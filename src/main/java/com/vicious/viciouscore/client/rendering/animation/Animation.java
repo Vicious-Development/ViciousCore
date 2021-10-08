@@ -19,7 +19,14 @@ public class Animation  {
     public Animation(int frameCount){
         frames = new AnimationFrameRunner[frameCount];
     }
+    public static Animation newSingleFrame(AnimationFrameRunner runner){
+        Animation a = new Animation(0);
+        a.addFrame(0,runner);
+        return a;
+    }
     public CCModel runModelFrame(CCModel model, double x, double y, double z, float yaw, float partialticks){
+        //Empty animation, this is usually when getAnimation is not overriden.
+        if(frames.length == 0) return model;
         int modularFrame = (int) (calcTotalTicks(partialticks))%frames.length;
         if(frames[modularFrame] == null) return model;
         else{
