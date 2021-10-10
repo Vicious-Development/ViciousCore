@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.rendering;
+package com.vicious.viciouscore.client.render.projectile;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
@@ -7,8 +7,9 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
-import com.vicious.viciouscore.client.rendering.animation.Animation;
-import com.vicious.viciouscore.client.rendering.animation.CCModelFrameRunner;
+import com.vicious.viciouscore.client.render.GenericRenderableEntity;
+import com.vicious.viciouscore.client.render.ViciousRenderManager;
+import com.vicious.viciouscore.client.render.animation.Animation;
 import com.vicious.viciouscore.common.entity.projectile.GenericModeledProjectile;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -53,14 +54,40 @@ public abstract class RenderModeledProjectile<T extends GenericModeledProjectile
         //Do this otherwise the client will crash. Crashing is bad.
         rs.draw();
     }
+
+    /**
+     * Override to provide your own matrix.
+     * @param x Camera x dist
+     * @param y Camera y dist
+     * @param z Camera z dist
+     * @return Matrix with no rotation and of supplied scale
+     */
     protected Matrix4 getMatrix(double x, double y, double z){
         //Create the default rendering matrix (no rotation, scale of 1 block wide.
-        return RenderUtils.getMatrix(new Vector3(x,y,z), new Rotation(0,0,0,1), 1).apply(this.scale);
+        return RenderUtils.getMatrix(new Vector3(x,y,z), new Rotation(0,0,0,1), 1).apply(getScale());
     }
+
+    /**
+     * Override to provide your own scale.
+     * @return scale
+     */
+    protected Scale getScale(){
+        return scale;
+    }
+
+    /**
+     * Override to provide your own animation.
+     * @return the Animation object to use for model modification.
+     */
     protected Animation getAnimation(){
+        //Empty anim
         return new Animation(0);
     }
 
+    /**
+     * Override to provide your model.
+     * @return the loaded CCModel
+     */
     public abstract CCModel getModel();
     @Nullable
     @Override

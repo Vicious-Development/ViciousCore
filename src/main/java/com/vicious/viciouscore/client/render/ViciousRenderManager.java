@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.rendering;
+package com.vicious.viciouscore.client.render;
 
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.Minecraft;

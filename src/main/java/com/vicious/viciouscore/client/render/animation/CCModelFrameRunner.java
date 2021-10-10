@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.rendering.animation;
+package com.vicious.viciouscore.client.render.animation;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Rotation;
@@ -6,7 +6,21 @@ import codechicken.lib.vec.Rotation;
 import java.util.function.Supplier;
 
 public abstract class CCModelFrameRunner implements AnimationFrameRunner {
+    private CCModelFrameRunner prevFrame;
+    public CCModelFrameRunner(){}
+    public CCModelFrameRunner setPrevious(CCModelFrameRunner previous){
+        prevFrame=previous;
+        return this;
+    }
+    public CCModelFrameRunner(CCModelFrameRunner previous){
+        prevFrame=previous;
+    }
     public abstract CCModel run(CCModel model, double x, double y, double z, float yaw, float partialticks);
+    //Applies model changes made in the previous frame.
+    protected CCModel applyPreviousFrame(CCModel model, double x, double y, double z, float yaw, float partialticks){
+        if(prevFrame == null) return model;
+        return prevFrame.run(model,x,y,z,yaw,partialticks-1);
+    }
 
     //Base level animations. Nothing really special, useful for avoiding repeat code.
 
@@ -27,8 +41,19 @@ public abstract class CCModelFrameRunner implements AnimationFrameRunner {
             this.y=y;
             this.z=z;
         }
+        public ConstantRotator(double rotationx, double rotationy, double rotationz, double x, double y, double z, CCModelFrameRunner previous){
+            super(previous);
+            rx=rotationx;
+            ry=rotationy;
+            rz=rotationz;
+            this.x=x;
+            this.y=y;
+            this.z=z;
+        }
+
         @Override
         public CCModel run(CCModel model, double xin, double yin, double zin, float yaw, float partialticks) {
+            model = applyPreviousFrame(model,xin,yin,zin,yaw,partialticks);
             float t = Animation.calcTotalTicks(partialticks);
             if(!willRotate()) return model;
             model = model.copy();
@@ -59,8 +84,18 @@ public abstract class CCModelFrameRunner implements AnimationFrameRunner {
             this.y=y;
             this.z=z;
         }
+        public VariableRotator(Supplier<Double> rotationx, Supplier<Double> rotationy, Supplier<Double> rotationz, Supplier<Double> x, Supplier<Double> y, Supplier<Double> z, CCModelFrameRunner previous){
+            super(previous);
+            rx=rotationx;
+            ry=rotationy;
+            rz=rotationz;
+            this.x=x;
+            this.y=y;
+            this.z=z;
+        }
         @Override
         public CCModel run(CCModel model, double xin, double yin, double zin, float yaw, float partialticks) {
+            model = applyPreviousFrame(model,xin,yin,zin,yaw,partialticks);
             float t = Animation.calcTotalTicks(partialticks);
             if(!willRotate()) return model;
             model = model.copy();

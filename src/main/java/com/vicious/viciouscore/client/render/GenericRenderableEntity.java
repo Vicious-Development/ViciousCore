@@ -1,5 +1,6 @@
-package com.vicious.viciouscore.client.rendering;
+package com.vicious.viciouscore.client.render;
 
+import com.vicious.viciouscore.common.entity.GenericEntity;
 import com.vicious.viciouscore.common.entity.projectile.GenericProjectileEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -9,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GenericRenderableEntity<T extends GenericProjectileEntity> extends Render<T> {
+public abstract class GenericRenderableEntity<T extends GenericEntity> extends Render<T> {
     protected GenericRenderableEntity(RenderManager renderManager) {
         super(renderManager);
     }

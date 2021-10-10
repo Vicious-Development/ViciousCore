@@ -1,8 +1,8 @@
-package com.vicious.viciouscore.client.rendering;
+package com.vicious.viciouscore.client.render.projectile;
 
 import codechicken.lib.render.CCModel;
-import com.vicious.viciouscore.client.rendering.animation.Animation;
-import com.vicious.viciouscore.client.rendering.animation.CCModelFrameRunner;
+import com.vicious.viciouscore.client.render.animation.Animation;
+import com.vicious.viciouscore.client.render.animation.CCModelFrameRunner;
 import com.vicious.viciouscore.common.entity.projectile.OrbProjectile;
 import com.vicious.viciouscore.common.util.ViciousLoader;
 import net.minecraft.client.renderer.entity.RenderManager;

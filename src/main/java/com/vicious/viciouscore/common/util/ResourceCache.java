@@ -8,7 +8,10 @@ import net.minecraft.util.ResourceLocation;
 
 public class ResourceCache implements IIconRegister, IResourceManagerReloadListener {
 
-    public static ResourceLocation ORBSPRITELOCATION = ViciousLoader.getViciousModelTexture("galena.png");
+    public static ResourceLocation ORBSPRITELOCATION = ViciousLoader.getViciousModelTexture("orb.png");
+    public static ResourceLocation TESTHEADSPRITELOCATION = ViciousLoader.getViciousModelTexture("testhead.png");
+    public static ResourceLocation TESTBODYSPRITELOCATION = ViciousLoader.getViciousModelTexture("testbody.png");
+    public static ResourceLocation TESTLIMBSPRITELOCATION = ViciousLoader.getViciousModelTexture("testlimb.png");
 
     @Override
     public void registerIcons(TextureMap textureMap) {

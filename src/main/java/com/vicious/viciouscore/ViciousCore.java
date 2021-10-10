@@ -3,7 +3,7 @@ package com.vicious.viciouscore;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.ResourceUtils;
 import com.vicious.viciouscore.client.registries.RenderRegistry;
-import com.vicious.viciouscore.client.rendering.ViciousRenderManager;
+import com.vicious.viciouscore.client.render.ViciousRenderManager;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import net.minecraftforge.fml.common.Mod;

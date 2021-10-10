@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.rendering;
+package com.vicious.viciouscore.client.render;
 
 
 import net.minecraft.client.renderer.texture.ITickable;

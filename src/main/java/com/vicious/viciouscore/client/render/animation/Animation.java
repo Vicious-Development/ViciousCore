@@ -1,9 +1,9 @@
-package com.vicious.viciouscore.client.rendering.animation;
+package com.vicious.viciouscore.client.render.animation;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.vec.Matrix4;
-import com.vicious.viciouscore.client.rendering.ViciousRenderManager;
+import com.vicious.viciouscore.client.render.ViciousRenderManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -20,7 +20,7 @@ public class Animation  {
         frames = new AnimationFrameRunner[frameCount];
     }
     public static Animation newSingleFrame(AnimationFrameRunner runner){
-        Animation a = new Animation(0);
+        Animation a = new Animation(1);
         a.addFrame(0,runner);
         return a;
     }
