@@ -24,6 +24,11 @@ public class Animation  {
         a.addFrame(0,runner);
         return a;
     }
+
+    public static Animation empty() {
+        return new Animation(0);
+    }
+
     public CCModel runModelFrame(CCModel model, double x, double y, double z, float yaw, float partialticks){
         //Empty animation, this is usually when getAnimation is not overriden.
         if(frames.length == 0) return model;

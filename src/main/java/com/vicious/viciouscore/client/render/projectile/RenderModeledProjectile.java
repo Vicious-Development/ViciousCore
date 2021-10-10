@@ -81,7 +81,7 @@ public abstract class RenderModeledProjectile<T extends GenericModeledProjectile
      */
     protected Animation getAnimation(){
         //Empty anim
-        return new Animation(0);
+        return Animation.empty();
     }
 
     /**
