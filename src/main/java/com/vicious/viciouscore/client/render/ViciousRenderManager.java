@@ -1,8 +1,16 @@
 package com.vicious.viciouscore.client.render;
 
+import codechicken.lib.render.CCModel;
+import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Scale;
+import codechicken.lib.vec.Translation;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.texture.ITickable;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,5 +60,21 @@ public class ViciousRenderManager implements ITickable {
     //Gets the correct lighting value for an object at the position.
     public static float getLightingBrightness(BlockPos pos){
         return Minecraft.getMinecraft().world.getLightBrightness(pos)*200;
+    }
+
+    /**
+     * Applies camera transformations depending on where the render is occurring. Model should be copied before doing this.
+     * @param overrider
+     * @param transformType
+     * @return
+     */
+    public static void applyCameraTransforms(IRenderOverride overrider, ItemCameraTransforms.TransformType transformType)
+    {
+        ItemTransformVec3f vec = overrider.getTransform(transformType);
+        GlStateManager.translate(vec.translation.x,vec.translation.y,vec.translation.z);
+        GlStateManager.rotate(vec.rotation.getX(),1,0,0);
+        GlStateManager.rotate(vec.rotation.getY(),0,1,0);
+        GlStateManager.rotate(vec.rotation.getZ(),0,0,1);
+        GlStateManager.scale(vec.scale.x,vec.scale.y,vec.scale.z);
     }
 }

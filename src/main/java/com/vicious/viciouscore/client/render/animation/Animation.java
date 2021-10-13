@@ -13,16 +13,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 @SuppressWarnings("unchecked")
 public class Animation  {
-    public float x,y,z;
-    public float rotx,roty,rotz;
     public final AnimationFrameRunner[] frames;
     public Animation(int frameCount){
         frames = new AnimationFrameRunner[frameCount];
     }
-    public static Animation newSingleFrame(AnimationFrameRunner runner){
+    public static <T extends Animation> T newSingleFrame(AnimationFrameRunner runner){
         Animation a = new Animation(1);
         a.addFrame(0,runner);
-        return a;
+        return (T)a;
     }
 
     public static Animation empty() {
@@ -35,7 +33,7 @@ public class Animation  {
         int modularFrame = (int) (calcTotalTicks(partialticks))%frames.length;
         if(frames[modularFrame] == null) return model;
         else{
-            return ((CCModelFrameRunner)frames[modularFrame]).run(model,x,y,z,yaw,partialticks);
+            return ((CCModelFrameRunner)frames[modularFrame]).run(model,x,y,z,yaw,calcTotalTicks(partialticks));
         }
     }
     public void runModelFrameAndRender(CCModel model, double x, double y, double z, float yaw, float partialticks, CCRenderState rs, Matrix4 mat){
@@ -44,37 +42,6 @@ public class Animation  {
     public AnimationFrameRunner addFrame(int frame, AnimationFrameRunner in){
         frames[frame] = in;
         return in;
-    }
-    public float ppX(float in){
-        float pre = x;
-        x+=in;
-        return pre;
-    }
-    public float ppY(float in){
-        float pre = y;
-        y+=in;
-        return pre;
-    }
-    public float ppZ(float in){
-        float pre = z;
-        z+=in;
-        return pre;
-    }
-
-    public float ppRotX(float in){
-        float pre = rotx;
-        rotx+=in;
-        return pre;
-    }
-    public float ppRotY(float in){
-        float pre = roty;
-        roty+=in;
-        return pre;
-    }
-    public float ppRotZ(float in){
-        float pre = rotz;
-        rotz+=in;
-        return pre;
     }
 
     //Assumes that the rotation is a constant speed. Useful for objects that spin constantly.

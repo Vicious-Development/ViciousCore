@@ -7,22 +7,16 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
 import com.vicious.viciouscore.client.render.animation.Animation;
-import com.vicious.viciouscore.common.entity.GenericEntity;
-import com.vicious.viciouscore.common.entity.projectile.GenericModeledProjectile;
-import net.minecraft.client.model.ModelArmorStand;
+import com.vicious.viciouscore.client.render.ICCModelUser;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
-
-public abstract class GenericRenderableEntityLiving <T extends EntityLiving> extends RenderLiving<T> {
+public abstract class GenericRenderableEntityLiving <T extends EntityLiving> extends RenderLiving<T> implements ICCModelUser {
     protected static Scale scale = new Scale(0.5,0.5,0.5);
     public GenericRenderableEntityLiving(RenderManager in){
         super(in, new ModelPlayer(1f,true), 1F);

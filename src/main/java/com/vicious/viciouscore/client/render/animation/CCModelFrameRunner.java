@@ -3,6 +3,9 @@ package com.vicious.viciouscore.client.render.animation;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Rotation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class CCModelFrameRunner implements AnimationFrameRunner {
@@ -52,14 +55,13 @@ public abstract class CCModelFrameRunner implements AnimationFrameRunner {
         }
 
         @Override
-        public CCModel run(CCModel model, double xin, double yin, double zin, float yaw, float partialticks) {
-            model = applyPreviousFrame(model,xin,yin,zin,yaw,partialticks);
-            float t = Animation.calcTotalTicks(partialticks);
+        public CCModel run(CCModel model, double xin, double yin, double zin, float yaw, float totalTicks) {
+            model = applyPreviousFrame(model,xin,yin,zin,yaw,totalTicks);
             if(!willRotate()) return model;
             model = model.copy();
-            if(x != 0) model.apply(new Rotation(t*rx, x,0,0));
-            if(y != 0) model.apply(new Rotation(t*ry, 0,y,0));
-            if(z != 0) model.apply(new Rotation(t*rz, 0,0,z));
+            if(x != 0) model.apply(new Rotation(totalTicks*rx, x,0,0));
+            if(y != 0) model.apply(new Rotation(totalTicks*ry, 0,y,0));
+            if(z != 0) model.apply(new Rotation(totalTicks*rz, 0,0,z));
             return model;
         }
         public boolean willRotate(){
@@ -94,18 +96,30 @@ public abstract class CCModelFrameRunner implements AnimationFrameRunner {
             this.z=z;
         }
         @Override
-        public CCModel run(CCModel model, double xin, double yin, double zin, float yaw, float partialticks) {
-            model = applyPreviousFrame(model,xin,yin,zin,yaw,partialticks);
-            float t = Animation.calcTotalTicks(partialticks);
+        public CCModel run(CCModel model, double xin, double yin, double zin, float yaw, float totalTicks) {
+            model = applyPreviousFrame(model,xin,yin,zin,yaw,totalTicks);
             if(!willRotate()) return model;
             model = model.copy();
-            if(x != null) model.apply(new Rotation(t*rx.get(), x.get(),0,0));
-            if(y != null) model.apply(new Rotation(t*ry.get(), 0,y.get(),0));
-            if(z != null) model.apply(new Rotation(t*rz.get(), 0,0,z.get()));
+            if(x != null) model.apply(new Rotation(totalTicks*rx.get(), x.get(),0,0));
+            if(y != null) model.apply(new Rotation(totalTicks*ry.get(), 0,y.get(),0));
+            if(z != null) model.apply(new Rotation(totalTicks*rz.get(), 0,0,z.get()));
             return model;
         }
         public boolean willRotate(){
             return !(rx == null && ry == null && rz == null) || !(x == null && y == null && z == null);
+        }
+    }
+    public static class MultiFrameRunner extends CCModelFrameRunner{
+        private List<CCModelFrameRunner> frames = new ArrayList<>();
+        public MultiFrameRunner(CCModelFrameRunner... frames){
+            this.frames.addAll(Arrays.asList(frames));
+        }
+        @Override
+        public CCModel run(CCModel model, double x, double y, double z, float yaw, float partialticks) {
+            for (CCModelFrameRunner frame : frames) {
+                model = frame.run(model,x,y,z,yaw,partialticks);
+            }
+            return model;
         }
     }
 }
