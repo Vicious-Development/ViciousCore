@@ -1,16 +1,13 @@
 package com.vicious.viciouscore.client.render;
 
 import com.vicious.viciouscore.common.entity.GenericEntity;
-import com.vicious.viciouscore.common.entity.projectile.GenericProjectileEntity;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GenericRenderableEntity<T extends GenericEntity> extends Render<T> {
+public abstract class GenericRenderableEntity<T extends GenericEntity> extends Render<T> implements ICCModelUser {
     protected GenericRenderableEntity(RenderManager renderManager) {
         super(renderManager);
     }
@@ -18,9 +15,5 @@ public abstract class GenericRenderableEntity<T extends GenericEntity> extends R
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks){
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-    }
-    protected void setLighting(float brightness){
-        GlStateManager.disableLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightness, brightness);
     }
 }

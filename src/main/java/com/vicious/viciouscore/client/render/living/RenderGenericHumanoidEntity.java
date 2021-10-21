@@ -2,20 +2,18 @@ package com.vicious.viciouscore.client.render.living;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.vec.*;
-import com.vicious.viciouscore.client.render.GenericRenderableEntity;
+import codechicken.lib.vec.Matrix4;
+import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Translation;
+import codechicken.lib.vec.Vector3;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
 import com.vicious.viciouscore.client.render.animation.Animation;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import com.vicious.viciouscore.common.util.ViciousLoader;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 

@@ -1,16 +1,11 @@
 package com.vicious.viciouscore.client.render;
 
-import codechicken.lib.render.CCModel;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.Translation;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.texture.ITickable;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;

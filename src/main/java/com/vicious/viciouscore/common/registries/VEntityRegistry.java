@@ -1,12 +1,10 @@
 package com.vicious.viciouscore.common.registries;
 
-import codechicken.lib.model.ModelRegistryHelper;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.entity.living.GenericHumanoidEntity;
 import com.vicious.viciouscore.common.entity.projectile.OrbProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 

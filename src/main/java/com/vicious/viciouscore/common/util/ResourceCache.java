@@ -12,6 +12,7 @@ public class ResourceCache implements IIconRegister, IResourceManagerReloadListe
     public static ResourceLocation TESTHEADSPRITELOCATION = ViciousLoader.getViciousModelTexture("testhead.png");
     public static ResourceLocation TESTBODYSPRITELOCATION = ViciousLoader.getViciousModelTexture("testbody.png");
     public static ResourceLocation TESTLIMBSPRITELOCATION = ViciousLoader.getViciousModelTexture("testlimb.png");
+    public static ResourceLocation ENERGORIFLELOCATION = ViciousLoader.getViciousModelTexture("mixedcolorpallete.png");
 
     @Override
     public void registerIcons(TextureMap textureMap) {

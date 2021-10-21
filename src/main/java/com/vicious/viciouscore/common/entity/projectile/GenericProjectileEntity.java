@@ -1,18 +1,11 @@
 package com.vicious.viciouscore.common.entity.projectile;
 
 import com.vicious.viciouscore.common.entity.GenericEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class GenericProjectileEntity extends GenericEntity {
     protected static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(GenericProjectileEntity.class, DataSerializers.VARINT);

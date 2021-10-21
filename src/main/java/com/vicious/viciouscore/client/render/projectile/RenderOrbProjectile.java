@@ -34,9 +34,4 @@ public class RenderOrbProjectile<T extends OrbProjectile> extends RenderModeledP
     public CCModel getModel(){
         return defaultmodel;
     }
-
-    @Override
-    protected Animation getAnimation() {
-        return anim;
-    }
 }

@@ -1,8 +1,6 @@
 package com.vicious.viciouscore.common.entity.living;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 

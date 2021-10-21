@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.client.render;
 
+import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.vicious.viciouscore.client.render.animation.Animation;
 import com.vicious.viciouscore.client.render.animation.CCModelFrameRunner;
 import com.vicious.viciouscore.client.render.animation.TickableAnimation;
@@ -77,6 +78,9 @@ public class RenderEventManager {
             //Cancel if the override render handles this stuff.
             overrider.cancelRenderOverlays(event);
         }
+    }
+    public void onRenderPlayerHeld(RenderItemEvent.Held event){
+
     }
     @SubscribeEvent
     public void onRenderSpecificHand(RenderSpecificHandEvent event)

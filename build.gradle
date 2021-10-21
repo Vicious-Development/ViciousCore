@@ -10,6 +10,9 @@ buildscript {
             name = "CoFH Maven"
             url = "http://maven.covers1624.net"
         }
+        maven {
+            url = "https://www.cursemaven.com"
+        }
         jcenter()
         mavenCentral()
     }
@@ -49,7 +52,6 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
-
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"

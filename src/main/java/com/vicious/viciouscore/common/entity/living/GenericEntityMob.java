@@ -2,7 +2,6 @@ package com.vicious.viciouscore.common.entity.living;
 
 import com.vicious.viciouscore.common.entity.projectile.GenericProjectileEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
