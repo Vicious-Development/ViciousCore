@@ -17,7 +17,7 @@ import net.minecraftforge.common.model.IModelState;
 public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsumer, IItemRenderer {
     @Override
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-        Matrix4 mat = getMatrix(0,0,0);
+        Matrix4 mat = getMatrix();
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
         //Start drawing

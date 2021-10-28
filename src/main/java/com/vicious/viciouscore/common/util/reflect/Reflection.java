@@ -1,5 +1,7 @@
 package com.vicious.viciouscore.common.util.reflect;
 
+import org.lwjgl.Sys;
+
 import java.lang.reflect.Field;
 
 public class Reflection {
@@ -10,13 +12,7 @@ public class Reflection {
      * @return uncasted field data
      */
     public static Object accessField(Object accessed, String fieldname){
-        Field f = null;
-        Class<?> clazz = accessed.getClass();
-        try {
-            f = clazz.getDeclaredField(fieldname);
-        } catch(NoSuchFieldException e){
-
-        }
+        Field f = getField(accessed,fieldname);
         if(f != null){
             try{
                 if (!f.isAccessible()) {
@@ -28,6 +24,34 @@ public class Reflection {
             }
         }
         return null;
+    }
+    private static Field getField(Object accessed, String fieldname){
+        Class<?> clazz = accessed.getClass();
+        Field f = null;
+        //Try to find the field, regardless of hierarchy position.
+        while(f == null && clazz != null) {
+            try {
+                f = clazz.getDeclaredField(fieldname);
+            } catch(NoSuchFieldException ignored){
+
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return f;
+    }
+    public static void setField(Object accessed, Object value, String fieldname){
+        Field f = getField(accessed,fieldname);
+        System.out.println(f);
+        if(f != null){
+            try{
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                f.set(accessed,value);
+            } catch(IllegalAccessException e){
+
+            }
+        }
     }
     public static Object accessStaticField(Class<?> accessed, String fieldname){
         Field f = null;

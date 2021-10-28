@@ -64,11 +64,20 @@ public interface ICCModelUser {
      */
     default Matrix4 getMatrix(double x, double y, double z){
         //Create the default rendering matrix (no rotation, scale of 1 block wide.
-        return RenderUtils.getMatrix(new Vector3(x,y,z), new Rotation(0,0,0,1), 1).apply(getScale());
+        return RenderUtils.getMatrix(new Vector3(x,y,z), getRotation(), 1).apply(getScale());
     }
     default Matrix4 getMatrix(Vector3 vec, Rotation rot){
         //Create the default rendering matrix (no rotation, scale of 1 block wide.
         return RenderUtils.getMatrix(vec,rot, 1).apply(getScale());
+    }
+    default Matrix4 getMatrix(){
+        return RenderUtils.getMatrix(getVector(), getRotation(), 1).apply(getScale());
+    }
+    default Vector3 getVector(){
+        return new Vector3(0,0,0);
+    }
+    default Rotation getRotation(){
+        return new Rotation(0,0,0,1);
     }
     /**
      * Override to provide your own animation.

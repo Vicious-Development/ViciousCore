@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class RenderGenericHumanoidEntity<T extends EntityLiving> extends GenericRenderableEntityLiving<T> {
+public class RenderGenericHumanoidEntity<T extends EntityLiving> extends RenderEntityLiving<T> {
     //Used to scale up the UV area when textures of larger factor are used.
     protected static int baseTextureFactor = 4;
     protected static CCModel defaultHeadModel = ViciousLoader.loadViciousModel("entity/obj/head.obj").backfacedCopy();

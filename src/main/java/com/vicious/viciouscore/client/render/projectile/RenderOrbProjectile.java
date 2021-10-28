@@ -20,7 +20,7 @@ public class RenderOrbProjectile<T extends OrbProjectile> extends RenderModeledP
     //Store a generic orb model.
     public static CCModel defaultmodel = ViciousLoader.loadViciousModel("projectile/obj/orb.obj").backfacedCopy();
     //Monoframe rotation animation. Movement and scale is handled by the server.
-    protected static Animation anim = Animation.newSingleFrame(new CCModelFrameRunner.VariableRotator(
+    protected static Animation anim = Animation.newSingleFrame(new CCModelFrameRunner.Rotator(
                 ()->0.1,
                 ()->0.1,
                 ()->0.1,

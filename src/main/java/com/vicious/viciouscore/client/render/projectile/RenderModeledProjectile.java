@@ -2,7 +2,7 @@ package com.vicious.viciouscore.client.render.projectile;
 
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.vec.Matrix4;
-import com.vicious.viciouscore.client.render.GenericRenderableEntity;
+import com.vicious.viciouscore.client.render.RenderGenericEntty;
 import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
 import com.vicious.viciouscore.common.entity.projectile.GenericModeledProjectile;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 
 @SideOnly(Side.CLIENT)
-public abstract class RenderModeledProjectile<T extends GenericModeledProjectile> extends GenericRenderableEntity<T> implements ICCModelConsumer {
+public abstract class RenderModeledProjectile<T extends GenericModeledProjectile> extends RenderGenericEntty<T> implements ICCModelConsumer {
     protected RenderModeledProjectile(RenderManager renderManager) {
         super(renderManager);
     }

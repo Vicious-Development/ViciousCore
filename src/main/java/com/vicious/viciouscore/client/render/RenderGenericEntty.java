@@ -7,8 +7,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GenericRenderableEntity<T extends GenericEntity> extends Render<T> implements ICCModelUser {
-    protected GenericRenderableEntity(RenderManager renderManager) {
+public abstract class RenderGenericEntty<T extends GenericEntity> extends Render<T> implements ICCModelUser {
+    protected RenderGenericEntty(RenderManager renderManager) {
         super(renderManager);
     }
 

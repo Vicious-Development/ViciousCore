@@ -39,6 +39,18 @@ public class Animation  {
     public void runModelFrameAndRender(CCModel model, double x, double y, double z, float yaw, float partialticks, CCRenderState rs, Matrix4 mat){
         runModelFrame(model,x,y,z,yaw,partialticks).render(rs,mat);
     }
+
+    /**
+     * Runs GLStateFrameRunners, these just modify the GLState.
+     * @param partialTicks
+     */
+    public void runGLStateFrame(float partialTicks){
+        int modularFrame = ((int)calcTotalTicks(partialTicks))%frames.length;
+        if(frames[modularFrame] == null) return;
+        else{
+            ((GLStateFrameRunner)frames[modularFrame]).run(calcTotalTicks(partialTicks));
+        }
+    }
     public AnimationFrameRunner addFrame(int frame, AnimationFrameRunner in){
         frames[frame] = in;
         return in;

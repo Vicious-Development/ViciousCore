@@ -8,12 +8,12 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 
-public abstract class GenericRenderableEntityLiving <T extends EntityLiving> extends RenderLiving<T> implements ICCModelUser, ICCModelConsumer {
-    public GenericRenderableEntityLiving(RenderManager in){
+public abstract class RenderEntityLiving<T extends EntityLiving> extends RenderLiving<T> implements ICCModelUser, ICCModelConsumer {
+    public RenderEntityLiving(RenderManager in){
         super(in, new ModelPlayer(1f,true), 1F);
     }
 
-    public GenericRenderableEntityLiving(RenderManager rendermanagerIn, ModelBase modelbaseIn, float shadowsizeIn) {
+    public RenderEntityLiving(RenderManager rendermanagerIn, ModelBase modelbaseIn, float shadowsizeIn) {
         super(rendermanagerIn, modelbaseIn, shadowsizeIn);
     }
 

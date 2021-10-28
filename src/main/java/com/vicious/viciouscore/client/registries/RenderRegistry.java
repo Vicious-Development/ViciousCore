@@ -14,8 +14,5 @@ public class RenderRegistry extends Registrator {
         //Entities
         RenderingRegistry.registerEntityRenderingHandler(OrbProjectile.class, RenderOrbProjectile::new);
         RenderingRegistry.registerEntityRenderingHandler(GenericHumanoidEntity.class, RenderGenericHumanoidEntity::new);
-
-        //Items
-        ModelRegistryHelper.registerItemRenderer(new ItemEnergoRifle(), new RenderEnergoRifle());
     }
 }
