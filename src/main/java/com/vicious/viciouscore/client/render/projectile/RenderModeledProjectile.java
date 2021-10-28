@@ -2,8 +2,8 @@ package com.vicious.viciouscore.client.render.projectile;
 
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.vec.Matrix4;
-import com.vicious.viciouscore.client.render.RenderGenericEntty;
 import com.vicious.viciouscore.client.render.ICCModelConsumer;
+import com.vicious.viciouscore.client.render.RenderGenericEntty;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
 import com.vicious.viciouscore.common.entity.projectile.GenericModeledProjectile;
 import com.vicious.viciouscore.common.util.ResourceCache;

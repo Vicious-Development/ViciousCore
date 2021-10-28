@@ -1,7 +1,6 @@
 package com.vicious.viciouscore.client.render.item;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import com.vicious.viciouscore.common.util.ViciousLoader;
@@ -12,7 +11,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
 
 public class RenderEnergoRifle extends RenderModeledItem{
     public static CCModel defaultmodel = ViciousLoader.loadViciousModel("item/obj/energorifle.obj").backfacedCopy();

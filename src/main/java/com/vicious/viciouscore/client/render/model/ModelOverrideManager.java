@@ -1,9 +1,8 @@
 package com.vicious.viciouscore.client.render.model;
 
-import com.vicious.viciouscore.client.render.model.OverrideModelBiped;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderBiped;
 
 public class ModelOverrideManager {
     /**
@@ -13,7 +12,8 @@ public class ModelOverrideManager {
      * @param entityRenderer
      * @return
      */
-    public static OverrideModelBiped overrideBiped(RenderLiving<?> entityRenderer) {
+    public static  OverrideModelBiped overrideBiped(RenderBiped<?> entityRenderer) {
+        //Override the entity model so we can apply changes.
         if (!(entityRenderer.getMainModel() instanceof OverrideModelBiped)) {
             ModelBiped model = (ModelBiped) entityRenderer.getMainModel();
             Reflection.setField(entityRenderer, new OverrideModelBiped(model), "mainModel");

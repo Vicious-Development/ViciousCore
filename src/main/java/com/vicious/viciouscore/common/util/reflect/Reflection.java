@@ -1,7 +1,5 @@
 package com.vicious.viciouscore.common.util.reflect;
 
-import org.lwjgl.Sys;
-
 import java.lang.reflect.Field;
 
 public class Reflection {

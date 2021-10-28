@@ -1,8 +1,6 @@
 package com.vicious.viciouscore.common.registries;
 
-import codechicken.lib.model.ModelRegistryHelper;
 import com.vicious.viciouscore.ViciousCore;
-import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.IRenderOverride;
 import com.vicious.viciouscore.common.item.ItemEnergoRifle;
 import net.minecraft.item.Item;

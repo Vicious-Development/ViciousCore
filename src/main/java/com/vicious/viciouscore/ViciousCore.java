@@ -5,6 +5,7 @@ import codechicken.lib.util.ResourceUtils;
 import com.vicious.viciouscore.client.registries.RenderRegistry;
 import com.vicious.viciouscore.client.render.RenderEventManager;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
+import com.vicious.viciouscore.common.modification.MobSpawnModifier;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VItemRegistry;
 import com.vicious.viciouscore.common.util.ResourceCache;
@@ -39,6 +40,7 @@ public class ViciousCore
         if(event.getSide() == Side.CLIENT) {
             clientPreInit(event);
         }
+        MinecraftForge.EVENT_BUS.register(MobSpawnModifier.class);
         System.out.println("INIT FINISHED");
     }
     @SubscribeEvent

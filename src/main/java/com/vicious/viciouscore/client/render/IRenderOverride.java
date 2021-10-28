@@ -1,7 +1,5 @@
 package com.vicious.viciouscore.client.render;
 
-import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
-import com.vicious.viciouscore.client.render.living.RenderEntityLiving;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;

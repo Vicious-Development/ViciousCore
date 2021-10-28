@@ -34,12 +34,6 @@ archivesBaseName = 'viciouscore'
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-repositories {
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
-}
 minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
@@ -58,7 +52,6 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
-    compile 'obfuscate:Obfuscate:0.2.6:1.12.2'
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"

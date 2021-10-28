@@ -1,8 +1,5 @@
 package com.vicious.viciouscore.client.render.animation;
 
-import codechicken.lib.render.CCModel;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Translation;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.ArrayList;
