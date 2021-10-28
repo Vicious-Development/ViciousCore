@@ -10,6 +10,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
  * IRenderOverride allows us to do that.
  */
 public abstract class ItemGun extends ViciousItem implements IRenderOverride {
+    public ItemGun(String name) {
+        super(name);
+    }
+
     public int getSightTime(){
         return 5; //Looks through sights in 5 ticks. (250ms on average).
     }

@@ -39,7 +39,6 @@ public class Reflection {
     }
     public static void setField(Object accessed, Object value, String fieldname){
         Field f = getField(accessed,fieldname);
-        System.out.println(f);
         if(f != null){
             try{
                 if (!f.isAccessible()) {

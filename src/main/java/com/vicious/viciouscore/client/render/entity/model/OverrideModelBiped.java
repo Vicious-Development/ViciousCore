@@ -1,19 +1,24 @@
-package com.vicious.viciouscore.client.render.model;
+package com.vicious.viciouscore.client.render.entity.model;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumHandSide;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
  * Overrided version of ModelBiped which changes how the game modifies the model on client rendering.
- * This model type gets injected into the mainModel field when an entity holds an item that implements BipedOverride.
+ * This model type gets injected into the mainModel field when RenderOverrideHandler#overrideBipedModel is called.
  */
 public class OverrideModelBiped extends ModelBiped {
     public Queue<Runnable> transforms = new LinkedList<>();
+    public List<EnumHandSide> ignoreHandSides = new ArrayList<>();
+    private boolean doRemove = false;
     public OverrideModelBiped()
     {
         this(0.0F);
@@ -87,11 +92,25 @@ public class OverrideModelBiped extends ModelBiped {
 
         GlStateManager.popMatrix();
     }
+
     public void overrideRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         //Runs rotations after MC has done its own bullshit.
         while(!transforms.isEmpty()){
             transforms.remove().run();
         }
+    }
+
+    /**
+     * Handles arm rendering. If you don't want the item to move with the arm, you can add the hand side to ignoreHandSides.
+     */
+    @Override
+    public void postRenderArm(float scale, EnumHandSide side) {
+        if(ignoreHandSides.contains(side)){
+            if(doRemove) ignoreHandSides.remove(side);
+            doRemove = !doRemove;
+            return;
+        }
+        super.postRenderArm(scale, side);
     }
 }

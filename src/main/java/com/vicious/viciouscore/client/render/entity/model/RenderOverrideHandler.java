@@ -1,10 +1,17 @@
-package com.vicious.viciouscore.client.render.model;
+package com.vicious.viciouscore.client.render.entity.model;
 
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 
-public class ModelOverrideManager {
+import java.util.List;
+
+@SuppressWarnings("unchecked")
+public class RenderOverrideHandler {
     /**
      * Used to allow custom mob animations. Works on anything with a mainModel of ModelBiped.
      * In vanilla this includes Skeletons, Strays, Zombies, Zombie Villagers, Zombie Pigmen, etc.
@@ -12,7 +19,7 @@ public class ModelOverrideManager {
      * @param entityRenderer
      * @return
      */
-    public static  OverrideModelBiped overrideBiped(RenderBiped<?> entityRenderer) {
+    public static OverrideModelBiped overrideModelBiped(RenderBiped<?> entityRenderer) {
         //Override the entity model so we can apply changes.
         if (!(entityRenderer.getMainModel() instanceof OverrideModelBiped)) {
             ModelBiped model = (ModelBiped) entityRenderer.getMainModel();

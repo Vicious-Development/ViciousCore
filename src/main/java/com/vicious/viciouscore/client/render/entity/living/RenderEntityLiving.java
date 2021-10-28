@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.render.living;
+package com.vicious.viciouscore.client.render.entity.living;
 
 import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.ICCModelUser;

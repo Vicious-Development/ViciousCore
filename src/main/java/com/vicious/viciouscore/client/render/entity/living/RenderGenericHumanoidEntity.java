@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.render.living;
+package com.vicious.viciouscore.client.render.entity.living;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;

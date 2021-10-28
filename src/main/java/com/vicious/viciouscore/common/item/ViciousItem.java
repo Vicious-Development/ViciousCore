@@ -8,4 +8,8 @@ public class ViciousItem extends Item {
         super();
         setRegistryName(ViciousCore.MODID);
     }
+    public ViciousItem(String name){
+        setUnlocalizedName(name);
+        setRegistryName(ViciousCore.MODID,name);
+    }
 }

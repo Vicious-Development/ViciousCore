@@ -1,5 +1,9 @@
 package com.vicious.viciouscore.client.render;
 
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
@@ -23,7 +27,7 @@ public interface IRenderOverride extends ICCModelUser {
     @SideOnly(Side.CLIENT)
     void cancelRenderOverlays(RenderGameOverlayEvent e);
     @SideOnly(Side.CLIENT)
-    void renderEntity(RenderLivingEvent<?> e);
+    void renderEntity(Render<?> renderer, EntityLivingBase e);
     @SideOnly(Side.CLIENT)
     void registerRenderers();
 }

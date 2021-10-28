@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.client.render.item;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import com.vicious.viciouscore.common.util.ViciousLoader;
@@ -23,28 +24,20 @@ public class RenderEnergoRifle extends RenderModeledItem{
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         super.renderItem(item, transformType);
         GlStateManager.pushMatrix();
-        AbstractClientPlayer abstractClientPlayer = Minecraft.getMinecraft().player;
-        Minecraft.getMinecraft().getTextureManager().bindTexture(abstractClientPlayer.getLocationSkin());
-        RenderPlayer renderPlayer = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(abstractClientPlayer);
-
-        GlStateManager.disableCull();
-        ModelRenderer arm = renderPlayer.getMainModel().bipedRightArm;
-
-        arm.rotateAngleX = 0F;
-        arm.rotateAngleY = 0F;
-        arm.rotateAngleZ = 0F;
-        arm.render(1F);
-
-        GlStateManager.enableCull();
         GlStateManager.popMatrix();
     }
 
     @Override
     public Scale getScale() {
-        return new Scale(0.125,0.125,0.125);
+        return new Scale(0.11,0.11,0.11);
     }
     public Rotation getRotation(){
         return new Rotation(-90,1,0,0);
+    }
+
+    @Override
+    public Matrix4 getMatrix() {
+        return super.getMatrix().translate(0,-14,5.5);
     }
     //NOTE TO SELF, IN RELATION TO PLAYER FRONT.
     // X+ rotates away from face. X- rotates towards.

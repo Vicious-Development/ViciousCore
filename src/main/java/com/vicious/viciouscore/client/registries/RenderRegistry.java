@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.client.registries;
 
-import com.vicious.viciouscore.client.render.living.RenderGenericHumanoidEntity;
+import com.vicious.viciouscore.client.render.entity.living.RenderGenericHumanoidEntity;
 import com.vicious.viciouscore.client.render.projectile.RenderOrbProjectile;
 import com.vicious.viciouscore.common.entity.living.GenericHumanoidEntity;
 import com.vicious.viciouscore.common.entity.projectile.OrbProjectile;

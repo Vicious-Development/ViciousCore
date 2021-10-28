@@ -3,6 +3,7 @@ package com.vicious.viciouscore.common.registries;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.client.render.IRenderOverride;
 import com.vicious.viciouscore.common.item.ItemEnergoRifle;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +24,7 @@ public class VItemRegistry extends Registrator{
         itemList.add(in);
         return in;
     }
+
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> ev){
         System.out.println("ENERG: " + ENERGO_RIFLE);
