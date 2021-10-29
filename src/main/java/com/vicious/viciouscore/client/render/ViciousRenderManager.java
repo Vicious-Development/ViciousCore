@@ -59,37 +59,4 @@ public class ViciousRenderManager implements ITickable {
     public static float getLightingBrightness(BlockPos pos){
         return Minecraft.getMinecraft().world.getLightBrightness(pos)*200;
     }
-
-    /**
-     * Applies camera transformations depending on where the render is occurring. Model should be copied before doing this.
-     * @param overrider
-     * @param transformType
-     * @return
-     */
-    public static void applyCameraTransforms(IRenderOverride overrider, ItemCameraTransforms.TransformType transformType)
-    {
-        /*ItemTransformVec3f vec = overrider.getTransform(transformType);
-        GlStateManager.translate(vec.translation.x,vec.translation.y,vec.translation.z);
-        GlStateManager.rotate(vec.rotation.getX(),1,0,0);
-        GlStateManager.rotate(vec.rotation.getY(),0,1,0);
-        GlStateManager.rotate(vec.rotation.getZ(),0,0,1);
-        GlStateManager.scale(vec.scale.x,vec.scale.y,vec.scale.z);*/
-    }
-    public static void renderArm(EnumHandSide hand, float scale)
-    {
-        AbstractClientPlayer abstractClientPlayer = Minecraft.getMinecraft().player;
-        Minecraft.getMinecraft().getTextureManager().bindTexture(abstractClientPlayer.getLocationSkin());
-        RenderPlayer renderPlayer = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(abstractClientPlayer);
-
-        GlStateManager.disableCull();
-        ModelRenderer arm = hand == EnumHandSide.LEFT ? renderPlayer.getMainModel().bipedLeftArm : renderPlayer.getMainModel().bipedRightArm;
-
-        arm.rotateAngleX = 0F;
-        arm.rotateAngleY = 0F;
-        arm.rotateAngleZ = 0F;
-        arm.render(scale);
-
-        GlStateManager.enableCull();
-    }
-
 }

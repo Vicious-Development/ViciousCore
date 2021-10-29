@@ -10,8 +10,8 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 
 public class ItemEnergoRifle extends ItemGun {
-    public ItemEnergoRifle(){
-        super("energorifle");
+    public ItemEnergoRifle(String name){
+        super(name);
     }
     @Override
     public void renderClient(RenderSpecificHandEvent e) {
@@ -26,8 +26,7 @@ public class ItemEnergoRifle extends ItemGun {
             OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
             model.ignoreHandSides.add(EnumHandSide.RIGHT);
             model.transforms.offer(()->{
-                model.bipedRightArm.rotateAngleY += -30;
-                model.bipedRightArm.rotateAngleX += -90;
+                model.bipedRightArm.rotateAngleX = 80;
             });
         }
     }

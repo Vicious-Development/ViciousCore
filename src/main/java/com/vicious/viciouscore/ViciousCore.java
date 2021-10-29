@@ -5,6 +5,9 @@ import codechicken.lib.util.ResourceUtils;
 import com.vicious.viciouscore.client.registries.RenderRegistry;
 import com.vicious.viciouscore.client.render.RenderEventManager;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
+import com.vicious.viciouscore.common.ViciousCTab;
+import com.vicious.viciouscore.common.item.ItemEnergoRifle;
+import com.vicious.viciouscore.common.item.ViciousItem;
 import com.vicious.viciouscore.common.modification.MobSpawnModifier;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VItemRegistry;
@@ -24,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "after:codechickenlib")
 public class ViciousCore
 {
+    public static final ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("energorifle", false));
+
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
     public static final String VERSION = "1.0";

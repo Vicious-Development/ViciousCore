@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * Overrided version of ModelBiped which changes how the game modifies the model on client rendering.
+ * Overridden version of ModelBiped which changes how the game modifies the model on client rendering.
  * This model type gets injected into the mainModel field when RenderOverrideHandler#overrideBipedModel is called.
  */
 public class OverrideModelBiped extends ModelBiped {

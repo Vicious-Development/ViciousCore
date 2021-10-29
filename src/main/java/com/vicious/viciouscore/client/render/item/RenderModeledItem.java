@@ -28,7 +28,6 @@ import java.util.Map;
 public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsumer, IItemRenderer {
     @Override
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-        System.out.println("TT:" + transformType);
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
 
@@ -47,7 +46,7 @@ public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsume
 
     @Override
     public IModelState getTransforms() {
-        Map<ItemCameraTransforms.TransformType, TRSRTransformation> map = new HashMap<>();
+        /*Map<ItemCameraTransforms.TransformType, TRSRTransformation> map = new HashMap<>();
         TRSRTransformation thirdPerson = TransformUtils.create(0.0F, 3.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.55F);
         TRSRTransformation firstPerson = TransformUtils.create(1.13F, 3.2F, 1.13F, 0.0F, -90.0F, 25.0F, 0.68F);
         map.put(ItemCameraTransforms.TransformType.GROUND, TransformUtils.create(0.0F, 2.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.5F));
@@ -56,8 +55,8 @@ public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsume
         map.put(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, TransformUtils.flipLeft(thirdPerson));
         map.put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, firstPerson);
         map.put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, TransformUtils.flipLeft(firstPerson));
-        CCModelState DEFAULTRIFLE = new CCModelState(map);
-        return DEFAULTRIFLE;
+        CCModelState DEFAULTRIFLE = new CCModelState(map);*/
+        return TransformUtils.DEFAULT_ITEM;
     }
 
     @Override

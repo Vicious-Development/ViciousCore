@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public abstract class ItemGun extends ViciousItem implements IRenderOverride {
     public ItemGun(String name) {
         super(name);
+        setMaxStackSize(1);
     }
 
     public int getSightTime(){
