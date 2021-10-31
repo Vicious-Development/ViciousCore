@@ -32,12 +32,12 @@ public class RenderEnergoRifle extends RenderModeledItem{
         return new Scale(0.11,0.11,0.11);
     }
     public Rotation getRotation(){
-        return new Rotation(30,-1,0,0);
+        return new Rotation(4.5,1,0,0);
     }
 
     @Override
     public Matrix4 getMatrix() {
-        return super.getMatrix().translate(0,0,0);
+        return super.getMatrix().translate(0,-10,5);
     }
     //NOTE TO SELF, IN RELATION TO PLAYER FRONT.
     // X+ rotates away from face. X- rotates towards.

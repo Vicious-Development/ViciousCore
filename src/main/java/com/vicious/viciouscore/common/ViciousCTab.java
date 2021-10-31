@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ViciousCTab extends CreativeTabs {
-    private Item icon
+    private Item icon;
     public ViciousCTab(String label, Item icon) {
         super(label);
         this.icon = icon;

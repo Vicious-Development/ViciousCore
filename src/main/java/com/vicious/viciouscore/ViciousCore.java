@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "after:codechickenlib")
 public class ViciousCore
 {
-    public static final ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("energorifle", false));
+    public static final ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("creativeicon", false));
 
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
