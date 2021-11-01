@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.item;
 
-import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
 import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
+import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -18,16 +18,5 @@ public class ItemEnergoRifle extends ItemGun {
         //e.getHand()
     }
 
-    @Override
-    public void renderEntity(Render<?> renderer, EntityLivingBase e) {
-        //Change how the entity renders while holding the weapon.
-        if(renderer instanceof RenderBiped) {
-            RenderLiving<?> entityRenderer = (RenderLiving<?>) renderer;
-            OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
-            model.ignoreHandSides.add(EnumHandSide.RIGHT);
-            model.transforms.offer(()->{
-                model.bipedRightArm.rotateAngleX = 80;
-            });
-        }
-    }
+
 }

@@ -1,5 +1,7 @@
 package com.vicious.viciouscore.client.render.entity.model;
 
+import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
+import com.vicious.viciouscore.client.render.item.configuration.ModelRendererConfiguration;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,6 +21,7 @@ public class OverrideModelBiped extends ModelBiped {
     public Queue<Runnable> transforms = new LinkedList<>();
     public List<EnumHandSide> ignoreHandSides = new ArrayList<>();
     private boolean doRemove = false;
+
     public OverrideModelBiped()
     {
         this(0.0F);
@@ -47,6 +50,34 @@ public class OverrideModelBiped extends ModelBiped {
         this.bipedLeftLeg = add(og.bipedLeftLeg);
     }
 
+    public void applicate(EntityModelOverride<ModelBiped> configurations) {
+        ModelRendererConfiguration leftarmcfg = configurations.getPartConfiguration("bipedLeftArm");
+        ModelRendererConfiguration rightarmcfg = configurations.getPartConfiguration("bipedRightArm");
+        ModelRendererConfiguration leftlegcfg = configurations.getPartConfiguration("bipedLeftLeg");
+        ModelRendererConfiguration rightlegcfg = configurations.getPartConfiguration("bipedRightLeg");
+        ModelRendererConfiguration bodycfg = configurations.getPartConfiguration("bipedBody");
+        ModelRendererConfiguration headcfg = configurations.getPartConfiguration("bipedHead");
+        ModelRendererConfiguration headwearcfg = configurations.getPartConfiguration("bipedHeadwear");
+        if(leftarmcfg.active.getBoolean()) applicatePart(bipedLeftArm,leftarmcfg);
+        if(rightarmcfg.active.getBoolean()) applicatePart(bipedRightArm,rightarmcfg);
+        if(leftlegcfg.active.getBoolean()) applicatePart(bipedLeftLeg,leftlegcfg);
+        if(rightlegcfg.active.getBoolean()) applicatePart(bipedRightLeg,rightlegcfg);
+        if(bodycfg.active.getBoolean()) applicatePart(bipedBody,bodycfg);
+        if(headcfg.active.getBoolean()) applicatePart(bipedHead,headcfg);
+        if(headwearcfg.active.getBoolean()) applicatePart(bipedHeadwear,headwearcfg);
+    }
+    private void applicatePart(ModelRenderer part, ModelRendererConfiguration config){
+        if(config.overrideRotation.getBoolean()){
+            part.rotateAngleX=config.rx.value();
+            part.rotateAngleY=config.ry.value();
+            part.rotateAngleZ=config.rz.value();
+        }
+        if(config.overrideTranslation.getBoolean()){
+            part.offsetX=config.tx.value();
+            part.offsetY=config.ty.value();
+            part.offsetZ=config.tz.value();
+        }
+    }
     private ModelRenderer add(ModelRenderer box) {
         boxList.add(box);
         return box;

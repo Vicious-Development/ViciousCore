@@ -5,12 +5,8 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import com.vicious.viciouscore.common.util.ViciousLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.item.ItemStack;
 
 public class RenderEnergoRifle extends RenderModeledItem{
@@ -29,15 +25,15 @@ public class RenderEnergoRifle extends RenderModeledItem{
 
     @Override
     public Scale getScale() {
-        return new Scale(0.11,0.11,0.11);
+        return new Scale(0.25,0.25,0.25);
     }
     public Rotation getRotation(){
-        return new Rotation(4.5,1,0,0);
+        return new Rotation(180,0,1,0);
     }
 
     @Override
     public Matrix4 getMatrix() {
-        return super.getMatrix().translate(0,-10,5);
+        return super.getMatrix().translate(0,0,0);
     }
     //NOTE TO SELF, IN RELATION TO PLAYER FRONT.
     // X+ rotates away from face. X- rotates towards.

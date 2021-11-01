@@ -1,6 +1,8 @@
 package com.vicious.viciouscore.common.util.reflect;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Reflection {
     /**
@@ -94,5 +96,17 @@ public class Reflection {
 
         }
         return null;
+    }
+
+    public static List<Field> getFieldsOfType(Class<?> clazz, Class<?> type) {
+        List<Field> fields = new ArrayList<>();
+        while(clazz != null) {
+            for (Field declaredField : clazz.getDeclaredFields()) {
+                if (declaredField.getType().equals(type) || declaredField.getType().getSuperclass().equals(type))
+                    fields.add(declaredField);
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
     }
 }

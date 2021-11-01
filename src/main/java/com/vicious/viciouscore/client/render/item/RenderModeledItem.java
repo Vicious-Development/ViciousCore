@@ -1,8 +1,6 @@
 package com.vicious.viciouscore.client.render.item;
 
-import codechicken.lib.render.CCModelState;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.item.CCRenderItem;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.state.GlStateTracker;
 import codechicken.lib.util.TransformUtils;
@@ -11,19 +9,10 @@ import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.ICCModelUser;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.Sys;
-
-import javax.vecmath.Matrix4f;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsumer, IItemRenderer {
     @Override

@@ -3,12 +3,6 @@ package com.vicious.viciouscore.client.render.entity.model;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-
-import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class RenderOverrideHandler {

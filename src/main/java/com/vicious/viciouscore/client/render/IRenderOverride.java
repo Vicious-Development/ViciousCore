@@ -1,11 +1,15 @@
 package com.vicious.viciouscore.client.render;
 
+import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
+import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
+import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
+import com.vicious.viciouscore.client.render.item.configuration.RenderConfiguration;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
