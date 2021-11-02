@@ -51,6 +51,7 @@ public class OverrideModelBiped extends ModelBiped {
     }
 
     public void applicate(EntityModelOverride<ModelBiped> configurations) {
+        if(configurations == null) return;
         ModelRendererConfiguration leftarmcfg = configurations.getPartConfiguration("bipedLeftArm");
         ModelRendererConfiguration rightarmcfg = configurations.getPartConfiguration("bipedRightArm");
         ModelRendererConfiguration leftlegcfg = configurations.getPartConfiguration("bipedLeftLeg");

@@ -1,15 +1,13 @@
 package com.vicious.viciouscore.common.item;
 
-import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
-import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumHandSide;
+import codechicken.lib.model.ModelRegistryHelper;
+import com.vicious.viciouscore.client.render.item.RenderEnergoRifle;
+import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 
 public class ItemEnergoRifle extends ItemGun {
+    private OverrideConfigurations renderconfig;
     public ItemEnergoRifle(String name){
         super(name);
     }
@@ -17,6 +15,10 @@ public class ItemEnergoRifle extends ItemGun {
     public void renderClient(RenderSpecificHandEvent e) {
         //e.getHand()
     }
-
-
+    @Override
+    public void registerRenderers() {
+        ModelRegistryHelper.registerItemRenderer(this, new RenderEnergoRifle());
+        renderconfig = OverrideConfigurations.create(this);
+        renderconfig.addEntityModelOverrider(ModelBiped.class);
+    }
 }

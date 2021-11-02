@@ -65,6 +65,10 @@ public class ConfigurationValue<T> extends TrackableObject<T> {
         settingOnStop = setting;
         return (ConfigurationValue<T>) super.setWithoutUpdate(setting);
     }
+    public String toString(){
+        return getStopValue().toString();
+    }
+
 
     public String getTab() {
         if(parent == null) return "";

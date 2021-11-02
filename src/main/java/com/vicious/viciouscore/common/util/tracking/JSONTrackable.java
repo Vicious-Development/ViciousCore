@@ -4,6 +4,7 @@ import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableValue;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,7 +58,7 @@ public class JSONTrackable<T extends JSONTrackable<T>> extends Trackable<T>{
             }
         } catch(Exception e){
             //IOE happens if the file doesn't exist. If it doesn't no values will be updated anyways which is totally fine.
-            if(!(e instanceof IOException)) {
+            if(!(e instanceof FileNotFoundException)) {
                 System.out.println("Failed to read a jsontrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
                 e.printStackTrace();
             }

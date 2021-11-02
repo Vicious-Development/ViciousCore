@@ -19,19 +19,50 @@ public class OverrideConfigurations {
     private final static Map<String, OverrideConfigurations> overrideConfigurationsMap = new HashMap<>();
     private final Path PATH;
     private final RenderConfiguration ITEM;
-    private final Map<ModelBase, EntityModelOverride<?>> MOBMAP = new HashMap<>();
+    private final Map<Class<? extends ModelBase>, EntityModelOverride<?>> MOBMAP = new HashMap<>();
     public OverrideConfigurations(Item in) {
-        String itemName = in.getRegistryName().toString();
-        PATH = Paths.get(Directories.itemRenderOverridesDirectory.toAbsolutePath() + "/" + itemName);
+        String itemName = in.getRegistryName().toString().replaceAll(":","-");
+        PATH = Directories.directorize(Directories.itemRenderOverridesDirectory.toAbsolutePath().toString(), itemName);
         FileUtil.createDirectoryIfDNE(PATH);
-        ITEM = new RenderConfiguration(Paths.get(PATH.toAbsolutePath() + "/" + itemName + ".json"));
+        ITEM = new RenderConfiguration(Directories.directorize(PATH.toAbsolutePath().toString(), itemName + ".json"));
     }
-    public OverrideConfigurations addEntityModelOverrider(ModelBase in){
-        EntityModelOverride<?> modelconfigurator = new EntityModelOverride<>(Paths.get(PATH.toAbsolutePath() + "/" + in.getClass().getCanonicalName()), in.getClass());
+
+    public static void saveAll() {
+        overrideConfigurationsMap.forEach((name, cfg)->{
+            cfg.ITEM.save();
+            cfg.MOBMAP.forEach((mob,override)->{
+                override.saveAll();
+            });
+        });
+    }
+
+    public static void readAll() {
+        overrideConfigurationsMap.forEach((name, cfg) -> {
+            cfg.ITEM.readFromJSON();
+            cfg.MOBMAP.forEach((mob, override) -> {
+                override.readAll();
+            });
+        });
+    }
+
+    public static void read(String itemname) {
+        OverrideConfigurations cfg = overrideConfigurationsMap.get(itemname);
+        if(cfg == null) return;
+        cfg.ITEM.readFromJSON();
+        cfg.MOBMAP.forEach((mob, override) -> {
+            override.readAll();
+        });
+    }
+
+    public <T extends ModelBase> OverrideConfigurations addEntityModelOverrider(Class<T> in){
+        EntityModelOverride<T> modelconfigurator = new EntityModelOverride<T>(Directories.directorize(PATH.toAbsolutePath().toString(),in.getCanonicalName().replaceAll("\\.","-")), in);
         MOBMAP.put(in,modelconfigurator);
         return this;
     }
     public <T extends ModelBase> EntityModelOverride<T> getEntityModelConfig(T in){
+        return (EntityModelOverride<T>) MOBMAP.get(in.getClass());
+    }
+    public <T extends ModelBase> EntityModelOverride<T> getEntityModelConfig(Class<T> in){
         return (EntityModelOverride<T>) MOBMAP.get(in);
     }
     public RenderConfiguration getItemConfig(){

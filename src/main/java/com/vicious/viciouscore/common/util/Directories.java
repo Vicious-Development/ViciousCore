@@ -2,6 +2,7 @@ package com.vicious.viciouscore.common.util;
 
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.Minecraft;
+import scala.Char;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +16,18 @@ public class Directories {
     public static Path itemRenderOverridesDirectory;
 
     public static void initializeConfigDependents() {
-        Directories.configDirectory = FileUtil.createDirectoryIfDNE(Paths.get(rootDir() + "/config"));
-        Directories.resourcesDirectory = FileUtil.createDirectoryIfDNE(Paths.get(rootDir() + "/resources"));
-        Directories.viciousResourcesDirectory = FileUtil.createDirectoryIfDNE(Paths.get(resourcesDirectory.toAbsolutePath() + "/vicious"));
-        Directories.itemRenderOverridesDirectory = FileUtil.createDirectoryIfDNE(Paths.get(viciousResourcesDirectory.toAbsolutePath() + "/itemrenderoverrides"));
-        Directories.viciousConfigDirectory = FileUtil.createDirectoryIfDNE(Paths.get(configDirectory.toAbsolutePath() + "/vicious"));
-        Directories.viciousCoreConfigPath = FileUtil.createDirectoryIfDNE(Paths.get(configDirectory.toAbsolutePath() + "/viciouscore.json"));
+        Directories.configDirectory = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"config"));
+        Directories.resourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"resources"));
+        Directories.viciousResourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(resourcesDirectory.toAbsolutePath().toString(),"vicious"));
+        Directories.itemRenderOverridesDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"itemrenderoverrides"));
+        Directories.viciousConfigDirectory = FileUtil.createDirectoryIfDNE(directorize(configDirectory.toAbsolutePath().toString(),"vicious"));
+        Directories.viciousCoreConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"viciouscore.json");
 
+    }
+
+    public static Path directorize(String dir, String path) {
+
+        return Paths.get(dir + "\\" + path);
     }
 
     public static String rootDir() {

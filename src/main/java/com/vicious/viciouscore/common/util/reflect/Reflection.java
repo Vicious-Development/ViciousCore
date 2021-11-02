@@ -102,8 +102,8 @@ public class Reflection {
         List<Field> fields = new ArrayList<>();
         while(clazz != null) {
             for (Field declaredField : clazz.getDeclaredFields()) {
-                if (declaredField.getType().equals(type) || declaredField.getType().getSuperclass().equals(type))
-                    fields.add(declaredField);
+                if (declaredField.getType().equals(type)) fields.add(declaredField);
+                if(declaredField.getType().getSuperclass() != null && declaredField.getType().getSuperclass().equals(type)) fields.add(declaredField);
             }
             clazz = clazz.getSuperclass();
         }

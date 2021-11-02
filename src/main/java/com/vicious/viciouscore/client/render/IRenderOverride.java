@@ -3,11 +3,13 @@ package com.vicious.viciouscore.client.render;
 import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
 import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
 import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.RenderConfiguration;
+import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
@@ -31,7 +33,22 @@ public interface IRenderOverride extends ICCModelUser {
     @SideOnly(Side.CLIENT)
     void cancelRenderOverlays(RenderGameOverlayEvent e);
     @SideOnly(Side.CLIENT)
-    void renderEntity(Render<?> renderer, EntityLivingBase e);
-    @SideOnly(Side.CLIENT)
     void registerRenderers();
+    @SideOnly(Side.CLIENT)
+    default void renderEntity(Render<?> renderer, EntityLivingBase e) {
+        Item item = e.getHeldItemMainhand().getItem();
+        //Changes how the entity renders while holding the item.
+        if(renderer instanceof RenderBiped) {
+            RenderLiving<?> entityRenderer = (RenderLiving<?>) renderer;
+            OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
+            OverrideConfigurations overridecfg = OverrideConfigurations.getConfiguration(item);
+            if(overridecfg != null) {
+                EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(model);
+                model.ignoreHandSides.add(EnumHandSide.RIGHT);
+                model.transforms.offer(() -> {
+                    model.applicate(configurations);
+                });
+            }
+        }
+    }
 }

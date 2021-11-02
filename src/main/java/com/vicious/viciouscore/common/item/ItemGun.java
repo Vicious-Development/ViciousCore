@@ -1,10 +1,8 @@
 package com.vicious.viciouscore.common.item;
 
-import codechicken.lib.model.ModelRegistryHelper;
 import com.vicious.viciouscore.client.render.IRenderOverride;
 import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
 import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
-import com.vicious.viciouscore.client.render.item.RenderEnergoRifle;
 import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
 import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
 import net.minecraft.client.model.ModelBiped;
@@ -40,17 +38,14 @@ public abstract class ItemGun extends ViciousItem implements IRenderOverride {
         if(renderer instanceof RenderBiped) {
             RenderLiving<?> entityRenderer = (RenderLiving<?>) renderer;
             OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
-            EntityModelOverride<ModelBiped> configurations = OverrideConfigurations.getConfiguration(this).getEntityModelConfig(model);
+            OverrideConfigurations overridecfg = OverrideConfigurations.getConfiguration(this);
             model.ignoreHandSides.add(EnumHandSide.RIGHT);
-            model.transforms.offer(()->{
-                model.applicate(configurations);
-            });
+            if(overridecfg != null) {
+                EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(model);
+                model.transforms.offer(() -> {
+                    model.applicate(configurations);
+                });
+            }
         }
-    }
-
-    @Override
-    public void registerRenderers() {
-        ModelRegistryHelper.registerItemRenderer(this, new RenderEnergoRifle());
-        OverrideConfigurations.create(this);
     }
 }
