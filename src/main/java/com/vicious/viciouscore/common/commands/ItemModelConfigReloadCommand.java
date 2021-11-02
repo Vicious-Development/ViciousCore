@@ -37,7 +37,8 @@ public class ItemModelConfigReloadCommand extends CommandBase {
     @Override
     public void execute( MinecraftServer server,  ICommandSender sender, String[] args) throws CommandException {
         String reload = args[0];
-        String itemname = args[1];
+        String itemname = "";
+        if(args.length > 1) itemname = args[1];
         if(reload.equalsIgnoreCase(reload)){
             if(!VUtil.isEmptyOrNull(itemname)) OverrideConfigurations.read(itemname);
             OverrideConfigurations.readAll();

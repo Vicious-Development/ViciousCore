@@ -31,21 +31,4 @@ public abstract class ItemGun extends ViciousItem implements IRenderOverride {
         //Cancel rendering crosshairs if the player is using sights.
         //if(e.getType().equals(RenderGameOverlayEvent.ElementType.CROSSHAIRS) && RenderEventManager.LOOKSIGHTSANIMATION.currentTick() >= getSightTime()) e.setCanceled(true);
     }
-
-    @Override
-    public void renderEntity(Render<?> renderer, EntityLivingBase e) {
-        //Changes how the entity renders while holding the item.
-        if(renderer instanceof RenderBiped) {
-            RenderLiving<?> entityRenderer = (RenderLiving<?>) renderer;
-            OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
-            OverrideConfigurations overridecfg = OverrideConfigurations.getConfiguration(this);
-            model.ignoreHandSides.add(EnumHandSide.RIGHT);
-            if(overridecfg != null) {
-                EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(model);
-                model.transforms.offer(() -> {
-                    model.applicate(configurations);
-                });
-            }
-        }
-    }
 }

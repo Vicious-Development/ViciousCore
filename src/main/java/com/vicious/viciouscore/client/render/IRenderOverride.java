@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,10 +44,10 @@ public interface IRenderOverride extends ICCModelUser {
             OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
             OverrideConfigurations overridecfg = OverrideConfigurations.getConfiguration(item);
             if(overridecfg != null) {
-                EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(model);
+                EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(ModelBiped.class);
                 model.ignoreHandSides.add(EnumHandSide.RIGHT);
                 model.transforms.offer(() -> {
-                    model.applicate(configurations);
+                    model.applicate(configurations != null ? configurations : overridecfg.getEntityModelConfig(model));
                 });
             }
         }
