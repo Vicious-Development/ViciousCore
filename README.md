@@ -28,10 +28,28 @@ public void registerRenderers() {
     //Other stuff...
 }
 ```
-Now on startup or when "ircfg reload" is called, your item's OverrideConfigurations will be automatically generated in the run/resources/vicious/<yourmodid>/<itemid> directory.
-The json file there provides 9 fields by default for modifying your item's rendering. These should be self explanatory so I won't delve deeper about that.
+**Now on startup or when "ircfg reload" is called, your item's OverrideConfigurations will be automatically generated in the run/resources/vicious/<yourmodid>/<itemid> directory.
+**The json file there provides 9 fields by default for modifying your item's rendering. These should be self explanatory so I won't delve deeper about that.
 Just know a few things.
 An OverrideConfiguration must have active set to true to work, as well as any of its transformations that will be ran.
 
 With that, you should be able to render the item at the correct scale, rotation, and position. For Animations, you will have to manually implement them. More on that later.
+
+**What about entities? Well, OverrideConfigurations has you covered. Note: Currently, OverrideConfigurations only supports overriding rendering when an IRenderOverride Item is held**
+**You can add overrides for specific Models by doing the following in your Item class**
+```
+@Override
+public void registerRenderers() {
+    //Other stuff...
+    renderconfig = OverrideConfigurations.create(this);
+    renderconfig.addEntityModelOverrider(modelclass extends ModelBase); //EXAMPLE OF COMPLETE CODE renderconfig.addEntityModelOverrider(ModelBiped.class);
+    //Other stuff...
+}
+```
+**In the Example, we are overriding the ModelBiped rendering. This will effect vanilla mobs such as Zombies, Skeletons, Pigmen, ... . Once you do this, the OverrideConfigurations for that specific model type will be generated in run/resources/vicious/<yourmodid>/<itemid>/<ModelClassCanonicalName>** 
+Each Model part will have its own OverrideConfiguration json file generated. This works the same as the Item variant, just without scale. If you enable one of the parts to have the render be overriden, the entity will be rendered differently while the item is held.
+
+**Being able to do this in such an easy fashion allows you to quickly created cursed beings such as the one below**
+
+<spider holding gun probably>
 
