@@ -2,6 +2,7 @@ package com.vicious.viciouscore.common.util;
 
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import scala.Char;
 
 import java.nio.file.Path;
@@ -22,7 +23,6 @@ public class Directories {
         Directories.itemRenderOverridesDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"itemrenderoverrides"));
         Directories.viciousConfigDirectory = FileUtil.createDirectoryIfDNE(directorize(configDirectory.toAbsolutePath().toString(),"vicious"));
         Directories.viciousCoreConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"viciouscore.json");
-
     }
 
     public static Path directorize(String dir, String path) {

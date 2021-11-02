@@ -4,6 +4,8 @@ import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLContainer;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -75,5 +77,8 @@ public class OverrideConfigurations {
     }
     public static OverrideConfigurations getConfiguration(Item in){
         return overrideConfigurationsMap.get(in.getRegistryName().toString());
+    }
+    public static void copyFromResources(String modid, Class<?> mainClass){
+        FileUtil.copyResources(mainClass, "/assets/" + modid + "/itemrenderoverrides", Directories.viciousResourcesDirectory.toAbsolutePath().toString());
     }
 }

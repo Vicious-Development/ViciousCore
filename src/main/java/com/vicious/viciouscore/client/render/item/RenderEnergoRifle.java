@@ -4,6 +4,7 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.ViciousLoader;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;

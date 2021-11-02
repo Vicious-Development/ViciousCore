@@ -16,6 +16,7 @@ import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VItemRegistry;
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.ResourceCache;
+import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.Sys;
 
 @Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "after:codechickenlib")
 public class ViciousCore
@@ -49,6 +51,10 @@ public class ViciousCore
         instance = this;
         Directories.initializeConfigDependents();
         CFG = VCoreConfig.init();
+        if(!CFG.firstLoad.getBoolean()) {
+            System.out.println("ViciousCore detected first load setup. Time to do some cool stuff and things!");
+            if(event.getSide() == Side.CLIENT) OverrideConfigurations.copyFromResources(MODID,this.getClass());
+        }
         logger = event.getModLog();
         System.out.println("INIT STARTED");
         VEntityRegistry.register();
@@ -87,6 +93,7 @@ public class ViciousCore
         if(event.getSide() == Side.CLIENT) {
             clientInit(event);
         }
+        if(!CFG.firstLoad.getBoolean()) CFG.firstLoad.set(true);
     }
 
     @EventHandler

@@ -42,7 +42,7 @@ public interface IRenderOverride extends ICCModelUser {
         if(renderer instanceof RenderBiped) {
             RenderLiving<?> entityRenderer = (RenderLiving<?>) renderer;
             OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
-            OverrideConfigurations overridecfg = OverrideConfigurations.getConfiguration(item);
+            OverrideConfigurations overridecfg = ((IRenderOverride)item).getConfiguration();
             if(overridecfg != null) {
                 EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(ModelBiped.class);
                 model.ignoreHandSides.add(EnumHandSide.RIGHT);
@@ -52,4 +52,6 @@ public interface IRenderOverride extends ICCModelUser {
             }
         }
     }
+    @SideOnly(Side.CLIENT)
+    OverrideConfigurations getConfiguration();
 }

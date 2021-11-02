@@ -1,16 +1,21 @@
 package com.vicious.viciouscore.common.util.file;
 
+import codechicken.lib.util.ResourceUtils;
+import com.vicious.viciouscore.common.util.Directories;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class FileUtil {
     public static Path createDirectoryIfDNE(Path p){
@@ -47,6 +52,50 @@ public class FileUtil {
             System.out.println("Could not load, probably doesn't actually exist. " + p.toString() + " caused by: " + ex.getMessage());
             ex.printStackTrace();
             throw ex;
+        }
+    }
+
+    /**
+     * Copied this from the internet somewhere, Idk where. Its meant to copy resources from a mod's resource cache.
+     * NOTE: This will copy the folder contents! The folder itself will NOT be copied. Make sure to set the targetDestination as the intended folder of storage.
+     * You know what they say, if it works don't question it.
+     * @param modMainClass
+     * @param resourcePath
+     * @param targetDestination
+     */
+    public static void copyResources(Class<?> modMainClass, String resourcePath, String targetDestination){
+
+        URL url = modMainClass.getResource(resourcePath + "/");
+        try
+        {
+            if (url != null)
+            {
+                URI uri = url.toURI();
+                Path path = null;
+                if ("file".equals(uri.getScheme()))
+                {
+                    path = Paths.get(modMainClass.getResource(resourcePath).toURI());
+                }
+                else
+                {
+                    FileSystem filesystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+                    path = filesystem.getPath(resourcePath);
+                }
+                Iterator<Path> it = Files.walk(path).iterator();
+                it.next();
+                while(it.hasNext()) {
+                    Path p = it.next();
+                    String postTarget = p.toAbsolutePath().toString().replaceAll(resourcePath + "/", "");
+                    Path destination = Directories.directorize(targetDestination, postTarget);
+                    new File(destination.toString());
+                    Files.copy(p, destination);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

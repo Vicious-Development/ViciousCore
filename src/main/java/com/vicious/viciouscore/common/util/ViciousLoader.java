@@ -18,6 +18,9 @@ public class ViciousLoader {
     public static ResourceLocation getResource(String resourcePath){
         return new ResourceLocation(resourcePath);
     }
+    public static ResourceLocation getItemRenderOverrideLocation(String modid){
+        return getResource(modid + "/" + "itemrenderoverrides");
+    }
 
     public static ResourceLocation getViciousTexture(String resourcePath) {
         return new ResourceLocation(ViciousCore.MODID + ":textures/" + resourcePath);

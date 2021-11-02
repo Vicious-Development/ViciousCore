@@ -23,7 +23,7 @@ public class JSONTrackable<T extends JSONTrackable<T>> extends Trackable<T>{
             readFromJSON();
         },1, TimeUnit.SECONDS);
     }
-    public JSONTrackable(Path p, Runnable onInit){
+    public JSONTrackable(Path p, Runnable onInit) {
         PATH = p;
         Executors.newScheduledThreadPool(1).schedule(()->{
             readFromJSON();
@@ -50,7 +50,7 @@ public class JSONTrackable<T extends JSONTrackable<T>> extends Trackable<T>{
             e.printStackTrace();
         }
     }
-    public JSONTrackable<T> readFromJSON(){
+    public JSONTrackable<T> readFromJSON() {
         try {
             JSONObject obj = FileUtil.loadJSON(PATH);
             for (TrackableValue<?> value : values.values()) {

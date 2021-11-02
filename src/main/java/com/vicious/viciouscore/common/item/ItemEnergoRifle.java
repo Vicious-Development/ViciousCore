@@ -5,9 +5,13 @@ import com.vicious.viciouscore.client.render.item.RenderEnergoRifle;
 import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemEnergoRifle extends ItemGun {
+    @SideOnly(Side.CLIENT)
     private OverrideConfigurations renderconfig;
+
     public ItemEnergoRifle(String name){
         super(name);
     }
@@ -20,5 +24,8 @@ public class ItemEnergoRifle extends ItemGun {
         ModelRegistryHelper.registerItemRenderer(this, new RenderEnergoRifle());
         renderconfig = OverrideConfigurations.create(this);
         renderconfig.addEntityModelOverrider(ModelBiped.class);
+    }
+    public OverrideConfigurations getConfiguration(){
+        return renderconfig;
     }
 }

@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class EntityModelOverride<T extends ModelBase> {
     public final Map<String, ModelRendererConfiguration> modelPartConfigs = new HashMap<>();
+
     public EntityModelOverride(Path f, Class<T> modelclass) {
         FileUtil.createDirectoryIfDNE(f);
         List<Field> rendererFields = Reflection.getFieldsOfType(modelclass, ModelRenderer.class);
