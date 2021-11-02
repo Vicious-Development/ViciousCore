@@ -46,10 +46,21 @@ public void registerRenderers() {
     //Other stuff...
 }
 ```
-**In the Example, we are overriding the ModelBiped rendering. This will effect vanilla mobs such as Zombies, Skeletons, Pigmen, ... . Once you do this, the OverrideConfigurations for that specific model type will be generated in run/resources/vicious/<yourmodid>/<itemid>/<ModelClassCanonicalName>** 
+**In the Example, we are overriding the ModelBiped rendering. This will effect vanilla mobs such as Zombies, Skeletons, Pigmen, ... . Once you do this, the OverrideConfigurations for that specific model type will be generated in run/resources/vicious/<yourmodid>-<itemid>/<ModelClassCanonicalName>** 
 Each Model part will have its own OverrideConfiguration json file generated. This works the same as the Item variant, just without scale. If you enable one of the parts to have the render be overriden, the entity will be rendered differently while the item is held.
 
 **Being able to do this in such an easy fashion allows you to quickly created cursed beings such as the one below**
 
 <spider holding gun probably>
+
+**If this is stored in my dev env run/resource folder, how do I put the OverrideConfigurations in the mod jar?**
+This was a question I asked. Fortunately, I've got a simple solution for you! Here's the steps to do it.
+1. In your mod's resources package, create a directory "assets" if it doesn't already exist.
+2. In your run directory, copy the entire "itemrenderoverrides" folder.
+3. Paste this in your resource/assets package.
+4. In your mod's client preInitializer write this:
+```
+OverrideConfigurations.copyFromResources(<yourmodid>,this.getClass());
+```
+This will put the OverrideConfigurations in the game's resource/vicious/itemrenderoverrides directory when the game starts for the first time. On future runs, the OverrideConfigurations will always load from the resources directory rather than your mod's assets allowing other modders to make changes as they see fit.
 
