@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.recipes;
+package com.vicious.viciouscore.common.sampleblock;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static com.vicious.viciouscore.common.sampleblock.TileEntitySampleBlock.getItemBurnTime;
 
 public class SampleBlockRecipes
 {
@@ -55,6 +57,10 @@ public class SampleBlockRecipes
     public Table<ItemStack, ItemStack, ItemStack> getDualSmeltingList()
     {
         return this.smeltingList;
+    }
+    public static boolean isItemFuel(ItemStack fuel)
+    {
+        return getItemBurnTime(fuel) > 0;
     }
 
     public float getSampleBlockExperience(ItemStack stack)

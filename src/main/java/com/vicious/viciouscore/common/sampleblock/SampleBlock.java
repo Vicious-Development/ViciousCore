@@ -1,10 +1,9 @@
-package com.vicious.viciouscore.common.block;
+package com.vicious.viciouscore.common.sampleblock;
 
 
 import com.vicious.viciouscore.ViciousCore;
-import com.vicious.viciouscore.common.gui.SampleBlockGui;
+import com.vicious.viciouscore.common.block.ViciousBlock;
 import com.vicious.viciouscore.common.registries.VBlockRegistry;
-import com.vicious.viciouscore.common.tile.TileEntitySampleBlock;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;

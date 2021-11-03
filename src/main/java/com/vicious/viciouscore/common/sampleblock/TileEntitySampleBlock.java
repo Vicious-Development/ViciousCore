@@ -1,7 +1,5 @@
-package com.vicious.viciouscore.common.tile;
+package com.vicious.viciouscore.common.sampleblock;
 
-import com.vicious.viciouscore.common.block.SampleBlock;
-import com.vicious.viciouscore.common.recipes.SampleBlockRecipes;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,8 +29,7 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
-        else return false;
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
 
     @Override
@@ -126,7 +123,7 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
             ItemStack result = SampleBlockRecipes.getInstance().getUsageResult((ItemStack) this.handler.getStackInSlot(0), (ItemStack) this.handler.getStackInSlot(1));
             if (result.isEmpty()) return false;
             else {
-                ItemStack output = (ItemStack) this.handler.getStackInSlot(3);
+                ItemStack output = this.handler.getStackInSlot(3);
                 if (output.isEmpty()) return true;
                 if (!output.isItemEqual(result)) return false;
                 int res = output.getCount() + result.getCount();
@@ -157,12 +154,8 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
             if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
             if (item == Items.BLAZE_ROD) return 2400;
 
-            return GameRegistry.getFuelValue(fuel);
+            return ForgeEventFactory.getItemBurnTime(fuel);
         }
-    }
-
-    public static boolean isItemFuel(ItemStack fuel) {
-        return getItemBurnTime(fuel) > 0;
     }
 
     public boolean isUsableByPlayer(EntityPlayer player) {

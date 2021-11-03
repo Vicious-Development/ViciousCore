@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.registries;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.client.render.IRenderOverride;
 import com.vicious.viciouscore.common.item.ItemEnergoRifle;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,17 +17,17 @@ import java.util.List;
  */
 @Mod.EventBusSubscriber(modid = ViciousCore.MODID)
 public class VItemRegistry extends Registrator{
-    private static List<Item> itemList = new ArrayList<>();
-    public static ItemEnergoRifle ENERGO_RIFLE = register(new ItemEnergoRifle("energorifle"));
+    private static final List<Item> ITEM_LIST = new ArrayList<>();
+    public static final ItemEnergoRifle ENERGO_RIFLE = register(new ItemEnergoRifle("energorifle"));
     public static <T extends Item> T register(T in){
-        itemList.add(in);
+        ITEM_LIST.add(in);
         return in;
     }
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> ev){
         IForgeRegistry<Item> reg = ev.getRegistry();
-        for(Item i : itemList){
+        for(Item i : ITEM_LIST){
             reg.register(i);
             if(i instanceof IRenderOverride){
                 ((IRenderOverride)i).registerRenderers();
