@@ -1,0 +1,12 @@
+{
+  "variants" : {
+    "active=true,facing=north": {"model": "viciouscore:sample_block_on"},
+    "active=true,facing=east": {"model": "viciouscore:sample_block_on", "y": 90},
+    "active=true,facing=south": {"model": "viciouscore:sample_block_on", "y": 180},
+    "active=true,facing=west": {"model": "viciouscore:sample_block_on", "y": 270},
+    "active=false,facing=north": {"model": "viciouscore:sample_block"},
+    "active=false,facing=east": {"model": "viciouscore:sample_block", "y": 90},
+    "active=false,facing=south": {"model": "viciouscore:sample_block", "y": 180},
+    "active=false,facing=west": {"model": "viciouscore:sample_block", "y": 270}
+  }
+}
