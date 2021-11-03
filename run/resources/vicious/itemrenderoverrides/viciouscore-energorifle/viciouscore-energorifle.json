@@ -1,15 +1,15 @@
 {
-"Active": false,
-"OverrideRotation": false,
+"Active": true,
+"OverrideRotation": true,
   "rx": 0,
   "ry": 0,
-  "rz": 0,
-"OverrideScale": false,
-  "sx": 0,
-  "sy": 0,
-  "sz": 0,
-"OverrideTranslation": false,
+  "rz": 180,
+"OverrideScale": true,
+  "sx": 0.5,
+  "sy": 0.5,
+  "sz": 0.5,
+"OverrideTranslation": true,
   "tx": 0,
-  "ty": 0,
-  "tz": 0
+  "ty": 0.7,
+  "tz": 6
 }

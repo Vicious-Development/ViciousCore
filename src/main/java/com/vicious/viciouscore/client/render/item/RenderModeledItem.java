@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.client.render.item;
 
+import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.state.GlStateTracker;
@@ -7,6 +8,10 @@ import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.ICCModelUser;
+import com.vicious.viciouscore.client.render.animation.Animation;
+import com.vicious.viciouscore.client.render.animation.CCModelFrameRunner;
+import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
+import com.vicious.viciouscore.client.render.item.configuration.RenderConfiguration;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -19,13 +24,15 @@ public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsume
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         GlStateManager.pushMatrix();
         GlStateTracker.pushState();
-
+        OverrideConfigurations cfg = OverrideConfigurations.getConfiguration(item.getItem());
+        RenderConfiguration r = cfg.getItemConfig();
         Matrix4 mat = getMatrix();
         //Start drawing
         CCRenderState rs = startAndBind(getModelTexture());
 
         //Render Model
-        getAnimation().runModelFrameAndRender(getModel(),0,0,0,0,0,rs,mat);
+        CCModel mdl = new CCModelFrameRunner.Configurate(r).run(getModel(),0.0,0.0,0.0,0.0f,0.0f);
+        getAnimation().runModelFrameAndRender(mdl,0,0,0,0,0,rs,mat);
 
         //Draw
         rs.draw();

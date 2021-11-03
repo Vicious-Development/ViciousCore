@@ -1,8 +1,12 @@
 package com.vicious.viciouscore.client.render.animation;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Translation;
+import com.vicious.viciouscore.client.render.item.configuration.RenderConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +102,31 @@ public abstract class CCModelFrameRunner extends AnimationFrameRunner {
         public CCModel run(CCModel model, double x, double y, double z, float yaw, float partialticks) {
             for (CCModelFrameRunner frame : frames) {
                 model = frame.run(model,x,y,z,yaw,partialticks);
+            }
+            return model;
+        }
+    }
+
+    public static class Configurate {
+        private RenderConfiguration cfg;
+
+        public Configurate(RenderConfiguration r) {
+            cfg = r;
+        }
+
+        public CCModel run(CCModel model, double x, double y, double z, float yaw, float partialticks) {
+            if(!cfg.active.getBoolean()) return model;
+            model = model.copy();
+            if(cfg.overrideRotation.getBoolean()){
+                model.apply(new Rotation(Math.toRadians(cfg.rx.value()),1,0,0));
+                model.apply(new Rotation(Math.toRadians(cfg.ry.value()),0,1,0));
+                model.apply(new Rotation(Math.toRadians(cfg.rz.value()),0,0,1));
+            }
+            if(cfg.overrideTranslation.getBoolean()){
+                model.apply(new Translation(cfg.tx.value(),cfg.ty.value(),cfg.tz.value()));
+            }
+            if(cfg.overrideScale.getBoolean()){
+                model.apply(new Scale(cfg.sx.value(),cfg.sy.value(),cfg.sz.value()));
             }
             return model;
         }

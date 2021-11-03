@@ -19,21 +19,6 @@ public class RenderEnergoRifle extends RenderModeledItem{
     @Override
     public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         super.renderItem(item, transformType);
-        GlStateManager.pushMatrix();
-        GlStateManager.popMatrix();
-    }
-
-    @Override
-    public Scale getScale() {
-        return new Scale(0.25,0.25,0.25);
-    }
-    public Rotation getRotation(){
-        return new Rotation(180,0,1,0);
-    }
-
-    @Override
-    public Matrix4 getMatrix() {
-        return super.getMatrix().translate(0,0,0);
     }
     //NOTE TO SELF, IN RELATION TO PLAYER FRONT.
     // X+ rotates away from face. X- rotates towards.

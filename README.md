@@ -36,7 +36,7 @@ The json file there provides 9 fields by default for modifying your item's rende
 Just know a few things.
 An OverrideConfiguration must have active set to true to work, as well as any of its transformations that will be ran. We do this inorder to prevent unintentional transformations and to optimize runtime CPU strain.
 
-With that, you should be able to render the item at the correct scale, rotation, and position. For Animations, you will have to manually implement them. More on that later.
+With that, you should be able to render the item at the correct scale, rotation, and position YOURSELF. You will have to call OverrideConfigurations.getConfiguration(item) to get the configuration. The configuration only provides you transformation data.
 
 **What about entities? Well, OverrideConfigurations has you covered. Note: Currently, OverrideConfigurations only supports overriding rendering when an IRenderOverride Item is held.**
 **You can add overrides for specific Models by doing the following in your Item class**

@@ -6,6 +6,7 @@ import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -60,6 +61,7 @@ public class EntityModelOverride<T extends ModelBase> {
     public void readAll() {
         modelPartConfigs.forEach((name,cfg)->{
             cfg.readFromJSON();
+            cfg.save();
         });
     }
 }

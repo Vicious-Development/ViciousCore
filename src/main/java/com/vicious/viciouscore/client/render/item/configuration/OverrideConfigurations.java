@@ -22,6 +22,7 @@ public class OverrideConfigurations {
         putArrayLengths(ModelWither.class, 3, 3);
         putArrayLengths(ModelEnderMite.class, 4);
         putArrayLengths(ModelBlaze.class, 12);
+        putArrayLengths(ModelGhast.class,9);
     }
     private final Path PATH;
     private final RenderConfiguration ITEM;
@@ -48,6 +49,7 @@ public class OverrideConfigurations {
             cfg.MOBMAP.forEach((mob, override) -> {
                 override.readAll();
             });
+            cfg.ITEM.save();
         });
     }
 
