@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.commands;
 
 import com.google.common.collect.Lists;
-import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
+import com.vicious.viciouscore.client.configuration.HeldItemOverrideCFG;
 import com.vicious.viciouscore.common.util.VUtil;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -40,8 +40,8 @@ public class ItemModelConfigReloadCommand extends CommandBase {
         String itemname = "";
         if(args.length > 1) itemname = args[1];
         if(reload.equalsIgnoreCase(reload)){
-            if(!VUtil.isEmptyOrNull(itemname)) OverrideConfigurations.read(itemname);
-            OverrideConfigurations.readAll();
+            if(!VUtil.isEmptyOrNull(itemname)) HeldItemOverrideCFG.read(itemname);
+            HeldItemOverrideCFG.readAll();
         }
     }
 }

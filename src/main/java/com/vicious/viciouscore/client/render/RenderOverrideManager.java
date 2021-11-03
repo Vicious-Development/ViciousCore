@@ -1,5 +1,6 @@
-package com.vicious.viciouscore.client.render.entity.model;
+package com.vicious.viciouscore.client.render;
 
+import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
 import com.vicious.viciouscore.client.render.entity.model.multimob.*;
 import com.vicious.viciouscore.client.render.entity.model.singlemob.OverrideModelPlayer;
 import com.vicious.viciouscore.client.render.entity.model.singlemob.aggressive.*;
@@ -8,6 +9,7 @@ import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.entity.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -63,6 +65,7 @@ public class RenderOverrideManager {
                 }
             }
             Reflection.setField(entityRenderer, model, "mainModel");
+            System.out.println(Reflection.fieldsToString(entityRenderer));
         }
         return (IOverrideModel) entityRenderer.getMainModel();
     }

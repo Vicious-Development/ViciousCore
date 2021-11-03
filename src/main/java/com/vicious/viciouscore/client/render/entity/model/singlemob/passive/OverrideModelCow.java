@@ -1,9 +1,8 @@
 package com.vicious.viciouscore.client.render.entity.model.singlemob.passive;
 
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
 import net.minecraft.client.model.ModelCow;
-import net.minecraft.client.model.ModelPig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
@@ -22,7 +21,7 @@ public class OverrideModelCow extends ModelCow implements IOverrideModel {
         clone(og,partMap);
     }
 
-    public void applicate(EntityModelOverride<?> configurations) {
+    public void applicate(EntityModelOverrideCFG<?> configurations) {
         applicate(partMap, configurations);
     }
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)

@@ -1,13 +1,9 @@
 package com.vicious.viciouscore.client.render.entity.model.singlemob.aggressive;
 
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.ModelRendererConfiguration;
-import com.vicious.viciouscore.common.util.reflect.Reflection;
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.ModelSkeleton;
 import net.minecraft.client.model.ModelWither;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 
@@ -26,7 +22,7 @@ public class OverrideModelWither extends ModelWither implements IOverrideModel {
         clone(og,partMap);
     }
 
-    public void applicate(EntityModelOverride<?> configurations) {
+    public void applicate(EntityModelOverrideCFG<?> configurations) {
         applicate(partMap, configurations);
     }
 

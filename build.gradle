@@ -2,6 +2,7 @@ buildscript {
     repositories {
         maven {
             url = 'https://files.minecraftforge.net/maven' }
+        maven {url = 'https://plugins.gradle.org/m2' }
         maven {
             name 'CB Maven'
             url "http://chickenbones.net/maven/"
@@ -14,14 +15,17 @@ buildscript {
             url = "https://www.cursemaven.com"
         }
         jcenter()
+
         mavenCentral()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
@@ -47,8 +51,12 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-
 repositories {
+    maven {
+        // RebornCore, TR Compat
+        name = "Modmuss50"
+        url = "http://maven.modmuss50.me/"
+    }
     maven {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
@@ -122,6 +130,13 @@ processResources {
 jar.finalizedBy('reobfJar') 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+        classpath = sourceSets.main.compileClasspath
+    }
+}
 
 publishing {
     publications {

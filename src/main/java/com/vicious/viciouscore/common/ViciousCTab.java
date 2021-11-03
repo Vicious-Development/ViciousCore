@@ -9,6 +9,7 @@ public class ViciousCTab extends CreativeTabs {
     public ViciousCTab(String label, Item icon) {
         super(label);
         this.icon = icon;
+        
     }
 
     @Override

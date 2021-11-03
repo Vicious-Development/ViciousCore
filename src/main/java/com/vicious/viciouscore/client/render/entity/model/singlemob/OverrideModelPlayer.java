@@ -1,8 +1,8 @@
 package com.vicious.viciouscore.client.render.entity.model.singlemob;
 
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.ModelRendererConfiguration;
+import com.vicious.viciouscore.client.configuration.EntityPartTransformOverrideCFG;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -48,10 +48,10 @@ public class OverrideModelPlayer extends ModelPlayer implements IOverrideModel {
         }
         super.postRenderArm(scale, side);
     }
-    public void applicate(EntityModelOverride<?> configurations) {
+    public void applicate(EntityModelOverrideCFG<?> configurations) {
         if(configurations == null) return;
         partMap.forEach((name,field)->{
-            ModelRendererConfiguration cfg = configurations.getPartConfiguration(name);
+            EntityPartTransformOverrideCFG cfg = configurations.getPartConfiguration(name);
             if(cfg == null);
             else if(cfg.active.getBoolean()) applicatePart((ModelRenderer) Reflection.accessField(field,this),cfg);
         });

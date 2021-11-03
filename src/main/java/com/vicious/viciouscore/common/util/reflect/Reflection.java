@@ -1,5 +1,7 @@
 package com.vicious.viciouscore.common.util.reflect;
 
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -167,5 +169,17 @@ public class Reflection {
             } catch(IllegalAccessException ignored){}
         }
         return null;
+    }
+
+    public static String fieldsToString(RenderLivingBase<?> entityRenderer) {
+        Class<?> clazz = entityRenderer.getClass();
+        String fields = "";
+        while(clazz != null){
+            for (Field declaredField : clazz.getDeclaredFields()) {
+                fields += "\n" + declaredField;
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
     }
 }

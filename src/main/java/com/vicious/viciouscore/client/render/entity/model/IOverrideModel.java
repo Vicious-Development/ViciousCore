@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.client.render.entity.model;
 
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.ModelRendererConfiguration;
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
+import com.vicious.viciouscore.client.configuration.EntityPartTransformOverrideCFG;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface IOverrideModel {
-    void applicate(EntityModelOverride<? extends ModelBase> configurations);
+    void applicate(EntityModelOverrideCFG<? extends ModelBase> configurations);
     void queueTransformer(Runnable in);
     void ignoreHandSide(EnumHandSide in);
-    default void applicatePart(ModelRenderer part, ModelRendererConfiguration config){
+    default void applicatePart(ModelRenderer part, EntityPartTransformOverrideCFG config){
         if(config.overrideRotation.getBoolean()){
             part.rotateAngleX= (float) Math.toRadians(config.rx.value());
             part.rotateAngleY= (float) Math.toRadians(config.ry.value());
@@ -27,10 +27,10 @@ public interface IOverrideModel {
             part.offsetZ=config.tz.value();
         }
     }
-    default void applicate(Map<String,Field> partMap, EntityModelOverride<?> configurations){
+    default void applicate(Map<String,Field> partMap, EntityModelOverrideCFG<?> configurations){
         if(configurations == null) return;
         partMap.forEach((name,field)->{
-            ModelRendererConfiguration cfg = null;
+            EntityPartTransformOverrideCFG cfg = null;
             if(!field.getType().isArray()) {
                 cfg = configurations.getPartConfiguration(name);
             } else{

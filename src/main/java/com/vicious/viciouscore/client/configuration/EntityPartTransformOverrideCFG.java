@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.client.render.item.configuration;
+package com.vicious.viciouscore.client.configuration;
 
 import com.vicious.viciouscore.common.util.configuration.Config;
 import com.vicious.viciouscore.common.util.configuration.ConfigurationValue;
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 /**
  * Changes the rendering of a specific part on an entity.
  */
-public class ModelRendererConfiguration extends Config {
+public class EntityPartTransformOverrideCFG extends Config {
     public ConfigurationValue<Boolean> active = add(new ConfigurationValue<>("Active", ()->false, this).modifyOnRuntime(true));
     //Part Rotation - Controls the Part rotation.
     public ConfigurationValue<Boolean> overrideRotation = add(new ConfigurationValue<>("OverrideRotation", ()->false, this).modifyOnRuntime(true));
@@ -23,7 +23,7 @@ public class ModelRendererConfiguration extends Config {
     public ConfigurationValue<Float> tz = add(new ConfigurationValue<>("tz", ()->0.0f, this).modifyOnRuntime(true).parent(overrideTranslation));
 
 
-    public ModelRendererConfiguration(Path f) {
+    public EntityPartTransformOverrideCFG(Path f) {
         super(f);
     }
 }

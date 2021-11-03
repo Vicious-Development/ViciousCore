@@ -46,5 +46,10 @@
       <option name="name" value="maven" />
       <option name="url" value="https://www.cursemaven.com" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="Modmuss50" />
+      <option name="name" value="Modmuss50" />
+      <option name="url" value="http://maven.modmuss50.me/" />
+    </remote-repository>
   </component>
 </project>

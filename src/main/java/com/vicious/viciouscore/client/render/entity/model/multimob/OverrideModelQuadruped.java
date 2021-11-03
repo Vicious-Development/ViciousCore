@@ -1,19 +1,5 @@
 package com.vicious.viciouscore.client.render.entity.model.multimob;
 
-import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.ModelRendererConfiguration;
-import com.vicious.viciouscore.common.util.reflect.Reflection;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelQuadruped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumHandSide;
-
-import java.lang.reflect.Field;
-import java.util.*;
-
 //Unused due to no RenderQuadruped actually existing. must override children.
 /*
 public class OverrideModelQuadruped extends ModelQuadruped implements IOverrideModel {

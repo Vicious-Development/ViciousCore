@@ -2,6 +2,8 @@ package com.vicious.viciouscore.common.util;
 
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.Loader;
+import org.lwjgl.Sys;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,6 +31,8 @@ public class Directories {
     }
 
     public static String rootDir() {
-        return Minecraft.getMinecraft().mcDataDir.getAbsolutePath().replace("/.","");
+        String dir =  Loader.instance().getConfigDir().getParent();
+        System.out.println("ROOT: " + dir);
+        return dir;
     }
 }

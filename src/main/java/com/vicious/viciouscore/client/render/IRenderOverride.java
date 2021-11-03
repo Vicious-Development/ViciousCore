@@ -1,9 +1,8 @@
 package com.vicious.viciouscore.client.render;
 
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
+import com.vicious.viciouscore.client.configuration.HeldItemOverrideCFG;
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.entity.model.RenderOverrideManager;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,13 +34,13 @@ public interface IRenderOverride extends ICCModelUser {
     default void renderEntity(Render<?> renderer, EntityLivingBase e) {
         Item item = e.getHeldItemMainhand().getItem();
         //Changes how the entity renders while holding the item.
-        OverrideConfigurations overridecfg = ((IRenderOverride)item).getConfiguration();
+        HeldItemOverrideCFG overridecfg = ((IRenderOverride)item).getConfiguration();
         if(overridecfg == null) return;
         IOverrideModel model = RenderOverrideManager.overrideModel((RenderLivingBase<?>) renderer);
-        EntityModelOverride<?> configurations = overridecfg.getEntityModelConfig(RenderOverrideManager.getRenderModel(renderer.getClass()));
+        EntityModelOverrideCFG<?> configurations = overridecfg.getEntityModelConfig(RenderOverrideManager.getRenderModel(renderer.getClass()));
         applicateConfiguration(model,configurations);
     }
-    default void applicateConfiguration(IOverrideModel model, EntityModelOverride<?> configurations){
+    default void applicateConfiguration(IOverrideModel model, EntityModelOverrideCFG<?> configurations){
         if(model != null && configurations != null) {
             model.queueTransformer(() -> {
                 model.applicate(configurations);
@@ -49,5 +48,5 @@ public interface IRenderOverride extends ICCModelUser {
         }
     }
     @SideOnly(Side.CLIENT)
-    OverrideConfigurations getConfiguration();
+    HeldItemOverrideCFG getConfiguration();
 }

@@ -1,12 +1,10 @@
 package com.vicious.viciouscore.client.render.animation;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Translation;
-import com.vicious.viciouscore.client.render.item.configuration.RenderConfiguration;
+import com.vicious.viciouscore.client.configuration.ItemTransformOverrideCFG;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,9 +106,9 @@ public abstract class CCModelFrameRunner extends AnimationFrameRunner {
     }
 
     public static class Configurate {
-        private RenderConfiguration cfg;
+        private ItemTransformOverrideCFG cfg;
 
-        public Configurate(RenderConfiguration r) {
+        public Configurate(ItemTransformOverrideCFG r) {
             cfg = r;
         }
 

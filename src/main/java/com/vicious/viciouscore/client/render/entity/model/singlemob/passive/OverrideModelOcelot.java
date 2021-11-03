@@ -1,9 +1,8 @@
 package com.vicious.viciouscore.client.render.entity.model.singlemob.passive;
 
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
-import net.minecraft.client.model.ModelBat;
 import net.minecraft.client.model.ModelOcelot;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,7 +23,7 @@ public class OverrideModelOcelot extends ModelOcelot implements IOverrideModel {
         clone(og,partMap);
     }
 
-    public void applicate(EntityModelOverride<?> configurations) {
+    public void applicate(EntityModelOverrideCFG<?> configurations) {
         applicate(partMap, configurations);
     }
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)

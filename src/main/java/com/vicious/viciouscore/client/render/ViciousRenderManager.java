@@ -21,7 +21,8 @@ public class ViciousRenderManager implements ITickable {
     public ViciousRenderManager(){
         instance = this;
         //Force my way into minecraft's texture ticking system to allow my renders to tick without me needing to tick it myself >:) IM SO EVIL MUAHAHAHA
-        ((List<ITickable>) Reflection.accessField(Minecraft.getMinecraft().getTextureManager(),"listTickables")).add(this);
+        //Disabled for now since I don't even use it lmao
+        //((List<ITickable>) Reflection.accessField(Minecraft.getMinecraft().getTextureManager(),"listTickables")).add(this);
     }
 
     @Override

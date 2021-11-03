@@ -5,7 +5,7 @@ import codechicken.lib.util.ResourceUtils;
 import com.vicious.viciouscore.client.registries.RenderRegistry;
 import com.vicious.viciouscore.client.render.RenderEventManager;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
-import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
+import com.vicious.viciouscore.client.configuration.HeldItemOverrideCFG;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.ViciousCTab;
 import com.vicious.viciouscore.common.commands.ConfigCommand;
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "after:codechickenlib")
 public class ViciousCore
 {
-    public static final ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("creativeicon", false));
+    public static ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("creativeicon", false));
 
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
@@ -51,7 +51,7 @@ public class ViciousCore
         CFG = VCoreConfig.init();
         if(!CFG.firstLoad.getBoolean()) {
             System.out.println("ViciousCore detected first load setup. Time to do some cool stuff and things!");
-            if(event.getSide() == Side.CLIENT) OverrideConfigurations.copyFromResources(MODID,this.getClass());
+            if(event.getSide() == Side.CLIENT) HeldItemOverrideCFG.copyFromResources(MODID,this.getClass());
         }
         logger = event.getModLog();
         System.out.println("INIT STARTED");
@@ -74,11 +74,12 @@ public class ViciousCore
     @SideOnly(Side.CLIENT)
     public void clientPreInit(FMLPreInitializationEvent event){
         RenderRegistry.register();
-        //Necessary CCL implementations
         MinecraftForge.EVENT_BUS.register(RenderEventManager.class);
+        ClientCommandHandler.instance.registerCommand(new ItemModelConfigReloadCommand());
+        //Necessary CCL implementations
         TextureUtils.addIconRegister(new ResourceCache());
         ResourceUtils.registerReloadListener(new ResourceCache());
-        ClientCommandHandler.instance.registerCommand(new ItemModelConfigReloadCommand());
+
     }
     @SideOnly(Side.CLIENT)
     public void clientInit(FMLInitializationEvent event){
@@ -101,6 +102,6 @@ public class ViciousCore
     @EventHandler
     public void onStop(FMLModDisabledEvent event){
         CFG.save();
-        OverrideConfigurations.saveAll();
+        HeldItemOverrideCFG.saveAll();
     }
 }

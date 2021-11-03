@@ -33,8 +33,8 @@ Simply write in your Item Class:
 @Override
 public void registerRenderers() {
     //Other stuff...
-    //render config is usually a private OverrideConfigurations field.
-    renderconfig = OverrideConfigurations.create(this);
+    //heldconfig is usually a private HeldItemOverrideCFG field.
+    heldconfig = ClientOverrideConfigurations.createWhenHeldOverride(this);
     //Other stuff...
 }
 ```

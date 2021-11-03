@@ -1,9 +1,7 @@
 package com.vicious.viciouscore.client.render.entity.model.multimob;
 
+import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.ModelRendererConfiguration;
-import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
@@ -23,7 +21,7 @@ public class OverrideModelVillager extends ModelVillager implements IOverrideMod
         clone(og,partMap);
     }
 
-    public void applicate(EntityModelOverride<?> configurations) {
+    public void applicate(EntityModelOverrideCFG<?> configurations) {
         applicate(partMap, configurations);
     }
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
