@@ -2,13 +2,10 @@ package com.vicious.viciouscore.client.render.item.configuration;
 
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.*;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLContainer;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +15,14 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class OverrideConfigurations {
+    private final static Map<Class<? extends ModelBase>, int[]> intMap = new HashMap<>();
     private final static Map<String, OverrideConfigurations> overrideConfigurationsMap = new HashMap<>();
+    static{
+        putArrayLengths(ModelSilverfish.class, 7, 3);
+        putArrayLengths(ModelWither.class, 3, 3);
+        putArrayLengths(ModelEnderMite.class, 4);
+        putArrayLengths(ModelBlaze.class, 12);
+    }
     private final Path PATH;
     private final RenderConfiguration ITEM;
     private final Map<Class<? extends ModelBase>, EntityModelOverride<?>> MOBMAP = new HashMap<>();
@@ -57,9 +61,18 @@ public class OverrideConfigurations {
     }
 
     public <T extends ModelBase> OverrideConfigurations addEntityModelOverrider(Class<T> in){
-        EntityModelOverride<T> modelconfigurator = new EntityModelOverride<T>(Directories.directorize(PATH.toAbsolutePath().toString(),in.getCanonicalName().replaceAll("\\.","-")), in);
-        MOBMAP.put(in,modelconfigurator);
+        if(!intMap.containsKey(in)) {
+            EntityModelOverride<T> modelconfigurator = new EntityModelOverride<T>(Directories.directorize(PATH.toAbsolutePath().toString(), in.getCanonicalName().replaceAll("\\.", "-")), in);
+            MOBMAP.put(in, modelconfigurator);
+        }
+        else{
+            EntityModelOverride<T> modelconfigurator = new EntityModelOverride<T>(Directories.directorize(PATH.toAbsolutePath().toString(), in.getCanonicalName().replaceAll("\\.", "-")), in, intMap.get(in));
+            MOBMAP.put(in, modelconfigurator);
+        }
         return this;
+    }
+    public static void putArrayLengths(Class<? extends ModelBase> clazz, int... lengths){
+        intMap.put(clazz,lengths);
     }
     public <T extends ModelBase> EntityModelOverride<T> getEntityModelConfig(T in){
         return (EntityModelOverride<T>) MOBMAP.get(in.getClass());

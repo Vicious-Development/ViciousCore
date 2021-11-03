@@ -1,6 +1,8 @@
 package com.vicious.viciouscore.common.util.reflect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +27,53 @@ public class Reflection {
         }
         return null;
     }
-    private static Field getField(Object accessed, String fieldname){
-        Class<?> clazz = accessed.getClass();
+
+    public static Object accessField(Field f, Object obj){
+        if(f != null){
+            try{
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                return f.get(obj);
+            } catch(IllegalAccessException e){
+
+            }
+        }
+        return null;
+    }
+    public static Method getMethod(Object accessed, String methodname, Class<?>[] parameters){
+        Class<?> clazz = accessed instanceof Class<?> ? (Class<?>)accessed : accessed.getClass();
+        Method m = null;
+        //Try to find the field, regardless of hierarchy position.
+        while(m == null && clazz != null) {
+            try {
+                m = clazz.getDeclaredMethod(methodname,parameters);
+            } catch(NoSuchMethodException ignored){
+
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return m;
+    }
+    public static Object invokeMethod(Object accessed, String methodname, Class<?>[] parameters, Object[] args){
+        Method m = getMethod(accessed,methodname,parameters);
+        try {
+            if (m.getReturnType() == void.class) {
+                m.invoke(accessed, args);
+            } else return m.invoke(accessed, args);
+        } catch(IllegalAccessException | InvocationTargetException ignored){}
+        return null;
+    }
+    public static Object invokeMethod(Object accessed, Method m, Class<?>[] parameters, Object[] args){
+        try {
+            if (m.getReturnType() == void.class) {
+                m.invoke(accessed, args);
+            } else return m.invoke(accessed, args);
+        } catch(IllegalAccessException | InvocationTargetException ignored){}
+        return null;
+    }
+    public static Field getField(Object accessed, String fieldname){
+        Class<?> clazz = accessed instanceof Class<?> ? (Class<?>)accessed : accessed.getClass();
         Field f = null;
         //Try to find the field, regardless of hierarchy position.
         while(f == null && clazz != null) {
@@ -47,24 +94,18 @@ public class Reflection {
                     f.setAccessible(true);
                 }
                 f.set(accessed,value);
-            } catch(IllegalAccessException e){
-
-            }
+            } catch(IllegalAccessException ignored){}
         }
     }
     public static Object accessStaticField(Class<?> accessed, String fieldname){
         Field f = null;
         try {
             f = accessed.getDeclaredField(fieldname);
-        } catch(NoSuchFieldException e){
-
-        }
+        } catch(NoSuchFieldException ignored){}
         if(f != null){
             try{
                 return f.get(accessed);
-            } catch(IllegalAccessException e){
-
-            }
+            } catch(IllegalAccessException ignored){}
         }
         return null;
     }
@@ -108,5 +149,23 @@ public class Reflection {
             clazz = clazz.getSuperclass();
         }
         return fields;
+    }
+    public static Field getFieldContaining(Object object, Class<?> type, Object toFind) {
+        List<Field> fields = new ArrayList<>();
+        Class<?> clazz = object.getClass();
+        while(clazz != null) {
+            for (Field declaredField : clazz.getDeclaredFields()) {
+                if (declaredField.getType().equals(type)) fields.add(declaredField);
+                if(declaredField.getType().getSuperclass() != null && declaredField.getType().getSuperclass().equals(type)) fields.add(declaredField);
+            }
+            clazz = clazz.getSuperclass();
+        }
+        for (Field field : fields) {
+            if(!field.isAccessible()) field.setAccessible(true);
+            try {
+                if (field.get(object) == toFind) return field;
+            } catch(IllegalAccessException ignored){}
+        }
+        return null;
     }
 }

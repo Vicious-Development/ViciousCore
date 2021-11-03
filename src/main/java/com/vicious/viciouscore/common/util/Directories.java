@@ -2,8 +2,6 @@ package com.vicious.viciouscore.common.util;
 
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import scala.Char;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

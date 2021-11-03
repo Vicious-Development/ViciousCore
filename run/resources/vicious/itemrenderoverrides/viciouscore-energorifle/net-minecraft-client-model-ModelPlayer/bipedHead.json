@@ -1,9 +1,9 @@
 {
 "Active": true,
 "OverrideRotation": true,
-  "rx": 90,
-  "ry": 18,
-  "rz": 9,
+  "rx": 0,
+  "ry": 0,
+  "rz": 10,
 "OverrideTranslation": true,
   "tx": 0,
   "ty": 0,

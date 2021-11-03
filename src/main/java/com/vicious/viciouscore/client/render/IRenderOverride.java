@@ -1,19 +1,15 @@
 package com.vicious.viciouscore.client.render;
 
-import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
-import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
+import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
+import com.vicious.viciouscore.client.render.entity.model.RenderOverrideManager;
 import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
 import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -39,17 +35,17 @@ public interface IRenderOverride extends ICCModelUser {
     default void renderEntity(Render<?> renderer, EntityLivingBase e) {
         Item item = e.getHeldItemMainhand().getItem();
         //Changes how the entity renders while holding the item.
-        if(renderer instanceof RenderBiped) {
-            RenderLiving<?> entityRenderer = (RenderLiving<?>) renderer;
-            OverrideModelBiped model = RenderOverrideHandler.overrideModelBiped((RenderBiped<?>) entityRenderer);
-            OverrideConfigurations overridecfg = ((IRenderOverride)item).getConfiguration();
-            if(overridecfg != null) {
-                EntityModelOverride<ModelBiped> configurations = overridecfg.getEntityModelConfig(ModelBiped.class);
-                model.ignoreHandSides.add(EnumHandSide.RIGHT);
-                model.transforms.offer(() -> {
-                    model.applicate(configurations != null ? configurations : overridecfg.getEntityModelConfig(model));
-                });
-            }
+        OverrideConfigurations overridecfg = ((IRenderOverride)item).getConfiguration();
+        if(overridecfg == null) return;
+        IOverrideModel model = RenderOverrideManager.overrideModel((RenderLivingBase<?>) renderer);
+        EntityModelOverride<?> configurations = overridecfg.getEntityModelConfig(RenderOverrideManager.getRenderModel(renderer.getClass()));
+        applicateConfiguration(model,configurations);
+    }
+    default void applicateConfiguration(IOverrideModel model, EntityModelOverride<?> configurations){
+        if(model != null && configurations != null) {
+            model.queueTransformer(() -> {
+                model.applicate(configurations);
+            });
         }
     }
     @SideOnly(Side.CLIENT)

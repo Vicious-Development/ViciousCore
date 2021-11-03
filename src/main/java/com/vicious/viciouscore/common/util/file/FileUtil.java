@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.common.util.file;
 
-import codechicken.lib.util.ResourceUtils;
 import com.vicious.viciouscore.common.util.Directories;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;

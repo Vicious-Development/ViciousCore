@@ -4,6 +4,7 @@ import codechicken.lib.model.ModelRegistryHelper;
 import com.vicious.viciouscore.client.render.item.RenderEnergoRifle;
 import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,6 +25,7 @@ public class ItemEnergoRifle extends ItemGun {
         ModelRegistryHelper.registerItemRenderer(this, new RenderEnergoRifle());
         renderconfig = OverrideConfigurations.create(this);
         renderconfig.addEntityModelOverrider(ModelBiped.class);
+        renderconfig.addEntityModelOverrider(ModelPlayer.class);
     }
     public OverrideConfigurations getConfiguration(){
         return renderconfig;

@@ -1,16 +1,6 @@
 package com.vicious.viciouscore.common.item;
 
 import com.vicious.viciouscore.client.render.IRenderOverride;
-import com.vicious.viciouscore.client.render.entity.model.OverrideModelBiped;
-import com.vicious.viciouscore.client.render.entity.model.RenderOverrideHandler;
-import com.vicious.viciouscore.client.render.item.configuration.EntityModelOverride;
-import com.vicious.viciouscore.client.render.item.configuration.OverrideConfigurations;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**

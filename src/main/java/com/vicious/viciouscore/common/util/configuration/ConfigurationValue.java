@@ -30,7 +30,7 @@ public class ConfigurationValue<T> extends TrackableObject<T> {
     //Returns the false if the parent is false.
     public boolean getBoolean(){
         if(parent == null && setting instanceof Boolean) return (Boolean) setting;
-        if(parent.setting instanceof Boolean && setting instanceof Boolean) return (Boolean)parent.setting && (Boolean) setting;
+        if(parent != null && parent.setting instanceof Boolean && setting instanceof Boolean) return (Boolean)parent.setting && (Boolean) setting;
         else return true;
     }
     public ConfigurationValue<T> modifyOnRuntime(boolean val){
