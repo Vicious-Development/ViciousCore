@@ -54,6 +54,7 @@ public abstract class TrackableValue<T> {
         //Failure is expected only if the dev screwed up.
         this.setting=setting;
         //Mark dirty.
+        tracker.markDirty(name,setting);
         return this;
     }
 

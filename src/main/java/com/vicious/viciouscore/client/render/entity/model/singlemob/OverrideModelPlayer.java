@@ -2,10 +2,8 @@ package com.vicious.viciouscore.client.render.entity.model.singlemob;
 
 import com.vicious.viciouscore.client.configuration.EntityModelOverrideCFG;
 import com.vicious.viciouscore.client.render.entity.model.IOverrideModel;
-import com.vicious.viciouscore.client.configuration.EntityPartTransformOverrideCFG;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
@@ -49,12 +47,7 @@ public class OverrideModelPlayer extends ModelPlayer implements IOverrideModel {
         super.postRenderArm(scale, side);
     }
     public void applicate(EntityModelOverrideCFG<?> configurations) {
-        if(configurations == null) return;
-        partMap.forEach((name,field)->{
-            EntityPartTransformOverrideCFG cfg = configurations.getPartConfiguration(name);
-            if(cfg == null);
-            else if(cfg.active.getBoolean()) applicatePart((ModelRenderer) Reflection.accessField(field,this),cfg);
-        });
+        applicate(partMap, configurations);
     }
 
     @Override

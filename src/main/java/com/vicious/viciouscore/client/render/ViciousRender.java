@@ -2,6 +2,7 @@ package com.vicious.viciouscore.client.render;
 
 
 import net.minecraft.client.renderer.texture.ITickable;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

@@ -76,6 +76,6 @@ public class HeldItemOverrideCFG implements IOverrideConfiguration {
     }
 
     public static void copyFromResources(String modid, Class<?> mainClass){
-        FileUtil.copyResources(mainClass, "/assets/" + modid + "/itemrenderoverrides", Directories.viciousResourcesDirectory.toAbsolutePath().toString());
+        FileUtil.copyResources(mainClass, "/assets/" + modid + "/itemrenderoverrides", Directories.itemRenderOverridesDirectory.toAbsolutePath().toString());
     }
 }

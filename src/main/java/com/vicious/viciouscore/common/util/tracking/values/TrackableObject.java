@@ -61,7 +61,9 @@ public class TrackableObject<T> extends TrackableValue<T> {
 
     public TrackableObject<T> setFromJSON(JSONObject jo) {
         try {
-            this.setWithoutUpdate(((TrackableValueJSONParser<T>) jsonparsers.get(type)).parse(jo, this));
+            T val = ((TrackableValueJSONParser<T>) jsonparsers.get(type)).parse(jo, this);
+            if(val != null);
+            this.setWithoutUpdate(val);
         } catch(Exception e){
             this.setWithoutUpdate(null);
         }

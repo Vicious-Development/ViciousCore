@@ -1,14 +1,21 @@
 package com.vicious.viciouscore.common.util.reflect;
 
+import com.vicious.viciouscore.ViciousCore;
+import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Reflection {
+
     /**
      * Allows accessing private nonstatic FIELDS in an Object.
      * @param accessed = the object.
@@ -74,29 +81,54 @@ public class Reflection {
         } catch(IllegalAccessException | InvocationTargetException ignored){}
         return null;
     }
-    public static Field getField(Object accessed, String fieldname){
-        Class<?> clazz = accessed instanceof Class<?> ? (Class<?>)accessed : accessed.getClass();
+    public static Field getField(Object accessed, String fieldname) {
+        Class<?> clazz = accessed instanceof Class<?> ? (Class<?>) accessed : accessed.getClass();
         Field f = null;
         //Try to find the field, regardless of hierarchy position.
-        while(f == null && clazz != null) {
+        while (f == null && clazz != null) {
+            String target = fieldname;
+            if(MappingsReference.hasMappingForClass(clazz)){
+                MappingsReference.Mapping mapping = MappingsReference.getMapping(clazz);
+                if(mapping.hasSRG(fieldname)){
+                    target = mapping.getObfuscated(fieldname);
+                }
+            }
+            //In the dev env, this will take extra time, outside though we are in th clear.
             try {
-                f = clazz.getDeclaredField(fieldname);
-            } catch(NoSuchFieldException ignored){
-
+                f = clazz.getDeclaredField(target);
+            } catch (NoSuchFieldException ignored) {
+                try {
+                    f = clazz.getDeclaredField(fieldname);
+                } catch (NoSuchFieldException ignored1) {}
             }
             clazz = clazz.getSuperclass();
         }
-        return f;
-    }
-    public static void setField(Object accessed, Object value, String fieldname){
-        Field f = getField(accessed,fieldname);
         if(f != null){
-            try{
+            if(ViciousCore.CFG.outputReflectionClasses.getBoolean()) outputClass(clazz);
+            return f;
+        }
+        //If the code returns null, an obfuscation mapping HAS to be registered.
+        return null;
+    }
+
+    private static void outputClass(Class<?> clazz) {
+        String path = Directories.rootDir()+"/classOPT.txt";
+        FileUtil.createDNE(path);
+        try {
+            Files.write(Paths.get(path), clazz.getName().getBytes(), StandardOpenOption.APPEND);
+        } catch(Exception ignored){}
+    }
+
+    public static void setField(Object accessed, Object value, String fieldname){
+        Field f = getField(accessed, fieldname);
+        if (f != null) {
+            try {
                 if (!f.isAccessible()) {
                     f.setAccessible(true);
                 }
-                f.set(accessed,value);
-            } catch(IllegalAccessException ignored){}
+                f.set(accessed, value);
+            } catch (IllegalAccessException ignored) {
+            }
         }
     }
     public static Object accessStaticField(Class<?> accessed, String fieldname){

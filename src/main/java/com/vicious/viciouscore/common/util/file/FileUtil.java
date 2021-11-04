@@ -63,7 +63,6 @@ public class FileUtil {
      * @param targetDestination
      */
     public static void copyResources(Class<?> modMainClass, String resourcePath, String targetDestination){
-
         URL url = modMainClass.getResource(resourcePath + "/");
         try
         {
@@ -93,6 +92,17 @@ public class FileUtil {
         }
         catch (Exception e)
         {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void createDNE(String path) {
+        Path p = Paths.get(path);
+        if(Files.exists(p)) return;
+        try {
+            Files.createFile(p);
+        } catch(Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
