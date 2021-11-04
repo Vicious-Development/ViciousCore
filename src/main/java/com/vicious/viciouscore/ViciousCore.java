@@ -12,12 +12,14 @@ import com.vicious.viciouscore.common.ViciousCTab;
 import com.vicious.viciouscore.common.commands.ConfigCommand;
 import com.vicious.viciouscore.common.commands.ItemModelConfigReloadCommand;
 import com.vicious.viciouscore.common.item.ViciousItem;
-import com.vicious.viciouscore.common.modification.MobSpawnModifier;
+import com.vicious.viciouscore.common.override.MobSpawnModifier;
+import com.vicious.viciouscore.common.override.Overrider;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VItemRegistry;
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import com.vicious.viciouscore.common.util.tracking.VCTrackingHandler;
+import com.vicious.viciouscore.overrides.VCoreOverrides;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "after:codechickenlib")
+@Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "required-after:codechickenlib;after:reborncore;after:techreborn")
 public class ViciousCore
 {
     public static ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("creativeicon", false));
@@ -45,6 +47,8 @@ public class ViciousCore
     public static ViciousCore instance;
     static {
         VCTrackingHandler.init();
+        Directories.initializeConfigDependents();
+        CFG = VCoreConfig.init();
     }
 
     public static Logger logger;
@@ -52,20 +56,18 @@ public class ViciousCore
     public void preInit(FMLPreInitializationEvent event)
     {
         instance = this;
-        Directories.initializeConfigDependents();
-        CFG = VCoreConfig.init();
         if(!CFG.firstLoad.getBoolean()) {
             System.out.println("ViciousCore detected first load setup. Time to do some cool stuff and things!");
             if(event.getSide() == Side.CLIENT) HeldItemOverrideCFG.copyFromResources(MODID,this.getClass());
         }
         logger = event.getModLog();
-        System.out.println("INIT STARTED");
         VEntityRegistry.register();
         if(event.getSide() == Side.CLIENT) {
             clientPreInit(event);
         }
         MinecraftForge.EVENT_BUS.register(MobSpawnModifier.class);
-        System.out.println("INIT FINISHED");
+        VCoreOverrides.init();
+        Overrider.onPreInit();
     }
     @SubscribeEvent
     public void itemInit(RegistryEvent.Register<Item> ev){
@@ -85,7 +87,6 @@ public class ViciousCore
         //Necessary CCL implementations
         TextureUtils.addIconRegister(new ResourceCache());
         ResourceUtils.registerReloadListener(new ResourceCache());
-
     }
     @SideOnly(Side.CLIENT)
     public void clientInit(FMLInitializationEvent event){
@@ -99,6 +100,7 @@ public class ViciousCore
             clientInit(event);
         }
         if(!CFG.firstLoad.getBoolean()) CFG.firstLoad.set(true);
+        Overrider.onInit();
     }
 
     @EventHandler

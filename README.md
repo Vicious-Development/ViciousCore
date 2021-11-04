@@ -29,7 +29,7 @@ One of the most painstaking processes in modding this god forsaken game is resta
 **The goal of OverrideConfigurations is to make this entire process reloadable during runtime. Using OverrideConfigurations will save you LOTS of time. Here's how.**
 First of all, you need to register an OverrideConfiguration for your item. This can be done when IRenderOverride#registerRenderers is called. 
 Simply write in your Item Class: 
-```
+```java
 @Override
 public void registerRenderers() {
     //Other stuff...
@@ -47,7 +47,7 @@ With that, you should be able to render the item at the correct scale, rotation,
 
 **What about entities? Well, OverrideConfigurations has you covered. Note: Currently, OverrideConfigurations only supports overriding rendering when an IRenderOverride Item is held.**
 **You can add overrides for specific Models by doing the following in your Item class**
-```
+```java
 @Override
 public void registerRenderers() {
     //Other stuff...
@@ -69,7 +69,7 @@ I've got a simple solution for you! Here's the steps to do it.
 2. In your run directory, copy the entire "itemrenderoverrides" folder.
 3. Paste this in your resource/assets package.
 4. In your mod's client preInitializer write this:
-```
+```java
 OverrideConfigurations.copyFromResources(<yourmodid>,this.getClass());
 ```
 This will put the OverrideConfigurations in the game's resource/vicious/itemrenderoverrides directory when the game starts for the first time. On future runs, the OverrideConfigurations will always load from the resources directory rather than your mod's assets allowing other modders to make changes as they see fit.
@@ -98,3 +98,72 @@ There are a few special cases where OverrideConfigurations need some help to wor
    If you fail to do this, the OverrideConfigurations for that model will not be generated properly as they will be assumed to be non-array fields. 
    See ModelSilverfish to see an example of a case of this situation.
    Unfortunately, if the model uses lists of ModelRenderers, VCore does not support modifying lists of renders.
+   
+
+
+# Overriding other mod's content: Overrides (Probably should rename this tbh)
+Every modder knows the pain of finding something broken in other people's work. This is why ViciousCore grants the ability to modify it.
+On certain event calls, VCore can execute overrides if asked to. The following events are included:
+preInit, Init, postInit, ...
+Ultimately using Overrides will slow down the game wherever they're run so use them wisely!
+Anyways, if this system wasn't stable and at least O(n) I wouldn't have included it so with that in mind lets get started.
+
+First, find the class that contains the field that stores the object you intend to overwrite. 
+In this example, we'll be using TechReborn's centrifuge RecipeHandler because that thing is broken (no offence TR devs).
+
+The centrifuge RecipeHandler is stored in a static field : "public static RecipeHandler centrifuge" in the Recipes class. Since this field is static, we only need to include it in our FieldRetrievalRoute.
+First I'll create the field override. To do this, we need to know 1 thing: When is the target field: "centrifuge" initialized?
+In this case, the field is initialized during the game Preinitialization event.
+So, we have two options: 1. call the method during the init() event or 2. call it during preInitialization after TR has completed its initialization.
+I like option 1 so, here's the result.
+```java
+public class VCoreOverrides {
+   public static void init(){ //init is called on VCore preInit.
+      Overrider.registerInitInjector(new FieldRetrievalRoute(
+         new String[]{"techreborn.api.recipe.Recipes"}, new String[]{"centrifuge"}
+      ), OverrideCentrifugeRecipeHandler::new);
+   }
+}
+```
+Now when VCore receives the game Init event, the RecipeHandler will converted into an OverrideCentrifugeRecipeHandler.
+But what is the Overridden handler?
+```java
+public class OverrideCentrifugeRecipeHandler extends RecipeHandler implements IFieldCloner {
+    public OverrideCentrifugeRecipeHandler(Object in) {
+        super("");
+        clone(in);
+    }
+```
+The Overridden variant just extends the original and implements IFieldCloner. The constructor must always take in an Object and call clone() passing in the object as clone's parameter.
+If you do this, your overridden variant will contain the same data as the original.
+HOWEVER...
+The methods don't have to be the same. Here's where you actually override.
+Just override the methods from the original and fix them yourself!
+That's about it. Just one thing to note, not every override will be as simple as this. If the field you intend to override is not static, you will have to access it somehow.
+The only thing VCore supports is going down a class rabbit hole, here's an example of that:
+```java
+package bob.bam
+class Klo{
+    private Cat cat;
+}
+class Cla{
+    private Klo klim;
+}
+class Klam{
+    private static Cla cla;
+}
+```
+In this case if we want to override the cat field in Klo, we'd need to do this:
+```java
+public class VCoreOverrides {
+   public static void init(){ //init is called on VCore preInit.
+      Overrider.registerInitInjector(new FieldRetrievalRoute(
+         new String[]{"bob.bam.Klam","bob.bam.Cla","bob.bam.Klo"}, new String[]{"cla","klim,"cat"}
+      ), OverrideCat::new);
+   }
+}
+```
+By doing this, we access the static cla field in Klam and get its Cla object.
+We then access the Cla's klim field and get its Klo object.
+We then access the Klo's cat field and get its cat object.
+We then overwrite the cat field with our OverrideCat.

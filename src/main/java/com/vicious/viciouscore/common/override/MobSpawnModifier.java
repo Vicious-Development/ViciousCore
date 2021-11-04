@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.modification;
+package com.vicious.viciouscore.common.override;
 
 import com.google.common.collect.Lists;
 import com.vicious.viciouscore.common.registries.VItemRegistry;
