@@ -25,7 +25,6 @@ public class TrackableEnum<T extends Enum<T>> extends TrackableValue<T> {
         try {
             this.set(Enum.valueOf(type,s));
         } catch(Exception e){
-            this.set(null);
         }
         this.convert();
         return this;
@@ -34,7 +33,6 @@ public class TrackableEnum<T extends Enum<T>> extends TrackableValue<T> {
         try {
             this.setWithoutUpdate(Enum.valueOf(type,s));
         } catch(Exception e){
-            this.setWithoutUpdate(null);
         }
         this.convert();
         return this;

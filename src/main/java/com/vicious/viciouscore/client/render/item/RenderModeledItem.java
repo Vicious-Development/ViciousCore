@@ -31,7 +31,7 @@ public abstract class RenderModeledItem implements ICCModelUser, ICCModelConsume
         CCRenderState rs = startAndBind(getModelTexture());
 
         //Render Model
-        CCModel mdl = new CCModelFrameRunner.Configurate(r).run(getModel(),0.0,0.0,0.0,0.0f,0.0f);
+        CCModel mdl = new CCModelFrameRunner.Configurate(r,transformType).run(getModel(),0.0,0.0,0.0,0.0f,0.0f);
         getAnimation().runModelFrameAndRender(mdl,0,0,0,0,0,rs,mat);
 
         //Draw

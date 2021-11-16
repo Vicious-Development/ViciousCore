@@ -1,8 +1,9 @@
-package com.vicious.viciouscore.common.util.configuration;
+package com.vicious.viciouscore.common.util.tracking.configuration;
 
 
 import com.vicious.viciouscore.common.util.tracking.Trackable;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableObject;
+import org.json.JSONObject;
 
 import java.util.function.Supplier;
 
@@ -65,6 +66,13 @@ public class ConfigurationValue<T> extends TrackableObject<T> {
         settingOnStop = setting;
         return (ConfigurationValue<T>) super.setWithoutUpdate(setting);
     }
+
+    @Override
+    public TrackableObject<T> setFromJSON(JSONObject jo) {
+
+        return super.setFromJSON(jo);
+    }
+
     public String toString(){
         return getStopValue().toString();
     }

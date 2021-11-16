@@ -10,7 +10,7 @@ public class ViciousLoader {
         return CCModel.combine(OBJParser.parseModels(res).values());
     }
     public static CCModel loadViciousModel(String resourcePath){
-        return loadModel(getViciousResource("model/" + resourcePath));
+        return loadModel(getViciousResource("models/" + resourcePath));
     }
     public static ResourceLocation getViciousResource(String resourcePath){
         return new ResourceLocation(ViciousCore.MODID + ":" + resourcePath);
@@ -26,6 +26,6 @@ public class ViciousLoader {
         return new ResourceLocation(ViciousCore.MODID + ":textures/" + resourcePath);
     }
     public static ResourceLocation getViciousModelTexture(String resourcePath) {
-        return getViciousTexture("model/" + resourcePath);
+        return getViciousTexture("models/" + resourcePath);
     }
 }

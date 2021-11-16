@@ -54,7 +54,7 @@ public class RenderOverrideManager {
      * @return
      */
     public static IOverrideModel overrideModel(RenderLivingBase<?> entityRenderer) {
-        //Override the entity model so we can apply changes.
+        //Override the entity models so we can apply changes.
         if (!(entityRenderer.getMainModel() instanceof IOverrideModel)) {
             ModelBase model = entityRenderer.getMainModel();
             Class<?> clazz = entityRenderer.getClass();
@@ -72,7 +72,7 @@ public class RenderOverrideManager {
     }
 
     /**
-     * Call this to register a model overrider. Parameters should look something like this:
+     * Call this to register a models overrider. Parameters should look something like this:
      * registerOverrideModel(ModelSpider.class, RenderSpider.class, (m)->new OverrideModelSpider((ModelSpider) m))
      */
     public static void registerOverrideModel(Class<? extends ModelBase> modelClass, Class<? extends Render> renderClass, Function<ModelBase,ModelBase> overrideModelFunction){

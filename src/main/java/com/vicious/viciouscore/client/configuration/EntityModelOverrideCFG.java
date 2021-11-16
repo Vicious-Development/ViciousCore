@@ -34,7 +34,7 @@ public class EntityModelOverrideCFG<T extends ModelBase> {
     }
 
     /**
-     * For when the model has arrays,
+     * For when the models has arrays,
      */
     public EntityModelOverrideCFG(Path f, Class<T> modelclass, int[] arraySizes) {
         this.modelclass=modelclass;

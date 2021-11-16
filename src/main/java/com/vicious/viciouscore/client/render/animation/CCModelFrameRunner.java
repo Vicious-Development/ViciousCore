@@ -5,6 +5,7 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Translation;
 import com.vicious.viciouscore.client.configuration.ItemTransformOverrideCFG;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public abstract class CCModelFrameRunner extends AnimationFrameRunner {
         prevFrame=previous;
     }
     public abstract CCModel run(CCModel model, double x, double y, double z, float yaw, float partialticks);
-    //Applies model changes made in the previous frame.
+    //Applies models changes made in the previous frame.
     protected CCModel applyPreviousFrame(CCModel model, double x, double y, double z, float yaw, float partialticks){
         if(prevFrame == null) return model;
         return prevFrame.run(model,x,y,z,yaw,partialticks-1);
@@ -107,24 +108,54 @@ public abstract class CCModelFrameRunner extends AnimationFrameRunner {
 
     public static class Configurate {
         private ItemTransformOverrideCFG cfg;
+        private ItemCameraTransforms.TransformType type;
 
-        public Configurate(ItemTransformOverrideCFG r) {
+        public Configurate(ItemTransformOverrideCFG r, ItemCameraTransforms.TransformType type) {
             cfg = r;
+            this.type=type;
         }
 
         public CCModel run(CCModel model, double x, double y, double z, float yaw, float partialticks) {
             if(!cfg.active.getBoolean()) return model;
             model = model.copy();
-            if(cfg.overrideRotation.getBoolean()){
-                model.apply(new Rotation(Math.toRadians(cfg.rx.value()),1,0,0));
-                model.apply(new Rotation(Math.toRadians(cfg.ry.value()),0,1,0));
-                model.apply(new Rotation(Math.toRadians(cfg.rz.value()),0,0,1));
+            if(type == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND || type == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
+                if (cfg.overrideRotation.getBoolean()) {
+                    model.apply(new Rotation(Math.toRadians(cfg.rx.value()), 1, 0, 0));
+                    model.apply(new Rotation(Math.toRadians(cfg.ry.value()), 0, 1, 0));
+                    model.apply(new Rotation(Math.toRadians(cfg.rz.value()), 0, 0, 1));
+                }
+                if (cfg.overrideTranslation.getBoolean()) {
+                    model.apply(new Translation(cfg.tx.value(), cfg.ty.value(), cfg.tz.value()));
+                }
+                if (cfg.overrideScale.getBoolean()) {
+                    model.apply(new Scale(cfg.sx.value(), cfg.sy.value(), cfg.sz.value()));
+                }
             }
-            if(cfg.overrideTranslation.getBoolean()){
-                model.apply(new Translation(cfg.tx.value(),cfg.ty.value(),cfg.tz.value()));
+            else if(type == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || type == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+                if (cfg.fpoverrideRotation.getBoolean()) {
+                    model.apply(new Rotation(Math.toRadians(cfg.frx.value()), 1, 0, 0));
+                    model.apply(new Rotation(Math.toRadians(cfg.fry.value()), 0, 1, 0));
+                    model.apply(new Rotation(Math.toRadians(cfg.frz.value()), 0, 0, 1));
+                }
+                if (cfg.fpoverrideTranslation.getBoolean()) {
+                    model.apply(new Translation(cfg.ftx.value(), cfg.fty.value(), cfg.ftz.value()));
+                }
+                if (cfg.fpoverrideScale.getBoolean()) {
+                    model.apply(new Scale(cfg.fsx.value(), cfg.fsy.value(), cfg.fsz.value()));
+                }
             }
-            if(cfg.overrideScale.getBoolean()){
-                model.apply(new Scale(cfg.sx.value(),cfg.sy.value(),cfg.sz.value()));
+            else if(type == ItemCameraTransforms.TransformType.GUI || type == ItemCameraTransforms.TransformType.FIXED) {
+                if (cfg.guioverrideRotation.getBoolean()) {
+                    model.apply(new Rotation(Math.toRadians(cfg.grx.value()), 1, 0, 0));
+                    model.apply(new Rotation(Math.toRadians(cfg.gry.value()), 0, 1, 0));
+                    model.apply(new Rotation(Math.toRadians(cfg.grz.value()), 0, 0, 1));
+                }
+                if (cfg.guioverrideTranslation.getBoolean()) {
+                    model.apply(new Translation(cfg.gtx.value(), cfg.gty.value(), cfg.gtz.value()));
+                }
+                if (cfg.guioverrideScale.getBoolean()) {
+                    model.apply(new Scale(cfg.gsx.value(), cfg.gsy.value(), cfg.gsz.value()));
+                }
             }
             return model;
         }

@@ -3,7 +3,7 @@ package com.vicious.viciouscore.common.commands;
 import com.google.common.collect.Lists;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.VCoreConfig;
-import com.vicious.viciouscore.common.util.configuration.ConfigurationValue;
+import com.vicious.viciouscore.common.util.tracking.configuration.ConfigurationValue;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableValue;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Changes configuration values while the game is running if possible.
  */
-public class ConfigCommand extends CommandBase {
+public class CommandConfig extends CommandBase {
     private final List<String> alias = Lists.newArrayList("vconfig", "vcfg");
 
     @Override

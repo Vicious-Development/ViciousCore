@@ -1,8 +1,11 @@
 package com.vicious.viciouscore.overrides;
 
+
 import com.vicious.viciouscore.common.override.Overrider;
+import com.vicious.viciouscore.common.override.TileEntityOverrider;
 import com.vicious.viciouscore.common.util.reflect.FieldRetrievalRoute;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class VCoreOverrides {
     public static void init(){
@@ -10,6 +13,8 @@ public class VCoreOverrides {
             Overrider.registerInitInjector(
                     new FieldRetrievalRoute("techreborn.api.recipe.Recipes", "centrifuge"),
                     OverrideCentrifugeRecipeHandler::new);
+            GameRegistry.registerTileEntity(OverrideTileFusionControlComputer.class,"fusion_control_computer");
+            TileEntityOverrider.registerOverrider("techreborn.tiles.fusionReactor.TileFusionControlComputer",OverrideTileFusionControlComputer::new,"techreborn");
         }
     }
 }

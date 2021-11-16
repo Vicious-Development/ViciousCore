@@ -13,12 +13,14 @@ public class Directories {
     public static Path viciousConfigDirectory;
     public static Path viciousCoreConfigPath;
     public static Path itemRenderOverridesDirectory;
+    public static Path viciousStructuresDirectory;
 
     public static void initializeConfigDependents() {
         Directories.configDirectory = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"config"));
         Directories.resourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"resources"));
         Directories.viciousResourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(resourcesDirectory.toAbsolutePath().toString(),"vicious"));
         Directories.itemRenderOverridesDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"itemrenderoverrides"));
+        Directories.viciousStructuresDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"structures"));
         Directories.viciousConfigDirectory = FileUtil.createDirectoryIfDNE(directorize(configDirectory.toAbsolutePath().toString(),"vicious"));
         Directories.viciousCoreConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"viciouscore.json");
     }

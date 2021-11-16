@@ -6,13 +6,13 @@ import net.minecraft.util.ResourceLocation;
 
 public interface ICCModelConsumer {
     /**
-     * Override to provide your model.
+     * Override to provide your models.
      * @return the loaded CCModel
      */
     CCModel getModel();
 
     /**
-     * Override to provide the model animator
+     * Override to provide the models animator
      * @return
      */
     default Animation getAnimation(){

@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
- * Overridden version of ModelBiped which changes how the game modifies the model on client rendering.
- * This model type gets injected into the mainModel field when RenderOverrideHandler#overrideBipedModel is called.
+ * Overridden version of ModelBiped which changes how the game modifies the models on client rendering.
+ * This models type gets injected into the mainModel field when RenderOverrideHandler#overrideBipedModel is called.
  */
 public class OverrideModelSpider extends ModelSpider implements IOverrideModel {
     public Queue<Runnable> transforms = new LinkedList<>();

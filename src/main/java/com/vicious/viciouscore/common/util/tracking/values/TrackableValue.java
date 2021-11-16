@@ -43,7 +43,7 @@ public abstract class TrackableValue<T> {
     }
 
     public void convert(){
-        if(converter != null) converter.convert(this);
+        if(converter != null && this.value() != null) converter.convert(this);
     }
     //Used to convert a trackable's value into something else.
     public TrackableValue<T> converter(TrackableValueConverter converter){

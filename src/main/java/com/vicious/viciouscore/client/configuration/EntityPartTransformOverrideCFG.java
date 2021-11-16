@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.client.configuration;
 
-import com.vicious.viciouscore.common.util.configuration.Config;
-import com.vicious.viciouscore.common.util.configuration.ConfigurationValue;
+import com.vicious.viciouscore.common.util.tracking.configuration.Config;
+import com.vicious.viciouscore.common.util.tracking.configuration.ConfigurationValue;
 
 import java.nio.file.Path;
 

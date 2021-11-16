@@ -81,7 +81,7 @@ public interface ICCModelUser {
     }
     /**
      * Override to provide your own animation.
-     * @return the Animation object to use for model modification.
+     * @return the Animation object to use for models modification.
      */
     default void setLighting(float brightness){
         GlStateManager.disableLighting();

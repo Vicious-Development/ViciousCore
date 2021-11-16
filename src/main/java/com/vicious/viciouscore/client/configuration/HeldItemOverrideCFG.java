@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Powerful class designed to allow us to save and load model and render override settings while in game. This means we can edit the rendering of entities and such
+ * Powerful class designed to allow us to save and load models and render override settings while in game. This means we can edit the rendering of entities and such
  * while in game without needing to restart. It also grants other modders control over our renders.
  */
 @SuppressWarnings("unchecked")

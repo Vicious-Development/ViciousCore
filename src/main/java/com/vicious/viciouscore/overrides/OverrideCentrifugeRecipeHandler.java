@@ -22,7 +22,6 @@ public class OverrideCentrifugeRecipeHandler extends RecipeHandler implements IF
     }
 
     public Recipe findAndApply(Collection<ItemStack> itemStacks, boolean simulate) {
-        System.out.println("Testing");
         Queue<InputIngredient<?>> ingredients = new ArrayDeque();
         Iterator var4 = itemStacks.iterator();
         while(var4.hasNext()) {

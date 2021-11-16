@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class VUtil {
     public static final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -57,5 +58,35 @@ public class VUtil {
 
     public static int subtractOrZero(int value, int subtractor) {
         return Math.max(value - subtractor, 0);
+    }
+
+    public static String arrayToString(Object[] in){
+        if(in.length == 0) return "[]";
+        else if(in[0].getClass().isArray()){
+            String out = "[";
+            out+=commatize(in,(obj)-> arrayToString((Object[]) obj));
+            return out + "]";
+        }
+        else {
+            String out = "[";
+            out += commatize(in);
+            return out + "]";
+        }
+    }
+    public static String commatize(Object[] in){
+        String out = "";
+        for (int i = 0; i < in.length; i++) {
+            out += in[i];
+            if(i != in.length-1) out+=",";
+        }
+        return out;
+    }
+    public static String commatize(Object[] in, Function<Object,String> toStringFunction){
+        String out = "";
+        for (int i = 0; i < in.length; i++) {
+            out += toStringFunction.apply(in[i]);
+            if(i != in.length-1) out+=",";
+        }
+        return out;
     }
 }

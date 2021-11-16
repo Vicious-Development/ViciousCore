@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 
 import java.util.List;
 
-public class ItemModelConfigReloadCommand extends CommandBase {
+public class CommandItemModelConfigReload extends CommandBase {
     private final List<String> alias = Lists.newArrayList("ircfg");
 
     @Override

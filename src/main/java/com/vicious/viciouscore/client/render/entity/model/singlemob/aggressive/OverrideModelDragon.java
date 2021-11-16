@@ -51,8 +51,8 @@ public class OverrideModelDragon extends ModelDragon implements IOverrideModel {
         double[] adouble = entitydragon.getMovementOffsets(6, partialTicks);
         Class<?>[] urc = new Class[]{Double.TYPE};
         Method updateRotations = Reflection.getMethod(this,"updateRotations", urc);
-        float f6 = (float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{entitydragon.getMovementOffsets(5, partialTicks)[0] - entitydragon.getMovementOffsets(10, partialTicks)[0]});
-        float f7 = (float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{entitydragon.getMovementOffsets(5, partialTicks)[0] + (double)(f6 / 2.0F)});
+        float f6 = (float) Reflection.invokeMethod(this,updateRotations, new Object[]{entitydragon.getMovementOffsets(5, partialTicks)[0] - entitydragon.getMovementOffsets(10, partialTicks)[0]});
+        float f7 = (float) Reflection.invokeMethod(this,updateRotations, new Object[]{entitydragon.getMovementOffsets(5, partialTicks)[0] + (double)(f6 / 2.0F)});
         float f8 = f * ((float)Math.PI * 2F);
         f2 = 20.0F;
         float f3 = -12.0F;
@@ -64,9 +64,9 @@ public class OverrideModelDragon extends ModelDragon implements IOverrideModel {
         {
             double[] adouble1 = entitydragon.getMovementOffsets(5 - i, partialTicks);
             float f9 = (float)Math.cos((double)((float)i * 0.45F + f8)) * 0.15F;
-            spine.rotateAngleY = (float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{adouble1[0] - adouble[0]}) * 0.017453292F * 1.5F;
+            spine.rotateAngleY = (float) Reflection.invokeMethod(this,updateRotations, new Object[]{adouble1[0] - adouble[0]}) * 0.017453292F * 1.5F;
             spine.rotateAngleX = f9 + entitydragon.getHeadPartYOffset(i, adouble, adouble1) * 0.017453292F * 1.5F * 5.0F;
-            spine.rotateAngleZ = -(float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{adouble1[0] - (double)f7}) * 0.017453292F * 1.5F;
+            spine.rotateAngleZ = -(float) Reflection.invokeMethod(this,updateRotations, new Object[]{adouble1[0] - (double)f7}) * 0.017453292F * 1.5F;
             spine.rotationPointY = f2;
             spine.rotationPointZ = f3;
             spine.rotationPointX = f4;
@@ -81,9 +81,9 @@ public class OverrideModelDragon extends ModelDragon implements IOverrideModel {
         head.rotationPointX = f4;
         double[] adouble2 = entitydragon.getMovementOffsets(0, partialTicks);
 
-        head.rotateAngleY = (float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{(adouble2[0] - adouble[0])}) * 0.017453292F;
-        head.rotateAngleX = (float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{((double)entitydragon.getHeadPartYOffset(6, adouble, adouble2))}) * 0.017453292F * 1.5F * 5.0F;
-        head.rotateAngleZ = -(float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{(adouble2[0] - (double)f7)}) * 0.017453292F;
+        head.rotateAngleY = (float) Reflection.invokeMethod(this,updateRotations, new Object[]{(adouble2[0] - adouble[0])}) * 0.017453292F;
+        head.rotateAngleX = (float) Reflection.invokeMethod(this,updateRotations, new Object[]{((double)entitydragon.getHeadPartYOffset(6, adouble, adouble2))}) * 0.017453292F * 1.5F * 5.0F;
+        head.rotateAngleZ = -(float) Reflection.invokeMethod(this,updateRotations, new Object[]{(adouble2[0] - (double)f7)}) * 0.017453292F;
         head.render(scale);
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 1.0F, 0.0F);
@@ -131,9 +131,9 @@ public class OverrideModelDragon extends ModelDragon implements IOverrideModel {
         {
             adouble2 = entitydragon.getMovementOffsets(12 + k, partialTicks);
             f10 = (float)((double)f10 + Math.sin((double)((float)k * 0.45F + f8)) * 0.05000000074505806D);
-            spine.rotateAngleY = ((float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{adouble2[0] - adouble[0]}) * 1.5F + 180.0F) * 0.017453292F;
+            spine.rotateAngleY = ((float) Reflection.invokeMethod(this,updateRotations, new Object[]{adouble2[0] - adouble[0]}) * 1.5F + 180.0F) * 0.017453292F;
             spine.rotateAngleX = f10 + (float)(adouble2[1] - adouble[1]) * 0.017453292F * 1.5F * 5.0F;
-            spine.rotateAngleZ = (float) Reflection.invokeMethod(this,updateRotations,urc, new Object[]{adouble2[0] - (double)f7}) * 0.017453292F * 1.5F;
+            spine.rotateAngleZ = (float) Reflection.invokeMethod(this,updateRotations, new Object[]{adouble2[0] - (double)f7}) * 0.017453292F * 1.5F;
             spine.rotationPointY = f2;
             spine.rotationPointZ = f3;
             spine.rotationPointX = f4;

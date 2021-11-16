@@ -2,35 +2,34 @@ package com.vicious.viciouscore;
 
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.ResourceUtils;
+import com.vicious.viciouscore.client.configuration.HeldItemOverrideCFG;
 import com.vicious.viciouscore.client.registries.RenderRegistry;
 import com.vicious.viciouscore.client.render.RenderEventManager;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
-import com.vicious.viciouscore.client.configuration.HeldItemOverrideCFG;
 import com.vicious.viciouscore.client.util.ClientMappingsInitializer;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.ViciousCTab;
-import com.vicious.viciouscore.common.commands.ConfigCommand;
-import com.vicious.viciouscore.common.commands.ItemModelConfigReloadCommand;
+import com.vicious.viciouscore.common.commands.CommandConfig;
+import com.vicious.viciouscore.common.commands.CommandItemModelConfigReload;
+import com.vicious.viciouscore.common.commands.CommandStructure;
 import com.vicious.viciouscore.common.item.ViciousItem;
 import com.vicious.viciouscore.common.override.MobSpawnModifier;
 import com.vicious.viciouscore.common.override.Overrider;
+import com.vicious.viciouscore.common.override.TileEntityOverrider;
+import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
-import com.vicious.viciouscore.common.registries.VItemRegistry;
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import com.vicious.viciouscore.common.util.tracking.VCTrackingHandler;
 import com.vicious.viciouscore.overrides.VCoreOverrides;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLModDisabledEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
@@ -66,12 +65,11 @@ public class ViciousCore
             clientPreInit(event);
         }
         MinecraftForge.EVENT_BUS.register(MobSpawnModifier.class);
+        MinecraftForge.EVENT_BUS.register(ViciousCorePlayerManager.class);
+        MinecraftForge.EVENT_BUS.register(TileEntityOverrider.class);
         VCoreOverrides.init();
         Overrider.onPreInit();
-    }
-    @SubscribeEvent
-    public void itemInit(RegistryEvent.Register<Item> ev){
-        VItemRegistry.register(ev);
+        TileEntityOverrider.init();
     }
 
     /**
@@ -83,7 +81,7 @@ public class ViciousCore
         ClientMappingsInitializer.init();
         RenderRegistry.register();
         MinecraftForge.EVENT_BUS.register(RenderEventManager.class);
-        ClientCommandHandler.instance.registerCommand(new ItemModelConfigReloadCommand());
+        ClientCommandHandler.instance.registerCommand(new CommandItemModelConfigReload());
         //Necessary CCL implementations
         TextureUtils.addIconRegister(new ResourceCache());
         ResourceUtils.registerReloadListener(new ResourceCache());
@@ -105,7 +103,8 @@ public class ViciousCore
 
     @EventHandler
     public static void serverInit(FMLServerStartingEvent event) {
-        event.registerServerCommand(new ConfigCommand());
+        event.registerServerCommand(new CommandConfig());
+        event.registerServerCommand(new CommandStructure());
     }
     @EventHandler
     public void onStop(FMLModDisabledEvent event){

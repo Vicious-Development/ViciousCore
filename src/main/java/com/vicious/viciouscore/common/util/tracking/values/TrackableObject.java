@@ -1,10 +1,11 @@
 package com.vicious.viciouscore.common.util.tracking.values;
 
 import com.vicious.viciouscore.common.util.VUtil;
+import com.vicious.viciouscore.common.util.tracking.serialization.SerializableArray;
+import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
 import com.vicious.viciouscore.common.util.tracking.Trackable;
 import com.vicious.viciouscore.common.util.tracking.interfaces.TrackableValueConverter;
 import com.vicious.viciouscore.common.util.tracking.interfaces.TrackableValueJSONParser;
-import com.vicious.viciouscore.common.util.tracking.interfaces.TrackableValueStringParser;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
 
 public class TrackableObject<T> extends TrackableValue<T> {
     protected static final Map<Class<?>, TrackableValueJSONParser<?>> jsonparsers = new HashMap<>();
-    protected static final Map<Class<?>, TrackableValueStringParser<?>> stringparsers = new HashMap<>();
+
     static {
         jsonparsers.put(Boolean.class,(j, t)->j.getBoolean(t.name));
         jsonparsers.put(Integer.class,(j, t)->j.getInt(t.name));
@@ -28,18 +29,7 @@ public class TrackableObject<T> extends TrackableValue<T> {
         jsonparsers.put(String.class,(j, t)->j.getString(t.name));
         jsonparsers.put(UUID.class,(j, t)->UUID.fromString(j.getString(t.name)));
         jsonparsers.put(Date.class,(j, t)-> VUtil.DATEFORMAT.parse(j.getString(t.name)));
-    }
-    static {
-        stringparsers.put(Boolean.class, Boolean::parseBoolean);
-        stringparsers.put(Integer.class, Integer::parseInt);
-        stringparsers.put(Double.class, Double::parseDouble);
-        stringparsers.put(Float.class, Float::parseFloat);
-        stringparsers.put(Byte.class, Byte::parseByte);
-        stringparsers.put(Short.class, Short::parseShort);
-        stringparsers.put(Long.class, Long::parseLong);
-        stringparsers.put(String.class,(j)-> j);
-        stringparsers.put(UUID.class, UUID::fromString);
-        stringparsers.put(Date.class, VUtil.DATEFORMAT::parse);
+        jsonparsers.put(SerializableArray.class,(j, t)-> ((TrackableArrayValue<?>)t).setting.parse(j.getString(t.name)));
     }
 
     public TrackableObject(String name, Supplier<T> defaultSetting, Trackable<?> tracker){
@@ -62,28 +52,24 @@ public class TrackableObject<T> extends TrackableValue<T> {
     public TrackableObject<T> setFromJSON(JSONObject jo) {
         try {
             T val = ((TrackableValueJSONParser<T>) jsonparsers.get(type)).parse(jo, this);
-            if(val != null);
             this.setWithoutUpdate(val);
-        } catch(Exception e){
-            this.setWithoutUpdate(null);
+        } catch(Exception ignored){
         }
         this.convert();
         return this;
     }
     public TrackableObject<T> setFromStringWithUpdate(String s) throws Exception{
         try {
-            this.set((T) stringparsers.get(type).parse(s));
+            this.set((T) SerializationUtil.stringparsers.get(type).parse(s));
         } catch(Exception e){
-            this.set(null);
         }
         this.convert();
         return this;
     }
     public TrackableObject<T> setFromStringWithoutUpdate(String s) {
         try {
-            this.setWithoutUpdate((T) stringparsers.get(type).parse(s));
+            this.setWithoutUpdate((T) SerializationUtil.stringparsers.get(type).parse(s));
         } catch(Exception e){
-            this.setWithoutUpdate(null);
         }
         this.convert();
         return this;

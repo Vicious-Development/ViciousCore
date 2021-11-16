@@ -22,4 +22,18 @@ public interface IFieldCloner {
             clazz = clazz.getSuperclass();
         }
     }
+    static void clone(Object clone, Object og){
+        Class<?> clazz = og.getClass();
+        while(clazz != null) {
+            for (Field f : clazz.getDeclaredFields()) {
+                f.setAccessible(true);
+                Field f2 = Reflection.getField(clone, f.getName());
+                try {
+                    f2.setAccessible(true);
+                    f2.set(clone, Reflection.accessField(f, og));
+                } catch (IllegalAccessException ignored) {}
+            }
+            clazz = clazz.getSuperclass();
+        }
+    }
 }

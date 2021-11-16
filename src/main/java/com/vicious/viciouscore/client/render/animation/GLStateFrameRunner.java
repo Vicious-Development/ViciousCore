@@ -18,7 +18,7 @@ public abstract class GLStateFrameRunner extends AnimationFrameRunner {
         prevFrame=previous;
     }
     public abstract void run(float totalTicks);
-    //Applies model changes made in the previous frame.
+    //Applies models changes made in the previous frame.
     protected void applyPreviousFrame(float totalticks){
         if(prevFrame == null) return;
         prevFrame.run(totalticks-1);

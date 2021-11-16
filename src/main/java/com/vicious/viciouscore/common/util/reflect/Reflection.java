@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.common.util.reflect;
 
-import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -13,6 +12,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Reflection {
 
@@ -36,6 +37,35 @@ public class Reflection {
         }
         return null;
     }
+    public static <T> T executeOnTargetClass(Function<Class<?>,T> funct, Class<?> start) {
+        Class<?>[] interfaces = start.getInterfaces();
+        T ret = null;
+        while(ret == null &&start != null){
+            ret = funct.apply(start);
+            if(ret != null) break;
+            for (Class<?> anInterface : interfaces) {
+                ret = funct.apply(anInterface);
+            }
+            start=start.getSuperclass();
+        }
+        return ret;
+    }
+    public static <T> T executeOnTargetClass(Function<Class<?>,T> funct, Predicate<Class<?>> doExec, Class<?> start) {
+        Class<?>[] interfaces;
+        while(start != null){
+            interfaces=start.getInterfaces();
+            if(doExec.test(start)) {
+                return funct.apply(start);
+            }
+            for (Class<?> anInterface : interfaces) {
+                if(doExec.test(anInterface)){
+                    return funct.apply(anInterface);
+                }
+            }
+            start=start.getSuperclass();
+        }
+        return null;
+    }
 
     public static Object accessField(Field f, Object obj){
         if(f != null){
@@ -52,17 +82,24 @@ public class Reflection {
     }
     public static Method getMethod(Object accessed, String methodname, Class<?>[] parameters){
         Class<?> clazz = accessed instanceof Class<?> ? (Class<?>)accessed : accessed.getClass();
-        Method m = null;
-        //Try to find the field, regardless of hierarchy position.
-        while(m == null && clazz != null) {
-            try {
-                m = clazz.getDeclaredMethod(methodname,parameters);
-            } catch(NoSuchMethodException ignored){
-
+        return executeOnTargetClass((cls)->{
+            String target = methodname;
+            if(MappingsReference.hasMappingForClass(cls)){
+                MappingsReference.Mapping mapping = MappingsReference.getMapping(cls);
+                if(mapping.hasSRG(methodname)){
+                    target = mapping.getObfuscated(methodname);
+                }
             }
-            clazz = clazz.getSuperclass();
-        }
-        return m;
+            try {
+                return cls.getDeclaredMethod(target,parameters);
+            } catch (NoSuchMethodException ignored) {
+                try {
+                    return cls.getDeclaredMethod(methodname,parameters);
+                } catch (NoSuchMethodException ignored1) {
+                    return null;
+                }
+            }
+        } ,clazz);
     }
     public static Object invokeMethod(Object accessed, String methodname, Class<?>[] parameters, Object[] args){
         Method m = getMethod(accessed,methodname,parameters);
@@ -73,7 +110,7 @@ public class Reflection {
         } catch(IllegalAccessException | InvocationTargetException ignored){}
         return null;
     }
-    public static Object invokeMethod(Object accessed, Method m, Class<?>[] parameters, Object[] args){
+    public static Object invokeMethod(Object accessed, Method m, Object[] args){
         try {
             if (m.getReturnType() == void.class) {
                 m.invoke(accessed, args);
@@ -81,34 +118,37 @@ public class Reflection {
         } catch(IllegalAccessException | InvocationTargetException ignored){}
         return null;
     }
+    //Disabled for the time being due to java not supporting this, even via reflection.
+    //Future solution: create a super duper object, clone the original object's fields into the superduper. Run the method. Clone the fields from the superduper to the child.
+    /*public static Object invokeSuperDuperMethod(Object accessed, Class<?> superClass, Class<?>[] parameterTypes, Object[] args, String methodName) {
+        Method m = getMethod(supgierClass,methodName,parameterTypes);
+        try {
+            if (m.getReturnType() == void.class) {
+                m.invoke(accessed, args);
+            } else return m.invoke(accessed, args);
+        } catch(IllegalAccessException | InvocationTargetException ignored){}
+        return null;
+    }*/
     public static Field getField(Object accessed, String fieldname) {
         Class<?> clazz = accessed instanceof Class<?> ? (Class<?>) accessed : accessed.getClass();
-        Field f = null;
-        //Try to find the field, regardless of hierarchy position.
-        while (f == null && clazz != null) {
+        return executeOnTargetClass((cls)->{
             String target = fieldname;
-            if(MappingsReference.hasMappingForClass(clazz)){
-                MappingsReference.Mapping mapping = MappingsReference.getMapping(clazz);
+            if(MappingsReference.hasMappingForClass(cls)){
+                MappingsReference.Mapping mapping = MappingsReference.getMapping(cls);
                 if(mapping.hasSRG(fieldname)){
                     target = mapping.getObfuscated(fieldname);
                 }
             }
-            //In the dev env, this will take extra time, outside though we are in th clear.
             try {
-                f = clazz.getDeclaredField(target);
+                return cls.getDeclaredField(target);
             } catch (NoSuchFieldException ignored) {
                 try {
-                    f = clazz.getDeclaredField(fieldname);
-                } catch (NoSuchFieldException ignored1) {}
+                    return cls.getDeclaredField(fieldname);
+                } catch (NoSuchFieldException ignored1) {
+                    return null;
+                }
             }
-            clazz = clazz.getSuperclass();
-        }
-        if(f != null){
-            if(ViciousCore.CFG.outputReflectionClasses.getBoolean()) outputClass(clazz);
-            return f;
-        }
-        //If the code returns null, an obfuscation mapping HAS to be registered.
-        return null;
+        } ,clazz);
     }
 
     private static void outputClass(Class<?> clazz) {
@@ -121,6 +161,17 @@ public class Reflection {
 
     public static void setField(Object accessed, Object value, String fieldname){
         Field f = getField(accessed, fieldname);
+        if (f != null) {
+            try {
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                f.set(accessed, value);
+            } catch (IllegalAccessException ignored) {
+            }
+        }
+    }
+    public static void setField(Object accessed, Object value, Field f){
         if (f != null) {
             try {
                 if (!f.isAccessible()) {

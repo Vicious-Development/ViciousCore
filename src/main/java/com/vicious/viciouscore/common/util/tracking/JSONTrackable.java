@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.common.util.tracking;
 
 import com.vicious.viciouscore.common.util.file.FileUtil;
+import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableValue;
 import org.json.JSONObject;
 
@@ -40,7 +41,7 @@ public class JSONTrackable<T extends JSONTrackable<T>> extends Trackable<T>{
 
     public void overWriteFile() {
         for (TrackableValue<?> value : values.values()) {
-            jsonObj.put(value.name,value.value());
+            jsonObj.put(value.name, SerializationUtil.serialize(value.value()));
         }
         FileUtil.createOrWipe(PATH);
         try {

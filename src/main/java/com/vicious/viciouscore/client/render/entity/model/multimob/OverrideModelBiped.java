@@ -11,8 +11,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * Overridden version of ModelBiped which changes how the game modifies the model on client rendering.
- * This model type gets injected into the mainModel field when RenderOverrideHandler#overrideModelSpider is called.
+ * Overridden version of ModelBiped which changes how the game modifies the models on client rendering.
+ * This models type gets injected into the mainModel field when RenderOverrideHandler#overrideModelSpider is called.
  */
 public class OverrideModelBiped extends ModelBiped implements IOverrideModel {
     public Queue<Runnable> transforms = new LinkedList<>();

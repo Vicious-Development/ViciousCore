@@ -13,7 +13,7 @@ public abstract class Trackable<T extends Trackable<T>> {
     public void insertJSONObject(){
 
     }
-    protected <E extends TrackableValue<?>> E add(E t){
+    public <E extends TrackableValue<?>> E add(E t){
         values.put(t.name,t);
         return t;
     }
@@ -42,4 +42,5 @@ public abstract class Trackable<T extends Trackable<T>> {
             } catch(Exception ignored){}
         }
     }
+
 }
