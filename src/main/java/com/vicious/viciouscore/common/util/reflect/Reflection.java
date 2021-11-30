@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -151,6 +152,25 @@ public class Reflection {
         } ,clazz);
     }
 
+    /**
+     * Pure evil. Time to start fucking with things you shouldn't eh?
+     * In a separate method so those who desire to change final fields have to intentionally.
+     */
+    public static void definalize(Object accessed, String fieldname){
+        Field f = getField(accessed,fieldname);
+        if(f != null){
+            try{
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                Field.class.getDeclaredField("modifiers")
+                        .setInt(f, f.getModifiers() & ~Modifier.FINAL);
+
+            } catch(IllegalAccessException | NoSuchFieldException ignored){
+
+            }
+        }
+    }
     private static void outputClass(Class<?> clazz) {
         String path = Directories.rootDir()+"/classOPT.txt";
         FileUtil.createDNE(path);

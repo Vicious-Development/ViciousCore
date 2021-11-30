@@ -27,18 +27,15 @@ public class TileEntityOverrider {
         if (tick.phase != TickEvent.Phase.END || tick.side == Side.CLIENT) return;
         World world = tick.world;
         List<TileEntity> loadedTileEntityList = (List<TileEntity>) Reflection.accessField(world, "loadedTileEntityList");
-        List<TileEntity> tickableTileEntities = (List<TileEntity>) Reflection.accessField(world, "tickableTileEntities");
-        List<TileEntity> addedTileEntityList = (List<TileEntity>) Reflection.accessField(world, "addedTileEntityList");
         prevTileCounts.putIfAbsent(world,loadedTileEntityList.size());
         if (prevTileCounts.get(world) != loadedTileEntityList.size()) {
             prevTileCounts.replace(world, loadedTileEntityList.size());
-            for (int i = 0; i < loadedTileEntityList.size(); i++) {
-                TileEntity ent = loadedTileEntityList.get(i);
+            for (TileEntity ent : loadedTileEntityList) {
                 if (overriders.containsKey(ent.getClass())) {
                     System.out.println("sifted" + ent.getClass());
                     TileEntity overridden = overriders.get(ent.getClass()).apply(ent);
                     overridden.setWorld(world);
-                    world.setTileEntity(ent.getPos(),overridden);
+                    world.setTileEntity(ent.getPos(), overridden);
                 }
             }
         }

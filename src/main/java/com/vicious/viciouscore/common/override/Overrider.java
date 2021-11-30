@@ -1,7 +1,14 @@
 package com.vicious.viciouscore.common.override;
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.reflect.FieldRetrievalRoute;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
+import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistry;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -12,9 +19,12 @@ import java.util.Map;
  * There are a few events on which an override will be executed.
  * Calls to Overrider.registerPreInitInjector should be made after VCore and whatever overridden mod has initialized.
  */
+@Mod.EventBusSubscriber(modid = ViciousCore.MODID)
 public class Overrider {
-    private static HashMap<FieldRetrievalRoute, OverrideConverter<?>> preInit = new HashMap<>();
-    private static HashMap<FieldRetrievalRoute, OverrideConverter<?>> init = new HashMap<>();
+    private static Map<FieldRetrievalRoute, OverrideConverter<?>> preInit = new HashMap<>();
+    private static Map<FieldRetrievalRoute, OverrideConverter<?>> init = new HashMap<>();
+    private static Map<FieldRetrievalRoute, OverrideConverter<?>> postInit = new HashMap<>();
+    private static Map<ResourceLocation, Block> blockRegReplacement = new HashMap<>();
 
     /**
      * Called when VCore starts preinitialization.
@@ -22,12 +32,38 @@ public class Overrider {
      * @param overriddenVariantFactory converts the original variant to the overridden variant.
      */
     public static void registerPreInitInjector(FieldRetrievalRoute route, OverrideConverter<?> overriddenVariantFactory) {
-        preInit.put(route, overriddenVariantFactory);
+        preInit.putIfAbsent(route, overriddenVariantFactory);
     }
 
     public static void registerInitInjector(FieldRetrievalRoute route, OverrideConverter<?> overriddenVariantFactory) {
-        init.put(route, overriddenVariantFactory);
+        init.putIfAbsent(route, overriddenVariantFactory);
     }
+
+    public static void registerPostInitInjector(FieldRetrievalRoute route, OverrideConverter<?> overriddenVariantFactory) {
+        postInit.putIfAbsent(route, overriddenVariantFactory);
+    }
+
+    /**
+     * Warning! Replacing registry entries is something that has never been done before outside of VCore as far as I know.
+     * Be sure to inject the replacement block into any fields where the original block was.
+     * There are likely unknown risks. Be careful.
+     */
+    public static void registerBlockRegistryReplacer(ResourceLocation rl, Block block) {
+        blockRegReplacement.putIfAbsent(rl, block);
+    }
+
+    @SubscribeEvent
+    public static void onBlockRegistration(RegistryEvent.Register<Block> forgereg){
+        ForgeRegistry<Block> frg = (ForgeRegistry<Block>) forgereg.getRegistry();
+        blockRegReplacement.forEach((rl,blk)->{
+            if(frg.containsKey(rl)) {
+                Block b1 = frg.remove(rl);
+                blk.setRegistryName(b1.getRegistryName());
+                frg.register(blk);
+            }
+        });
+    }
+
     public static void onPreInit(){
         processOverrideMap(preInit);
         preInit=null;
@@ -36,12 +72,38 @@ public class Overrider {
         processOverrideMap(init);
         init=null;
     }
+    public static void onPostInit(){
+        processOverrideMap(postInit);
+        postInit=null;
+    }
+    /*
 
+    Did not complete. This method is literally too dangerous to give anyone access to. Even myself. Overwriting tiles in the TE registry can delete their data on world load.
+       Use TileEntityOverrider instead.
+    @SubscribeEvent
+    @SuppressWarnings({"unchecked","rawtypes"})
+    public static void onTileEntityRegistration(){
+        RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>> reg = (RegistryNamespaced) Reflection.accessField(TileEntity.class,"REGISTRY");
+        blockReg.forEach((rr, bo)->{
+            if(reg.containsKey(rr.resource)){
+                Block b = reg.remove(rr.resource);
+                Block overridden = bo.override(b);
+                reg.register(b);
+                processRegistrationOverride(overridden,rr.route);
+            }
+        });
+    }*/
+
+    private static void inject(Object overridden, FieldRetrievalRoute route){
+        if(route != null) {
+            Object objectToAccess = route.getEndObjectSupplier();
+            if (objectToAccess != null) Reflection.setField(objectToAccess,overridden,route.endField());
+        }
+    }
     @FunctionalInterface
     public interface OverrideConverter<T>{
         T override(Object in);
     }
-
     private static void processOverrideMap(Map<FieldRetrievalRoute,OverrideConverter<?>> map){
         map.forEach((route, converter)->{
             try {

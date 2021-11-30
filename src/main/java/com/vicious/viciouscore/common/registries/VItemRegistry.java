@@ -41,5 +41,7 @@ public class VItemRegistry extends Registrator{
             //Use vanilla rendering
             else ModelLoader.setCustomModelResourceLocation(i, 0, new ModelResourceLocation(i.getRegistryName(),null));
         }
+        Item tabIcon = ViciousCore.TABVICIOUS.getTabIconItem().getItem();
+        ModelLoader.setCustomModelResourceLocation(tabIcon,0,new ModelResourceLocation(tabIcon.getRegistryName(),null));
     }
 }

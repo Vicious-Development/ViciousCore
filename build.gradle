@@ -14,6 +14,10 @@ buildscript {
         maven {
             url = "https://www.cursemaven.com"
         }
+        maven {
+            // Licenser
+            url "https://plugins.gradle.org/m2/"
+        }
         jcenter()
 
         mavenCentral()
@@ -21,7 +25,7 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-    }
+        classpath 'de.undercouch:gradle-download-task:3.4.3'}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -31,6 +35,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'de.undercouch.download'
 
 version = '1.0'
 group = 'com.vicious.viciouscore' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -54,54 +59,36 @@ minecraft {
 
 repositories {
     maven {
-        // RebornCore, TR Compat
+        // RebornCore, TR
         name = "Modmuss50"
         url = "http://maven.modmuss50.me/"
     }
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        // JEI
+        name "JEI"
+        url "https://dvs1.progwml6.com/files/maven"
     }
-    maven {
-        url = "https://www.cursemaven.com"
+    maven { // IC2 repo
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
     }
 }
 dependencies {
+    deobfProvided "net.industrial-craft:industrialcraft-2:2.8.178-ex112:api" // IC2 Api
     compile "org.json:json:20171018"
-    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
-    // You may put jars on which you depend on in ./libs or you may define them like so..
-    // compile "some.group:artifact:version:classifier"
-    // compile "some.group:artifact:version"
-
-    // Real examples
-    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // These dependencies get remapped to your current MCP mappings
-    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
+            "Specification-Title": "viciouscore",
+            "Specification-Vendor": "vicious",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Vendor" :"vicious",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

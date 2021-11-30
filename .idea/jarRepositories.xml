@@ -51,5 +51,65 @@
       <option name="name" value="Modmuss50" />
       <option name="url" value="http://maven.modmuss50.me/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="CCL Maven" />
+      <option name="name" value="CCL Maven" />
+      <option name="url" value="http://chickenbones.net/maven/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="progwml6" />
+      <option name="name" value="progwml6" />
+      <option name="url" value="http://dvs1.progwml6.com/files/maven/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="CyclopsMC" />
+      <option name="name" value="CyclopsMC" />
+      <option name="url" value="https://oss.jfrog.org/artifactory/simple/libs-release/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="blamejared" />
+      <option name="name" value="blamejared" />
+      <option name="url" value="http://maven.blamejared.com/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="tterrag Maven" />
+      <option name="name" value="tterrag Maven" />
+      <option name="url" value="https://maven.tterrag.com/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="CoFH Maven" />
+      <option name="name" value="CoFH Maven" />
+      <option name="url" value="http://maven.covers1624.net" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="ModMaven" />
+      <option name="name" value="ModMaven" />
+      <option name="url" value="https://modmaven.k-4u.nl" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="mcmoddev" />
+      <option name="name" value="mcmoddev" />
+      <option name="url" value="https://maven.mcmoddev.com" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="cil" />
+      <option name="name" value="cil" />
+      <option name="url" value="http://maven.cil.li/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="ic2" />
+      <option name="name" value="ic2" />
+      <option name="url" value="http://maven.ic2.player.to/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="JEI" />
+      <option name="name" value="JEI" />
+      <option name="url" value="https://dvs1.progwml6.com/files/maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="BintrayJCenter" />
+      <option name="name" value="BintrayJCenter" />
+      <option name="url" value="https://jcenter.bintray.com/" />
+    </remote-repository>
   </component>
 </project>
