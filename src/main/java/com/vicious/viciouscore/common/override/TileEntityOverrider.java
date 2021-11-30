@@ -32,7 +32,7 @@ public class TileEntityOverrider {
             prevTileCounts.replace(world, loadedTileEntityList.size());
             for (TileEntity ent : loadedTileEntityList) {
                 if (overriders.containsKey(ent.getClass())) {
-                    System.out.println("sifted" + ent.getClass());
+                    //System.out.println("sifted" + ent.getClass());
                     TileEntity overridden = overriders.get(ent.getClass()).apply(ent);
                     overridden.setWorld(world);
                     world.setTileEntity(ent.getPos(), overridden);

@@ -2,7 +2,6 @@ package com.vicious.viciouscore.common.util.reflect;
 
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -274,8 +273,8 @@ public class Reflection {
         return null;
     }
 
-    public static String fieldsToString(RenderLivingBase<?> entityRenderer) {
-        Class<?> clazz = entityRenderer.getClass();
+    public static String fieldsToString(Object object) {
+        Class<?> clazz = object.getClass();
         String fields = "";
         while(clazz != null){
             for (Field declaredField : clazz.getDeclaredFields()) {
