@@ -15,6 +15,7 @@ import java.util.Queue;
 
 /**
  * Overridden variant of the centrifugeRecipeHandler that actually processes correctly for fucks sake.
+ * "We care about NBT" - RebornTeam
  */
 public class OverrideCentrifugeRecipeHandler extends RecipeHandler implements IFieldCloner {
     public OverrideCentrifugeRecipeHandler(Object in) {
