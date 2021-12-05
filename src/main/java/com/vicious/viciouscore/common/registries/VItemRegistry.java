@@ -1,17 +1,13 @@
 package com.vicious.viciouscore.common.registries;
 
 import com.vicious.viciouscore.ViciousCore;
-import com.vicious.viciouscore.client.render.IRenderOverride;
 import com.vicious.viciouscore.common.item.ItemEnergoRifle;
 import com.vicious.viciouscore.common.item.structure.ItemStructureAreaSelectionWand;
 import com.vicious.viciouscore.common.item.structure.ItemStructurePasteWand;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +27,7 @@ public class VItemRegistry extends Registrator{
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> ev){
-        IForgeRegistry<Item> reg = ev.getRegistry();
+        /*IForgeRegistry<Item> reg = ev.getRegistry();
         for(Item i : itemList){
             reg.register(i);
             //Use CCL rendering
@@ -43,5 +39,6 @@ public class VItemRegistry extends Registrator{
         }
         Item tabIcon = ViciousCore.TABVICIOUS.getTabIconItem().getItem();
         ModelLoader.setCustomModelResourceLocation(tabIcon,0,new ModelResourceLocation(tabIcon.getRegistryName(),null));
+        */
     }
 }

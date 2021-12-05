@@ -27,7 +27,7 @@ public class FieldRetrievalRoute {
             for (int i = 0; i < fieldTargets.length; i++) {
                 f = Reflection.getField(clazz, fieldTargets[i]);
                 if(f == null) return null;
-                obj = Reflection.accessField(f,clazz);
+                obj = Reflection.accessField(clazz, f);
                 if(obj == null) return null;
                 clazz = obj.getClass();
             }
@@ -50,7 +50,7 @@ public class FieldRetrievalRoute {
             for (int i = 0; i < fieldTargets.length-1; i++) {
                 f = Reflection.getField(clazz, fieldTargets[i]);
                 if(f == null) return null;
-                obj = Reflection.accessField(f,clazz);
+                obj = Reflection.accessField(clazz, f);
                 if(obj == null) return null;
                 clazz = obj.getClass();
             }

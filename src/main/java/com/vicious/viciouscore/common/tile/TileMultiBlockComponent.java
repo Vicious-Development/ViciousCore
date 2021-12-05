@@ -1,30 +1,43 @@
 package com.vicious.viciouscore.common.tile;
 
+
+import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
+//TODO: make multiblockcomponents notify each other less.
 public class TileMultiBlockComponent extends ViciousTE implements INotifier<Object> {
-    public List<INotifiable<Object>> parents;
-
-    @Override
+    public List<INotifiable<Object>> parents = new ArrayList<>();
+    public long lastTick = -1;
+    public TileMultiBlockComponent(){}
     @SuppressWarnings({"rawtypes","unchecked"})
-    /**
-     * This may add blocks outside of the multiblock to the structure, but this is ok. It won't really harm the server too bad.
-     */
-    public void onLoad() {
-        super.onLoad();
-        for (TileEntity neighborTile : getNeighborTiles()) {
-            if(neighborTile instanceof INotifier) {
-                List<INotifiable> parentList = ((INotifier) neighborTile).getParents();
-                for (INotifiable parent : parentList) {
-                    if(!parents.contains(parent)) parents.add(parent);
-                }
-                ((INotifier) neighborTile).setParents(parents);
+    public void notifyNeighbors(){
+        if(!chunkIsCorrect()) return;
+        long worldTick = world != null ? world.getTotalWorldTime() : -1;
+        forNeighborBlockTiles((bs,te,bpos)->{
+            Block b = bs.getBlock();
+            TileMultiBlockComponent tmbc = null;
+            if(te instanceof TileMultiBlockComponent){
+                tmbc = (TileMultiBlockComponent) te;
             }
-        }
-        notifyParent();
+            if (tmbc != null) {
+                if(tmbc.lastTick != worldTick) {
+                    tmbc.lastTick = worldTick;
+                    List<INotifiable<Object>> parentList = tmbc.getParents();
+                    for (INotifiable<Object> parent : parentList) {
+                        if (!parents.contains(parent)) parents.add(parent);
+                    }
+                    tmbc.setParents(parents);
+                }
+            }
+        });
     }
+
 
     @Override
     public void onChunkUnload() {
@@ -41,18 +54,14 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
     @Override
     public void invalidate() {
         super.invalidate();
+        notifyNeighbors();
         notifyParent();
     }
 
     @Override
     public void validate() {
         super.validate();
-        notifyParent();
-    }
-
-    @Override
-    public void markDirty() {
-        super.markDirty();
+        notifyNeighbors();
         notifyParent();
     }
 
@@ -61,16 +70,17 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
      * Remove the parent if the parent is no longer a valid parent.
      */
     public void notifyParent(){
+        if(!chunkIsCorrect()) return;
         for (int i = 0; i < parents.size(); i++) {
             INotifiable<Object> parent = parents.get(i);
-            if(parent instanceof TileEntity){
-                if(((TileEntity) parent).isInvalid()){
+            if(parent instanceof TileEntity) {
+                if (((TileEntity) parent).isInvalid()) {
                     parents.remove(i);
                     i--;
                 }
-            }
-            else if (parent != null) {
-                parent.notify(this);
+                else if (parent != null) {
+                    parent.notify(this);
+                }
             }
             else {
                 parents.remove(i);
@@ -81,7 +91,7 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
 
     @Override
     public void addParent(INotifiable<Object> parent) {
-        parents.add(parent);
+        if(!parents.contains(parent)) parents.add(parent);
     }
 
     @Override
@@ -92,5 +102,22 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
     @Override
     public void setParents(List<INotifiable<Object>> parents) {
         this.parents = parents;
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        return super.writeToNBT(compound);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        notifyParent();
+        return super.getUpdatePacket();
     }
 }

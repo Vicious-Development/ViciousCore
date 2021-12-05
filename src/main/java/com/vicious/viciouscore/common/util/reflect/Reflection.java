@@ -67,7 +67,7 @@ public class Reflection {
         return null;
     }
 
-    public static Object accessField(Field f, Object obj){
+    public static Object accessField(Object obj, Field f){
         if(f != null){
             try{
                 if (!f.isAccessible()) {

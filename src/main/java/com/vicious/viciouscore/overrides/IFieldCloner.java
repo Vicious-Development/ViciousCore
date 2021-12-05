@@ -16,7 +16,7 @@ public interface IFieldCloner {
                 Field f2 = Reflection.getField(this, f.getName());
                 try {
                     f2.setAccessible(true);
-                    f2.set(this, Reflection.accessField(f, og));
+                    f2.set(this, Reflection.accessField(og, f));
                 } catch (IllegalAccessException ignored) {}
             }
             clazz = clazz.getSuperclass();
@@ -30,7 +30,7 @@ public interface IFieldCloner {
                 Field f2 = Reflection.getField(clone, f.getName());
                 try {
                     f2.setAccessible(true);
-                    f2.set(clone, Reflection.accessField(f, og));
+                    f2.set(clone, Reflection.accessField(og, f));
                 } catch (IllegalAccessException ignored) {}
             }
             clazz = clazz.getSuperclass();

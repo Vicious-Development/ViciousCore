@@ -4,30 +4,26 @@ import com.vicious.viciouscore.common.tile.INotifiable;
 import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import com.vicious.viciouscore.overrides.IFieldCloner;
-import nc.Global;
-import nc.block.tile.generator.BlockFissionControllerNewFixed;
-import nc.capability.radiation.source.IRadiationSource;
 import nc.config.NCConfig;
 import nc.enumm.MetaEnums;
 import nc.init.NCBlocks;
-import nc.radiation.RadiationHelper;
 import nc.tile.dummy.TileFissionPort;
 import nc.tile.fluid.TileActiveCooler;
 import nc.tile.generator.TileFissionController;
 import nc.tile.internal.fluid.Tank;
-import nc.util.*;
-import net.minecraft.block.BlockFire;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import nc.util.BlockFinder;
+import nc.util.BlockPosHelper;
+import nc.util.NCMath;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Optimized version of the NC Fission Controller.
@@ -38,21 +34,28 @@ import java.util.*;
  * This obviously did not bode well for servers with extremely large reactors as the runtime complexity would get really bad.
  * To solve the problem I've now stored any calculation data so we don't have to do it all over again.
  */
-public class OverrideTileFissionControllerNew extends TileFissionController.New implements INotifiable<Object> {
-    public boolean isActivated = false;
-    public Random rand = new Random();
-    public boolean newRules = false;
+public class OverrideTileFissionControllerNew extends TileFissionController.New implements INotifiable<Object>,IFieldCloner {
     public boolean doStructureAnalysis = true;
     public boolean structureFormed = false;
+    public Field isActive = Reflection.getField(OverrideTileFissionControllerNew.class,"isActivated");
+    public static Map<String,Integer> cachedCoolingStats = new HashMap<>();
     public Map<Item,FissionProcessData> cachedRuns = new HashMap<>();
     public List<TileActiveCooler> cachedCoolers = new ArrayList<>();
     private long lastTick = -1;
+
+    public OverrideTileFissionControllerNew(){
+        super();
+    }
     public OverrideTileFissionControllerNew(Object og){
-        IFieldCloner.clone(this,og);
+        super();
     }
     @Override
     public void updateGenerator() {
         if(world.isRemote) return;
+        if(cachedCoolingStats.isEmpty()) cacheCooling();
+        boolean wasProcessing = this.isProcessing;
+        Reflection.setField(this,this.isActivated(),isActive);
+        this.isProcessing = this.isProcessing();
         //Prevent tick acceleration.
         if(lastTick == world.getTotalWorldTime()) return;
         lastTick = world.getTotalWorldTime();
@@ -66,19 +69,33 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
         pushEnergy();
         currentEnergyStored = getEnergyStored();
         //If the structure is not formed, we got no reactor to run.
-        if(!structureFormed) return;
-        //newRun(false);
+        if(!structureFormed){
+            return;
+        }
+        if(recipeInfo != null) {
+            //Fucking kill me NC.
+            FissionProcessData fpd = cachedRuns.get(recipeInfo.getRecipe().itemIngredients().get(0).getStack().getItem());
+            if (fpd == null) {
+                calcRunStats();
+            }
+            else {
+                processPower = fpd.processPower;
+                heatChange = fpd.heatChange;
+                cooling = fpd.cooling;
+            }
+        }
+        activeCool();
+        run();
         if (overheat()) return;
-
         if (isProcessing) process();
         else getRadiationSource().setRadiationLevel(0D);
 
         boolean shouldUpdate = false;
-        /*if (wasProcessing != isProcessing) {
+        if (wasProcessing != isProcessing) {
             shouldUpdate = true;
             updateBlockType();
             sendUpdateToAllPlayers();
-        }*/
+        }
         int compStrength = getComparatorStrength();
         if (comparatorStrength != compStrength && findAdjacentComparator()) {
             shouldUpdate = true;
@@ -88,448 +105,175 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
         if (shouldUpdate) {
             markDirty();
         }
-
     }
+    /*
+    private void newRun(boolean checkBlocks) {
+        double energyThisTick = 0.0D;
+        double fuelThisTick = 0.0D;
+        double heatThisTick = 0.0D;
+        double coolerHeatThisTick = 0.0D;
+        int cellCount = 0;
+        double energyMultThisTick = 0.0D;
+        double heatMultThisTick = 0.0D;
+        double baseRF = NCConfig.fission_power * this.baseProcessPower;
+        double baseHeat = NCConfig.fission_heat_generation * this.baseProcessHeat;
+        double moderatorPowerMultiplier = NCConfig.fission_moderator_extra_power / 6.0D;
+        double moderatorHeatMultiplier = NCConfig.fission_moderator_extra_heat / 6.0D;
+        this.ready = this.readyToProcess() && !(boolean)Reflection.accessField(this,isActive) ? 1 : 0;
+        if (checkBlocks) {
+            boolean isProcessing = this.isProcessing();
+            if (this.complete == 1) {
+                for(int z = this.minZ + 1; z <= this.maxZ - 1; ++z) {
+                    for(int x = this.minX + 1; x <= this.maxX - 1; ++x) {
+                        for(int y = this.minY + 1; y <= this.maxY - 1; ++y) {
+                            int extraCells;
+                            if (this.findCell(x, y, z)) {
+                                extraCells = 0;
+                                EnumFacing[] var28 = EnumFacing.VALUES;
+                                int var29 = var28.length;
+                                int var30 = 0;
 
-    public int getComparatorStrength() {
-        if (heatChange > 0 || NCConfig.fission_force_heat_comparator) {
-            return (int) MathHelper.clamp(1500D/NCConfig.fission_comparator_max_heat*heat/getMaxHeat(), 0D, 15D);
-        } else {
-            return (int) MathHelper.clamp(15D*getEnergyStored()/getMaxEnergyStored(), 0D, 15D);
-        }
-    }
+                                while(true) {
+                                    if (var30 >= var29) {
+                                        ++cellCount;
+                                        energyMultThisTick += (double)extraCells + 1.0D;
+                                        heatMultThisTick += ((double)extraCells + 1.0D) * ((double)extraCells + 2.0D) / 2.0D;
+                                        if (this.readyToProcess()) {
+                                            energyThisTick += baseRF * ((double)extraCells + 1.0D);
+                                            heatThisTick += baseHeat * ((double)extraCells + 1.0D) * ((double)extraCells + 2.0D) / 2.0D;
+                                        }
 
-    public boolean canProcessInputs() {
-        boolean validRecipe = this.setRecipeStats();
-        boolean canProcess = validRecipe && this.canProduceProducts();
-        if (this.hasConsumed && !validRecipe) {
-            for(int i = 0; i < this.itemInputSize; ++i) {
-                this.getItemInputs(true).set(i, ItemStack.EMPTY);
-            }
+                                        if (isProcessing) {
+                                            fuelThisTick += NCConfig.fission_fuel_use;
+                                        }
 
-            this.hasConsumed = false;
-        }
-
-        if (!canProcess) {
-            this.time = MathHelper.clamp(this.time, 0.0D, this.baseProcessTime - 1.0D);
-        }
-
-        return canProcess;
-    }
-    @Override
-    public void refreshActivity() {
-        boolean canProcessInputsOld = canProcessInputs;
-        super.refreshActivity();
-        refreshMultiblock(canProcessInputsOld != canProcessInputs);
-    }
-
-    @Override
-    public void refreshActivityOnProduction() {
-        boolean canProcessInputsOld = canProcessInputs;
-        super.refreshActivityOnProduction();
-        refreshMultiblock(canProcessInputsOld != canProcessInputs);
-    }
-
-    public boolean findAdjacentComparator() {
-        return getFinder().adjacent(pos, 1, Blocks.UNPOWERED_COMPARATOR, Blocks.POWERED_COMPARATOR);
-    }
-
-    public boolean overheat() {
-        if (heat >= getMaxHeat() && NCConfig.fission_overheat) {
-            meltdown();
-            return true;
-        }
-        return false;
-    }
-
-    public void meltdown() {
-        NCUtil.getLogger().info("Fission Reactor meltdown at " + pos.toString() + "!");
-
-        BlockPos middle = getFinder().position((minX + maxX)/2, (minY + maxY)/2, (minZ + maxZ)/2);
-
-        IRadiationSource chunkSource = RadiationHelper.getRadiationSource(world.getChunkFromBlockCoords(middle));
-        if (chunkSource != null) {
-            RadiationHelper.addToSourceRadiation(chunkSource, 8D*baseProcessRadiation*cells*NCConfig.fission_fuel_use*NCConfig.fission_meltdown_radiation_multiplier);
-        }
-
-        IBlockState corium = RegistryHelper.getBlock(Global.MOD_ID + ":fluid_corium").getDefaultState();
-        world.removeTileEntity(pos);
-        world.setBlockState(pos, corium);
-
-        if (NCConfig.fission_explosions) {
-            world.createExplosion(null, middle.getX(), middle.getY(), middle.getZ(), getLengthX()*getLengthX() + getLengthY()*getLengthY() + getLengthZ()*getLengthZ(), true);
-        }
-
-        for (EnumFacing dir : EnumFacing.VALUES) {
-            BlockPos offPos = pos.offset(dir);
-            if (rand.nextDouble() < 0.25D) {
-                world.removeTileEntity(offPos);
-                world.setBlockState(offPos, corium);
-            }
-        }
-
-        for (int i = minX; i <= maxX; i++) {
-            for (int j = minY; j <= maxY; j++) {
-                for (int k = minZ; k <= maxZ; k++) {
-                    BlockPos position = getFinder().position(i, j, k);
-                    if (findCell(position)) {
-                        world.removeTileEntity(position);
-                        world.setBlockState(position, corium);
-
-                        for (EnumFacing dir : EnumFacing.VALUES) {
-                            BlockPos offPos = position.offset(dir);
-                            if (getFinder().find(offPos, "blockGraphite")) {
-                                for (EnumFacing offDir : EnumFacing.VALUES) {
-                                    BlockPos graphiteOffPos = offPos.offset(offDir);
-                                    if (MaterialHelper.isReplaceable(world.getBlockState(graphiteOffPos).getMaterial())) {
-                                        world.setBlockState(graphiteOffPos, Blocks.FIRE.getDefaultState().withProperty(BlockFire.NORTH, Boolean.valueOf(offDir == EnumFacing.SOUTH)).withProperty(BlockFire.EAST, Boolean.valueOf(offDir == EnumFacing.WEST)).withProperty(BlockFire.SOUTH, Boolean.valueOf(offDir == EnumFacing.NORTH)).withProperty(BlockFire.WEST, Boolean.valueOf(offDir == EnumFacing.EAST)).withProperty(BlockFire.UPPER, Boolean.valueOf(offDir == EnumFacing.DOWN)));
+                                        int moderatorAdjacentCount = this.moderatorAdjacentCount(x, y, z);
+                                        energyMultThisTick += moderatorPowerMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
+                                        heatMultThisTick += moderatorHeatMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
+                                        energyThisTick += baseRF * moderatorPowerMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
+                                        heatThisTick += baseHeat * moderatorHeatMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
+                                        break;
                                     }
+
+                                    EnumFacing side = var28[var30];
+                                    if (this.findCellOnSide(x, y, z, side) || this.newFindModeratorThenCellOnSide(x, y, z, side)) {
+                                        ++extraCells;
+                                    }
+
+                                    ++var30;
                                 }
                             }
-                            else if (rand.nextDouble() < 0.75D) {
-                                world.removeTileEntity(offPos);
-                                world.setBlockState(offPos, corium);
+
+                            for(extraCells = 1; extraCells < MetaEnums.CoolerType.values().length; ++extraCells) {
+                                if (this.findCooler(x, y, z, extraCells) && this.coolerRequirements(x, y, z, extraCells)) {
+                                    coolerHeatThisTick -= MetaEnums.CoolerType.values()[extraCells].getCooling();
+                                    break;
+                                }
+                            }
+
+                            if (this.getFinder().find(x, y, z, new Object[]{NCBlocks.active_cooler})) {
+                                TileEntity tile = this.world.getTileEntity(this.getFinder().position(x, y, z));
+                                if (tile instanceof TileActiveCooler) {
+                                    TileActiveCooler cooler = (TileActiveCooler)tile;
+                                    Tank tank = (Tank)cooler.getTanks().get(0);
+                                    if (tank.getFluidAmount() > 0) {
+                                        boolean isInValidPosition = false;
+
+                                        for(int i = 1; i < MetaEnums.CoolerType.values().length; ++i) {
+                                            if (tank.getFluidName().equals(MetaEnums.CoolerType.values()[i].getFluidName()) && this.coolerRequirements(x, y, z, i)) {
+                                                coolerHeatThisTick -= NCConfig.fission_active_cooling_rate[i - 1] * (double)NCConfig.active_cooler_max_rate / 20.0D;
+                                                isInValidPosition = true;
+                                                break;
+                                            }
+                                        }
+
+                                        cooler.isActive = isInValidPosition && this.isActivated() && this.readyToProcess();
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+
+            if (this.complete == 1) {
+                this.heatChange = heatThisTick + coolerHeatThisTick;
+                this.cooling = coolerHeatThisTick;
+                this.cells = cellCount;
+                this.efficiency = cellCount == 0 ? 0.0D : 100.0D * energyMultThisTick / (double)cellCount;
+                this.heatMult = cellCount == 0 ? 0.0D : 100.0D * heatMultThisTick / (double)cellCount;
+                this.processPower = energyThisTick;
+                this.speedMultiplier = fuelThisTick;
+            } else {
+                this.heatChange = this.cooling = 0.0D;
+                this.efficiency = this.heatMult = 0.0D;
+                this.cells = 0;
+                this.processPower = this.speedMultiplier = 0.0D;
+            }
         }
 
-		/*for (int i = minX; i <= maxX; i++) {
-			for (int j = minY; j <= maxY; j++) {
-				for (int k = minZ; k <= maxZ; k++) {
-					if (rand.nextDouble() < 0.18D) {
-						BlockPos position = getFinder().position(i, j, k);
-						world.removeTileEntity(position);
-						world.setBlockState(position, corium);
-					}
-				}
-			}
-		}*/
-    }
-
-    @Override
-    public void setState(boolean isActive, TileEntity tile) {
-        if (getBlockType() instanceof BlockFissionControllerNewFixed) {
-            ((BlockFissionControllerNewFixed)getBlockType()).setStateNewFixed(isActive, this);
+        if (this.isProcessing) {
+            if (this.heat + this.heatChange >= 0.0D) {
+                this.heat += this.heatChange;
+            } else {
+                this.heat = 0.0D;
+            }
+        } else if (this.ready == 1 || this.complete == 1) {
+            if (this.heat + this.cooling >= 0.0D) {
+                this.heat += this.cooling;
+            } else {
+                this.heat = 0.0D;
+            }
         }
-        else super.setState(isActive, tile);
+
+    }*/
+    public void addNotificator(TileEntity te, BlockPos pos){
+        if(te instanceof INotifier){
+            ((INotifier)te).addParent(this);
+        }
+        else {
+            TileFissionComponent tfc = new TileFissionComponent();
+            tfc.addParent(this);
+            world.setTileEntity(pos,tfc);
+        }
+    }
+    /*public void refreshMultiblock(boolean checkBlocks) {
+        notify(this);
+    }*/
+    public void run() {
+        if(this.isProcessing){
+            this.heat = Math.max(0, this.heat += this.heatChange);
+        }
     }
 
-
-    // Processing
-
-    @Override
-    public boolean isProcessing() {
-        return readyToProcess() && isActivated;
+    public static void cacheCooling() {
+        for (int i = 1; i < MetaEnums.CoolerType.values().length; i++) {
+            MetaEnums.CoolerType type = MetaEnums.CoolerType.values()[i];
+            cachedCoolingStats.put(type.getFluidName(),i);
+        }
     }
 
-    @Override
-    public boolean readyToProcess() {
-        return canProcessInputs && hasConsumed && complete == 1;
+    /**
+     * Improves runtime to O(n) (before this ran in something that was O(n^2).
+     * There really isn't any more improvements I can make to active cooling since it depends on a value that updates every tick.
+     */
+    public void activeCool(){
+        int activeCooling = 0;
+        for (TileActiveCooler cooler : cachedCoolers) {
+            Tank tank = cooler.getTanks().get(0);
+            if (tank.getFluidAmount() > 0) {
+                cooler.isActive = isActivated() && readyToProcess() && heat + heatChange > 0;
+                if (cooler.isActive) {
+                    activeCooling += NCConfig.fission_active_cooling_rate[cachedCoolingStats.get(tank.getFluidName())] * NCConfig.active_cooler_max_rate / 20;
+                }
+            } else cooler.isActive = false;
+        }
+        cooling+=activeCooling;
+        heatChange-=activeCooling;
     }
 
     private boolean isActivated() {
         return getIsRedstonePowered() || computerActivated;
-    }
-
-    // IC2 Tiers
-
-    @Override
-    public int getEUSourceTier() {
-        return EnergyHelper.getEUTier(processPower);
-    }
-
-    @Override
-    public int getEUSinkTier() {
-        return 10;
-    }
-
-    // Reactor Stats
-
-    public String getFuelName() {
-        if (recipeInfo == null) return NO_FUEL;
-        if (recipeInfo.getRecipe().extras().size() < 4) return GENERIC_FUEL;
-        Object fuelNameInfo = recipeInfo.getRecipe().extras().get(3);
-        if (fuelNameInfo instanceof String) return ((String) fuelNameInfo).replace('_', '-');
-        else return GENERIC_FUEL;
-    }
-
-    public int getLengthX() {
-        return lengthX - 2;
-    }
-
-    public int getLengthY() {
-        return lengthY - 2;
-    }
-
-    public int getLengthZ() {
-        return lengthZ - 2;
-    }
-
-    public int getMaxHeat() {
-        if (NCMath.atIntLimit(getLengthX()*getLengthY()*getLengthZ(), NCConfig.fission_base_max_heat)) return Integer.MAX_VALUE;
-        if (getLengthX() <= 0 || getLengthY() <= 0 || getLengthZ() <= 0) return NCConfig.fission_base_max_heat;
-        return NCConfig.fission_base_max_heat*getLengthX()*getLengthY()*getLengthZ();
-    }
-
-    // Finding Blocks
-
-    private boolean findCell(BlockPos pos) {
-        return getFinder().find(pos, NCBlocks.cell_block);
-    }
-
-    private boolean findCell(int x, int y, int z) {
-        return findCell(getFinder().position(x, y, z));
-    }
-
-    private boolean findModerator(BlockPos pos) {
-        return getFinder().find(pos, "blockGraphite", "blockBeryllium");
-    }
-
-    private boolean findModerator(int x, int y, int z) {
-        return findModerator(getFinder().position(x, y, z));
-    }
-
-    private boolean findCellOnSide(int x, int y, int z, EnumFacing side) {
-        return findCell(getFinder().position(x, y, z).offset(side));
-    }
-
-    private boolean findModeratorThenCellOnSide(int x, int y, int z, EnumFacing side) {
-        return findModerator(getFinder().position(x, y, z).offset(side)) && findCell(getFinder().position(x, y, z).offset(side, 2));
-    }
-
-    private boolean newFindModeratorThenCellOnSide(int x, int y, int z, EnumFacing side) {
-        for (int i = 1; i <= NCConfig.fission_neutron_reach; i++) {
-            for (int j = 1; j <= i; j++) if (!findModerator(getFinder().position(x, y, z).offset(side, j))) return false;
-            if (findCell(getFinder().position(x, y, z).offset(side, i + 1))) return true;
-        }
-        return false;
-    }
-
-    private int moderatorAdjacentCount(BlockPos pos) {
-        int count = 0;
-        BlockPosHelper helper = new BlockPosHelper(pos);
-        for (BlockPos blockPos : helper.adjacents()) if (findModerator(blockPos)) count++;
-        return count;
-    }
-
-    private int moderatorAdjacentCount(int x, int y, int z) {
-        return moderatorAdjacentCount(getFinder().position(x, y, z));
-    }
-
-    private int activeModeratorAdjacentCount(BlockPos pos) {
-        int count = 0;
-        BlockPosHelper helper = new BlockPosHelper(pos);
-        for (BlockPos blockPos : helper.adjacents()) {
-            if (findModerator(blockPos) && cellAdjacent(blockPos)) count++;
-        }
-        return count;
-    }
-
-    private int activeModeratorAdjacentCount(int x, int y, int z) {
-        return activeModeratorAdjacentCount(getFinder().position(x, y, z));
-    }
-
-    private boolean cellAdjacent(BlockPos pos) {
-        return getFinder().adjacent(pos, 1, NCBlocks.cell_block);
-    }
-
-    private boolean cellAdjacent(int x, int y, int z) {
-        return getFinder().adjacent(x, y, z, 1, NCBlocks.cell_block);
-    }
-
-    private int cellAdjacentCount(BlockPos pos) {
-        return getFinder().adjacentCount(pos, 1, NCBlocks.cell_block);
-    }
-
-    private int cellAdjacentCount(int x, int y, int z) {
-        return cellAdjacentCount(getFinder().position(x, y, z));
-    }
-
-    private boolean activeModeratorAdjacent(BlockPos pos) {
-        BlockPosHelper helper = new BlockPosHelper(pos);
-        for (BlockPos blockPos : helper.adjacents()) {
-            if (findModerator(blockPos) && cellAdjacent(blockPos)) return true;
-        }
-        return false;
-    }
-
-    private boolean activeModeratorAdjacent(int x, int y, int z) {
-        return activeModeratorAdjacent(getFinder().position(x, y, z));
-    }
-
-    private boolean findCooler(BlockPos pos, int meta) {
-        return getFinder().find(pos, NCBlocks.cooler.getStateFromMeta(meta));
-    }
-
-    private boolean findCooler(int x, int y, int z, int meta) {
-        return findCooler(getFinder().position(x, y, z), meta);
-    }
-
-    private boolean activeCoolerAdjacent(BlockPos pos, int meta) {
-        BlockPosHelper helper = new BlockPosHelper(pos);
-        for (BlockPos blockPos : helper.adjacents()) {
-            if (findCooler(blockPos, meta)) if (coolerRequirements(blockPos, meta)) return true;
-        }
-        return false;
-    }
-
-    private boolean activeCoolerAdjacent(int x, int y, int z, int meta) {
-        return activeCoolerAdjacent(getFinder().position(x, y, z), meta);
-    }
-
-    private int activeCoolerAdjacentCount(BlockPos pos, int meta) {
-        int count = 0;
-        BlockPosHelper helper = new BlockPosHelper(pos);
-        for (BlockPos blockPos : helper.adjacents()) {
-            if (findCooler(blockPos, meta)) if (coolerRequirements(blockPos, meta)) count++;
-        }
-        return count;
-    }
-
-    private int activeCoolerAdjacentCount(int x, int y, int z, int meta) {
-        return activeCoolerAdjacentCount(getFinder().position(x, y, z), meta);
-    }
-
-    private boolean activeCoolerConfiguration(BlockPos pos, int meta, List<BlockPos[]> posArrays) {
-        for (BlockPos[] posArray : posArrays) {
-            if (getFinder().configuration(posArray, NCBlocks.cooler.getStateFromMeta(meta))) {
-                for (BlockPos blockPos : posArray) if (!coolerRequirements(blockPos, meta)) return false;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean activeCoolerHorizontal(BlockPos pos, int meta) {
-        return activeCoolerConfiguration(pos, meta, new BlockPosHelper(pos).horizontalsList());
-    }
-
-    private boolean activeCoolerAxial(BlockPos pos, int meta) {
-        return activeCoolerConfiguration(pos, meta, new BlockPosHelper(pos).axialsList());
-    }
-
-    private boolean coolerRequirements(BlockPos pos, int meta) {
-        switch (meta) {
-            case 1: // Water
-                return !NCConfig.fission_water_cooler_requirement || (newRules ? cellAdjacent(pos) || activeModeratorAdjacent(pos) : casingAllAdjacent(pos));
-            case 2: // Redstone
-                return cellAdjacent(pos);
-            case 3: // Quartz
-                return activeModeratorAdjacent(pos);
-            case 4: // Gold
-                return activeCoolerAdjacent(pos, 1) && activeCoolerAdjacent(pos, 2);
-            case 5: // Glowstone
-                return activeModeratorAdjacentCount(pos) >= 2;
-            case 6: // Lapis
-                return cellAdjacent(pos) && casingAllAdjacent(pos);
-            case 7: // Diamond
-                return newRules ? activeCoolerAdjacent(pos, 1) && activeCoolerAdjacent(pos, 3) : activeCoolerHorizontal(pos, 1) && casingAllAdjacent(pos);
-            case 8: // Liquid Helium
-                return newRules ? activeCoolerAdjacentCount(pos, 2) == 1 && casingAllAdjacent(pos) : activeCoolerAdjacent(pos, 3) && casingAllAdjacent(pos);
-            case 9: // Enderium
-                return casingAllOneVertex(pos);
-            case 10: // Cryotheum
-                return cellAdjacentCount(pos) >= 2;
-            case 11: // Iron
-                return activeCoolerAdjacent(pos, 4);
-            case 12: // Emerald
-                return activeModeratorAdjacent(pos) && cellAdjacent(pos);
-            case 13: // Copper
-                return activeCoolerAdjacent(pos, 5);
-            case 14: // Tin
-                return activeCoolerAxial(pos, 6);
-            case 15: // Magnesium
-                return newRules ? casingAllAdjacent(pos) && activeModeratorAdjacent(pos) : casingAllAdjacent(pos) && activeCoolerAdjacent(pos, 8);
-            default:
-                return false;
-        }
-    }
-
-    private boolean coolerRequirements(int x, int y, int z, int meta) {
-        return coolerRequirements(getFinder().position(x, y, z), meta);
-    }
-
-    private boolean findCasing(BlockPos pos) {
-        boolean found = getFinder().find(pos, NCBlocks.fission_block.getStateFromMeta(0), NCBlocks.reactor_casing_transparent, NCBlocks.fission_port, NCBlocks.buffer, NCBlocks.reactor_door, NCBlocks.reactor_trapdoor);
-        if(found){
-            TileEntity te = world.getTileEntity(pos);
-            //Optimized
-            if(te instanceof INotifier){
-                ((INotifier)te).addParent(this);
-            }
-        }
-        return found;
-    }
-
-    private boolean findCasing(int x, int y, int z) {
-        return findCasing(getFinder().position(x, y, z));
-    }
-
-    private boolean findController(BlockPos pos) {
-        return getFinder().find(pos, NCBlocks.fission_controller_new_fixed, NCBlocks.fission_controller_idle, NCBlocks.fission_controller_active, NCBlocks.fission_controller_new_idle, NCBlocks.fission_controller_new_active);
-    }
-
-    private boolean findController(int x, int y, int z) {
-        return findController(getFinder().position(x, y, z));
-    }
-
-    private boolean findCasingAll(BlockPos pos) {
-        return findCasing(pos) || findController(pos);
-    }
-
-    private boolean findCasingAll(int x, int y, int z) {
-        return findCasingAll(getFinder().position(x, y, z));
-    }
-    private BlockFinder getFinder() {
-        BlockFinder finder = (BlockFinder) Reflection.accessField(this,"finder");
-        if (finder == null) {
-            Reflection.setField(this,new BlockFinder(this.pos, this.world, this.getBlockMetadata() & 7),"finder");
-        }
-
-        return finder;
-    }
-
-    private boolean findPort(BlockPos pos) {
-        boolean found = getFinder().find(pos, NCBlocks.fission_port);
-        if (found) {
-            TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileFissionPort) {
-                ((TileFissionPort)tile).masterPosition = this.pos;
-                return true;
-            }
-            if(tile instanceof INotifier){
-                ((INotifier)tile).addParent(this);
-            }
-        }
-        return false;
-    }
-
-    private boolean findPort(int x, int y, int z) {
-        return findPort(getFinder().position(x, y, z));
-    }
-
-    private boolean casingAllAdjacent(BlockPos pos) {
-        BlockPosHelper posHelper = new BlockPosHelper(pos);
-        for (BlockPos blockPos : posHelper.adjacents()) if (findCasingAll(blockPos)) return true;
-        return false;
-    }
-
-    private boolean casingAllOneVertex(BlockPos pos) {
-        int count = 0;
-        BlockPosHelper posHelper = new BlockPosHelper(pos);
-        posList: for (BlockPos[] vertexPosList : posHelper.vertexList()) {
-            for (BlockPos blockPos : vertexPosList) if (!findCasingAll(blockPos)) continue posList;
-            count++;
-            if (count > 1) return false;
-        }
-        return count == 1;
-    }
-
-    private static boolean notOrigin(int x, int y, int z) {
-        return x != 0 || y != 0 || z != 0;
     }
 
     /**
@@ -712,12 +456,10 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
         setCapacity();
         return true;
     }
-
     private void setCapacity() {
         getEnergyStorage().setStorageCapacity(getNewCapacity());
         getEnergyStorage().setMaxTransfer(getNewCapacity());
     }
-
     private int getNewCapacity() {
         if (NCMath.atIntLimit(getLengthX()*getLengthY()*getLengthZ(), NCConfig.fission_base_capacity)) return Integer.MAX_VALUE;
         if (getLengthX() <= 0 || getLengthY() <= 0 || getLengthZ() <= 0) return NCConfig.fission_base_capacity;
@@ -725,9 +467,10 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
     }
 
     /**
-     * Rewrite of newRun() that only does the calculations.
+     * Rewrite of newRun() that only does the calculations for passive structures and registers any active coolers to the cachedCoolers.
      */
     private void calcRunStats() {
+        cachedCoolers.clear();
         double energyThisTick = 0D;
         double fuelThisTick = 0D, heatThisTick = 0D, coolerHeatThisTick = 0D;
         int cellCount = 0;
@@ -785,19 +528,19 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
                 if (tile instanceof TileActiveCooler) {
                     TileActiveCooler cooler = (TileActiveCooler) tile;
                     Tank tank = cooler.getTanks().get(0);
+                    if(tile instanceof INotifier) ((INotifier<Object>) tile).addParent(this);
                     if (tank.getFluidAmount() > 0) {
                         //double currentHeat = heat + (isProcessing ? heatThisTick : 0) + coolerHeatThisTick;
                         boolean isInValidPosition = false;
                         for (int i = 1; i < MetaEnums.CoolerType.values().length; i++) {
                             if (tank.getFluidName().equals(MetaEnums.CoolerType.values()[i].getFluidName())) {
                                 if (coolerRequirements(x, y, z, i)) {
-                                    coolerHeatThisTick -= NCConfig.fission_active_cooling_rate[i - 1] * NCConfig.active_cooler_max_rate / 20;
-                                    isInValidPosition = true;
+                                    //Add the cooler to the cached coolers, reduce runtime lag.
+                                    cachedCoolers.add(cooler);
                                     break;
                                 }
                             }
                         }
-                        cooler.isActive = isInValidPosition && isActivated() && readyToProcess();
                     }
                 }
             }
@@ -814,93 +557,292 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
             cachedRuns.replace(recipeInfo.getRecipe().itemIngredients().get(0).getStack().getItem(), fpd);
         }
     }
-
     public void stopActiveCooling() {
         for (TileActiveCooler cachedCooler : cachedCoolers) {
             cachedCooler.isActive = false;
         }
     }
-
-    // NBT
-
     @Override
-    public NBTTagCompound writeAll(NBTTagCompound nbt) {
-        super.writeAll(nbt);
-        nbt.setDouble("processPower", processPower);
-        nbt.setDouble("speedMultiplier", speedMultiplier);
-        nbt.setDouble("baseProcessTime", baseProcessTime);
-        nbt.setDouble("heat", heat);
-        nbt.setDouble("cooling", cooling);
-        nbt.setDouble("efficiency", efficiency);
-        nbt.setInteger("cells", cells);
-        nbt.setInteger("minX", minX);
-        nbt.setInteger("minY", minY);
-        nbt.setInteger("minZ", minZ);
-        nbt.setInteger("maxX", maxX);
-        nbt.setInteger("maxY", maxY);
-        nbt.setInteger("maxZ", maxZ);
-        nbt.setInteger("lengthX", lengthX);
-        nbt.setInteger("lengthY", lengthY);
-        nbt.setInteger("lengthZ", lengthZ);
-        nbt.setDouble("heatChange", heatChange);
-        nbt.setDouble("heatMult", heatMult);
-        nbt.setInteger("complete", complete);
-        nbt.setInteger("ready", ready);
-        nbt.setString("problem", problem);
-        nbt.setString("problemPos", problemPos);
-        nbt.setInteger("problemPosX", problemPosX);
-        nbt.setInteger("problemPosY", problemPosY);
-        nbt.setInteger("problemPosZ", problemPosZ);
-        nbt.setBoolean("newRules", newRules);
-        nbt.setInteger("ports", ports);
-        nbt.setInteger("currentEnergyStored", currentEnergyStored);
-        nbt.setBoolean("isActivated", isActivated);
-        nbt.setBoolean("computerActivated", computerActivated);
-        nbt.setInteger("comparatorStrength", comparatorStrength);
-        return nbt;
-    }
-
-    @Override
-    public void readAll(NBTTagCompound nbt) {
-        lengthX = nbt.getInteger("lengthX");
-        lengthY = nbt.getInteger("lengthY");
-        lengthZ = nbt.getInteger("lengthZ");
-        getEnergyStorage().setStorageCapacity(getNewCapacity());
-        super.readAll(nbt);
-        processPower = nbt.getDouble("processPower");
-        speedMultiplier = nbt.getDouble("speedMultiplier");
-        baseProcessTime = nbt.getDouble("baseProcessTime");
-        heat = nbt.getDouble("heat");
-        cooling = nbt.getDouble("cooling");
-        efficiency = nbt.getDouble("efficiency");
-        cells = nbt.getInteger("cells");
-        minX = nbt.getInteger("minX");
-        minY = nbt.getInteger("minY");
-        minZ = nbt.getInteger("minZ");
-        maxX = nbt.getInteger("maxX");
-        maxY = nbt.getInteger("maxY");
-        maxZ = nbt.getInteger("maxZ");
-        heatChange = nbt.getDouble("heatChange");
-        heatMult = nbt.getDouble("heatMult");
-        complete = nbt.getInteger("complete");
-        ready = nbt.getInteger("ready");
-        problem = nbt.getString("problem");
-        problemPos = nbt.getString("problemPos");
-        problemPosX = nbt.getInteger("problemPosX");
-        problemPosY = nbt.getInteger("problemPosY");
-        problemPosZ = nbt.getInteger("problemPosZ");
-        newRules = nbt.getBoolean("newRules");
-        ports = nbt.getInteger("ports");
-        currentEnergyStored = nbt.getInteger("currentEnergyStored");
-        isActivated = nbt.getBoolean("isActivated");
-        computerActivated = nbt.getBoolean("computerActivated");
-        comparatorStrength = nbt.getInteger("comparatorStrength");
-    }
-
-    @Override
+    /**
+     * On notify by a multiblock component, rescan structure.
+     */
     public void notify(Object sender) {
         doStructureAnalysis = true;
+        structureFormed = false;
+        complete = 0;
+        stopActiveCooling();
         cachedRuns.clear();
         cachedCoolers.clear();
+    }
+
+    // Finding Blocks
+
+    /**
+     * Modified to update the cell's parent.
+     * @param pos
+     * @return
+     */
+    private boolean findCell(BlockPos pos) {
+        boolean found = getFinder().find(pos, NCBlocks.cell_block);
+        if(found){
+            TileEntity te = world.getTileEntity(pos);
+            //Optimized
+            addNotificator(te,pos);
+        }
+        return found;
+    }
+
+    private boolean findCell(int x, int y, int z) {
+        return findCell(getFinder().position(x, y, z));
+    }
+
+    private boolean findModerator(BlockPos pos) {
+        boolean found = getFinder().find(pos, "blockGraphite", "blockBeryllium");
+        if(found){
+            TileEntity te = world.getTileEntity(pos);
+            //Optimized
+            addNotificator(te,pos);
+
+        }
+        return found;
+    }
+
+    private boolean findModerator(int x, int y, int z) {
+        return findModerator(getFinder().position(x, y, z));
+    }
+
+    private boolean findCellOnSide(int x, int y, int z, EnumFacing side) {
+        return findCell(getFinder().position(x, y, z).offset(side));
+    }
+
+    private boolean findModeratorThenCellOnSide(int x, int y, int z, EnumFacing side) {
+        return findModerator(getFinder().position(x, y, z).offset(side)) && findCell(getFinder().position(x, y, z).offset(side, 2));
+    }
+
+    private boolean newFindModeratorThenCellOnSide(int x, int y, int z, EnumFacing side) {
+        for (int i = 1; i <= NCConfig.fission_neutron_reach; i++) {
+            for (int j = 1; j <= i; j++) if (!findModerator(getFinder().position(x, y, z).offset(side, j))) return false;
+            if (findCell(getFinder().position(x, y, z).offset(side, i + 1))) return true;
+        }
+        return false;
+    }
+
+    private int moderatorAdjacentCount(BlockPos pos) {
+        int count = 0;
+        BlockPosHelper helper = new BlockPosHelper(pos);
+        for (BlockPos blockPos : helper.adjacents()) if (findModerator(blockPos)) count++;
+        return count;
+    }
+
+    private int moderatorAdjacentCount(int x, int y, int z) {
+        return moderatorAdjacentCount(getFinder().position(x, y, z));
+    }
+
+    private int activeModeratorAdjacentCount(BlockPos pos) {
+        int count = 0;
+        BlockPosHelper helper = new BlockPosHelper(pos);
+        for (BlockPos blockPos : helper.adjacents()) {
+            if (findModerator(blockPos) && cellAdjacent(blockPos)) count++;
+        }
+        return count;
+    }
+
+    private int activeModeratorAdjacentCount(int x, int y, int z) {
+        return activeModeratorAdjacentCount(getFinder().position(x, y, z));
+    }
+
+    private boolean cellAdjacent(BlockPos pos) {
+        return getFinder().adjacent(pos, 1, NCBlocks.cell_block);
+    }
+
+    private boolean cellAdjacent(int x, int y, int z) {
+        return getFinder().adjacent(x, y, z, 1, NCBlocks.cell_block);
+    }
+
+    private int cellAdjacentCount(BlockPos pos) {
+        return getFinder().adjacentCount(pos, 1, NCBlocks.cell_block);
+    }
+
+    private int cellAdjacentCount(int x, int y, int z) {
+        return cellAdjacentCount(getFinder().position(x, y, z));
+    }
+
+    private boolean activeModeratorAdjacent(BlockPos pos) {
+        BlockPosHelper helper = new BlockPosHelper(pos);
+        for (BlockPos blockPos : helper.adjacents()) {
+            if (findModerator(blockPos) && cellAdjacent(blockPos)) return true;
+        }
+        return false;
+    }
+
+    private boolean activeModeratorAdjacent(int x, int y, int z) {
+        return activeModeratorAdjacent(getFinder().position(x, y, z));
+    }
+
+    private boolean findCooler(BlockPos pos, int meta) {
+        return getFinder().find(pos, NCBlocks.cooler.getStateFromMeta(meta));
+    }
+
+    private boolean findCooler(int x, int y, int z, int meta) {
+        return findCooler(getFinder().position(x, y, z), meta);
+    }
+
+    private boolean activeCoolerAdjacent(BlockPos pos, int meta) {
+        BlockPosHelper helper = new BlockPosHelper(pos);
+        for (BlockPos blockPos : helper.adjacents()) {
+            if (findCooler(blockPos, meta)) if (coolerRequirements(blockPos, meta)) return true;
+        }
+        return false;
+    }
+
+    private boolean activeCoolerAdjacent(int x, int y, int z, int meta) {
+        return activeCoolerAdjacent(getFinder().position(x, y, z), meta);
+    }
+
+    private int activeCoolerAdjacentCount(BlockPos pos, int meta) {
+        int count = 0;
+        BlockPosHelper helper = new BlockPosHelper(pos);
+        for (BlockPos blockPos : helper.adjacents()) {
+            if (findCooler(blockPos, meta)) if (coolerRequirements(blockPos, meta)) count++;
+        }
+        return count;
+    }
+
+    private int activeCoolerAdjacentCount(int x, int y, int z, int meta) {
+        return activeCoolerAdjacentCount(getFinder().position(x, y, z), meta);
+    }
+
+    private boolean activeCoolerConfiguration(BlockPos pos, int meta, List<BlockPos[]> posArrays) {
+        for (BlockPos[] posArray : posArrays) {
+            if (getFinder().configuration(posArray, NCBlocks.cooler.getStateFromMeta(meta))) {
+                for (BlockPos blockPos : posArray) if (!coolerRequirements(blockPos, meta)) return false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean activeCoolerHorizontal(BlockPos pos, int meta) {
+        return activeCoolerConfiguration(pos, meta, new BlockPosHelper(pos).horizontalsList());
+    }
+
+    private boolean activeCoolerAxial(BlockPos pos, int meta) {
+        return activeCoolerConfiguration(pos, meta, new BlockPosHelper(pos).axialsList());
+    }
+
+    private boolean coolerRequirements(BlockPos pos, int meta) {
+        switch (meta) {
+            case 1: // Water
+                return !NCConfig.fission_water_cooler_requirement || cellAdjacent(pos);
+            case 2: // Redstone
+                return cellAdjacent(pos);
+            case 3: // Quartz
+                return activeModeratorAdjacent(pos);
+            case 4: // Gold
+                return activeCoolerAdjacent(pos, 1) && activeCoolerAdjacent(pos, 2);
+            case 5: // Glowstone
+                return activeModeratorAdjacentCount(pos) >= 2;
+            case 6: // Lapis
+                return cellAdjacent(pos) && casingAllAdjacent(pos);
+            case 7: // Diamond
+                return activeCoolerAdjacent(pos, 3);
+            case 8: // Liquid Helium
+                return activeCoolerAdjacentCount(pos, 2) == 1 && casingAllAdjacent(pos);
+            case 9: // Enderium
+                return casingAllOneVertex(pos);
+            case 10: // Cryotheum
+                return cellAdjacentCount(pos) >= 2;
+            case 11: // Iron
+                return activeCoolerAdjacent(pos, 4);
+            case 12: // Emerald
+                return activeModeratorAdjacent(pos) && cellAdjacent(pos);
+            case 13: // Copper
+                return activeCoolerAdjacent(pos, 5);
+            case 14: // Tin
+                return activeCoolerAxial(pos, 6);
+            case 15: // Magnesium
+                return casingAllAdjacent(pos) && activeModeratorAdjacent(pos);
+            default:
+                return false;
+        }
+    }
+
+    private boolean coolerRequirements(int x, int y, int z, int meta) {
+        return coolerRequirements(getFinder().position(x, y, z), meta);
+    }
+
+    private boolean findCasing(BlockPos pos) {
+        boolean found = getFinder().find(pos, NCBlocks.fission_block.getStateFromMeta(0), NCBlocks.reactor_casing_transparent, NCBlocks.fission_port, NCBlocks.buffer, NCBlocks.reactor_door, NCBlocks.reactor_trapdoor);
+        if(found){
+            TileEntity te = world.getTileEntity(pos);
+            addNotificator(te,pos);
+        }
+        return found;
+    }
+
+    private boolean findCasing(int x, int y, int z) {
+        return findCasing(getFinder().position(x, y, z));
+    }
+
+    private boolean findController(BlockPos pos) {
+        return getFinder().find(pos, NCBlocks.fission_controller_new_fixed, NCBlocks.fission_controller_idle, NCBlocks.fission_controller_active, NCBlocks.fission_controller_new_idle, NCBlocks.fission_controller_new_active);
+    }
+
+    private boolean findController(int x, int y, int z) {
+        return findController(getFinder().position(x, y, z));
+    }
+
+    private boolean findCasingAll(BlockPos pos) {
+        return findCasing(pos) || findController(pos);
+    }
+
+    private boolean findCasingAll(int x, int y, int z) {
+        return findCasingAll(getFinder().position(x, y, z));
+    }
+    private BlockFinder getFinder() {
+        BlockFinder finder = (BlockFinder) Reflection.accessField(this,"finder");
+        if (finder == null) {
+            Reflection.setField(this,new BlockFinder(this.pos, this.world, this.getBlockMetadata() & 7),"finder");
+            finder = (BlockFinder) Reflection.accessField(this,"finder");
+        }
+        return finder;
+    }
+
+    private boolean findPort(BlockPos pos) {
+        boolean found = getFinder().find(pos, NCBlocks.fission_port);
+        if (found) {
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileFissionPort) {
+                ((TileFissionPort)te).masterPosition = this.pos;
+                return true;
+            }
+            addNotificator(te,pos);
+        }
+        return false;
+    }
+
+    private boolean findPort(int x, int y, int z) {
+        return findPort(getFinder().position(x, y, z));
+    }
+
+    private boolean casingAllAdjacent(BlockPos pos) {
+        BlockPosHelper posHelper = new BlockPosHelper(pos);
+        for (BlockPos blockPos : posHelper.adjacents()) if (findCasingAll(blockPos)) return true;
+        return false;
+    }
+
+    private boolean casingAllOneVertex(BlockPos pos) {
+        int count = 0;
+        BlockPosHelper posHelper = new BlockPosHelper(pos);
+        posList: for (BlockPos[] vertexPosList : posHelper.vertexList()) {
+            for (BlockPos blockPos : vertexPosList) if (!findCasingAll(blockPos)) continue posList;
+            count++;
+            if (count > 1) return false;
+        }
+        return count == 1;
+    }
+
+    private static boolean notOrigin(int x, int y, int z) {
+        return x != 0 || y != 0 || z != 0;
     }
 }

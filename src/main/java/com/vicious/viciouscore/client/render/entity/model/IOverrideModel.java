@@ -34,7 +34,7 @@ public interface IOverrideModel {
             if(!field.getType().isArray()) {
                 cfg = configurations.getPartConfiguration(name);
             } else{
-                ModelRenderer[] arr = (ModelRenderer[]) Reflection.accessField(field,this);
+                ModelRenderer[] arr = (ModelRenderer[]) Reflection.accessField(this, field);
                 for (int i = 0; i < arr.length; i++) {
                     cfg = configurations.getPartConfiguration(name+i);
                     if(cfg == null) continue;
@@ -42,7 +42,7 @@ public interface IOverrideModel {
                 }
             }
             if(cfg == null) return;
-            if(cfg.active.getBoolean()) applicatePart((ModelRenderer) Reflection.accessField(field,this),cfg);
+            if(cfg.active.getBoolean()) applicatePart((ModelRenderer) Reflection.accessField(this, field),cfg);
         });
     }
 
@@ -70,7 +70,7 @@ public interface IOverrideModel {
                 Field f2 = Reflection.getField(this, f.getName());
                 try {
                     f2.setAccessible(true);
-                    f2.set(this, Reflection.accessField(f, og));
+                    f2.set(this, Reflection.accessField(og, f));
                 } catch (IllegalAccessException ignored) {}
                 if (f.getType() == ModelRenderer.class) {
                     partMap.put(f2.getName(), f2);

@@ -18,17 +18,17 @@ buildscript {
             // Licenser
             url "https://plugins.gradle.org/m2/"
         }
-        jcenter()
-
-        mavenCentral()
+        //maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
+        //classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
         classpath 'de.undercouch:gradle-download-task:3.4.3'}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+//apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
@@ -43,10 +43,11 @@ archivesBaseName = 'viciouscore'
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+
 minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
-
+    //coreMod = 'com.drathonix.nertweaks.NERTweaksLoadingPlugin'
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.

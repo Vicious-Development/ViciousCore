@@ -14,10 +14,13 @@ import com.vicious.viciouscore.common.commands.CommandItemModelConfigReload;
 import com.vicious.viciouscore.common.commands.CommandStructure;
 import com.vicious.viciouscore.common.item.ViciousItem;
 import com.vicious.viciouscore.common.override.MobSpawnModifier;
-import com.vicious.viciouscore.common.override.Overrider;
-import com.vicious.viciouscore.common.override.TileEntityOverrider;
+import com.vicious.viciouscore.common.override.OverrideHandler;
+import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
+import com.vicious.viciouscore.common.override.chunk.ChunkOverrideHandler;
+import com.vicious.viciouscore.common.override.tile.TileEntityOverrideHandler;
 import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
+import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.ResourceCache;
 import com.vicious.viciouscore.common.util.tracking.VCTrackingHandler;
@@ -34,7 +37,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "required-after:codechickenlib;after:reborncore;after:techreborn")
+@Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, dependencies = "required-after:codechickenlib;after:reborncore;after:techreborn;after:nuclearcraft")
 public class ViciousCore
 {
     public static ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("creativeicon", false));
@@ -66,10 +69,12 @@ public class ViciousCore
         }
         MinecraftForge.EVENT_BUS.register(MobSpawnModifier.class);
         MinecraftForge.EVENT_BUS.register(ViciousCorePlayerManager.class);
-        MinecraftForge.EVENT_BUS.register(TileEntityOverrider.class);
+        MinecraftForge.EVENT_BUS.register(TileEntityOverrideHandler.class);
+        MinecraftForge.EVENT_BUS.register(BlockOverrideHandler.class);
+        MinecraftForge.EVENT_BUS.register(ChunkOverrideHandler.class);
         VCoreOverrides.init();
-        Overrider.onPreInit();
-        TileEntityOverrider.init();
+        OverrideHandler.onPreInit();
+        TileEntityOverrideHandler.init();
     }
 
     /**
@@ -98,7 +103,8 @@ public class ViciousCore
             clientInit(event);
         }
         if(!CFG.firstLoad.getBoolean()) CFG.firstLoad.set(true);
-        Overrider.onInit();
+        VTileEntityRegistry.register();
+        OverrideHandler.onInit();
     }
 
     @EventHandler

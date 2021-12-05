@@ -1,8 +1,6 @@
 package com.vicious.viciouscore.overrides.nuclearcraft;
 
 public class FissionProcessData {
-    public double baseProcessHeat;
-    public double heat;
     public double cooling;
     public double heatChange;
     public double processPower;
