@@ -1,4 +1,4 @@
-package com.vicious.viciouscore;
+package com.vicious.viciouscore.common;
 
 import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
@@ -15,7 +15,7 @@ import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.World;
 
 
-
+//TODO: reimpl
 public class BossBase extends EntityMob {
 
     private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS)).setDarkenSky(true);

@@ -1,4 +1,4 @@
-package com.vicious.viciouscore;
+package com.vicious.viciouscore.common;
 
 import com.vicious.viciouscore.common.entity.projectile.OrbProjectile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
+//TODO: reimpl
 public class BossSummonItem extends Item {
     Random r = new Random(System.currentTimeMillis());
     public static float scale = 1F;

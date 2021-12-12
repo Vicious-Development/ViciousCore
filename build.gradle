@@ -18,6 +18,14 @@ buildscript {
             // Licenser
             url "https://plugins.gradle.org/m2/"
         }
+        maven {
+            name = "ViciousLib"
+            url = uri("https://maven.pkg.github.com/Vicious-MCModding/ViciousLib")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+                password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+            }
+        }
         //maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
