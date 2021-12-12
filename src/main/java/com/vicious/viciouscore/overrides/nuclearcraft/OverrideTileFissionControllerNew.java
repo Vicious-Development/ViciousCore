@@ -3,7 +3,7 @@ package com.vicious.viciouscore.overrides.nuclearcraft;
 import com.vicious.viciouscore.common.tile.INotifiable;
 import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
-import com.vicious.viciouscore.overrides.IFieldCloner;
+import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
 import nc.config.NCConfig;
 import nc.enumm.MetaEnums;
 import nc.init.NCBlocks;

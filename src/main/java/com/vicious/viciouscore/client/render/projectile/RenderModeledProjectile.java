@@ -6,7 +6,7 @@ import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.ViciousRenderManager;
 import com.vicious.viciouscore.client.render.entity.RenderGenericEntity;
 import com.vicious.viciouscore.common.entity.projectile.GenericModeledProjectile;
-import com.vicious.viciouscore.common.util.ResourceCache;
+import com.vicious.viciouscore.common.util.resources.ResourceCache;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;

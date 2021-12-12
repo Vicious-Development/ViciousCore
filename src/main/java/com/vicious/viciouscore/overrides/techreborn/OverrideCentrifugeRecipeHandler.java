@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.overrides.techreborn;
 
-import com.vicious.viciouscore.overrides.IFieldCloner;
+import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
 import net.minecraft.item.ItemStack;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
