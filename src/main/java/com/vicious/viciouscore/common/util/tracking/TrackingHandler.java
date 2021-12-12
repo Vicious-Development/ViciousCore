@@ -23,7 +23,7 @@ public class TrackingHandler {
                 dirtyJsons.pop();
             }
         } catch(Exception e){
-            System.out.println(e.getMessage());
+            ViciousCore.logger.error(e.getMessage());
             e.printStackTrace();
         }
     }

@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.util.tracking;
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableValue;
 
 import java.util.concurrent.Executors;
@@ -20,7 +21,7 @@ public class VCTrackingHandler extends TrackingHandler {
             try {
                 instance.update();
             } catch (Exception e) {
-                System.out.println("Failed to update trackable: " + e.getMessage());
+                ViciousCore.logger.error("Failed to update trackable: " + e.getMessage());
                 e.printStackTrace();
             }
             //TODO CONFIGURABLE

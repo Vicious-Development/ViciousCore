@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.util.tracking.serialization;
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.VUtil;
-import com.vicious.viciouscore.common.util.reflect.Reflection;
 import com.vicious.viciouscore.common.util.tracking.interfaces.TrackableValueStringParser;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableArrayValue;
 import net.minecraft.block.state.IBlockState;
@@ -12,6 +12,7 @@ import net.minecraft.world.gen.structure.template.Template;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class SerializationUtil {
     public static final Map<Class<?>, TrackableValueStringParser<?>> stringparsers = new HashMap<>();
@@ -109,7 +110,7 @@ public class SerializationUtil {
                     try {
                         parseBlockInfo(val, palette);
                     } catch (Exception e) {
-                        System.out.println("Failed to read: " + e.getMessage());
+                        ViciousCore.logger.error("Failed to read: " + e.getMessage());
                         e.printStackTrace();
                     }
                     val = "";
@@ -119,7 +120,7 @@ public class SerializationUtil {
             }
             return objs;
         } catch(Exception e){
-            System.out.println(e.getMessage());
+            ViciousCore.logger.error(e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -146,10 +147,41 @@ public class SerializationUtil {
 
     public static Object serialize(Object value, Object... extraData) {
         if(value == null) return value;
-        String out = Reflection.executeOnTargetClass((cls) -> serializers.get(cls).apply(value), serializers::containsKey, value.getClass());
+        String out = executeOnTargetClass((cls) -> serializers.get(cls).apply(value), serializers::containsKey, value.getClass());
         if (out != null) return out;
-        out = Reflection.executeOnTargetClass((cls) -> specialserializers.get(cls).apply(value, extraData), specialserializers::containsKey, value.getClass());
+        out = executeOnTargetClass((cls) -> specialserializers.get(cls).apply(value, extraData), specialserializers::containsKey, value.getClass());
         return out != null ? out : value;
+    }
+
+    public static <T> T executeOnTargetClass(Function<Class<?>,T> funct, Class<?> start) {
+        Class<?>[] interfaces = start.getInterfaces();
+        T ret = null;
+        while(ret == null &&start != null){
+            ret = funct.apply(start);
+            if(ret != null) break;
+            for (Class<?> anInterface : interfaces) {
+                ret = funct.apply(anInterface);
+            }
+            start=start.getSuperclass();
+        }
+        return ret;
+    }
+
+    public static <T> T executeOnTargetClass(Function<Class<?>,T> funct, Predicate<Class<?>> doExec, Class<?> start) {
+        Class<?>[] interfaces;
+        while(start != null){
+            interfaces=start.getInterfaces();
+            if(doExec.test(start)) {
+                return funct.apply(start);
+            }
+            for (Class<?> anInterface : interfaces) {
+                if(doExec.test(anInterface)){
+                    return funct.apply(anInterface);
+                }
+            }
+            start=start.getSuperclass();
+        }
+        return null;
     }
 
     private NBTTagList writeDoublesNBT(double... values)

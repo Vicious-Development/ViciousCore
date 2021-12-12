@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.util.tracking;
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
 import com.vicious.viciouscore.common.util.tracking.values.TrackableValue;
@@ -47,7 +48,7 @@ public class JSONTrackable<T extends JSONTrackable<T>> extends Trackable<T>{
         try {
             Files.write(PATH, jsonObj.toString(1).getBytes(), StandardOpenOption.WRITE);
         } catch(IOException e){
-            System.out.println("Failed to save a JSONTrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
+            ViciousCore.logger.error("Failed to save a JSONTrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -60,7 +61,7 @@ public class JSONTrackable<T extends JSONTrackable<T>> extends Trackable<T>{
         } catch(Exception e){
             //IOE happens if the file doesn't exist. If it doesn't no values will be updated anyways which is totally fine.
             if(!(e instanceof FileNotFoundException)) {
-                System.out.println("Failed to read a jsontrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
+                ViciousCore.logger.error("Failed to read a jsontrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
                 e.printStackTrace();
             }
         }

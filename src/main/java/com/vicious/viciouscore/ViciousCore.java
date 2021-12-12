@@ -59,7 +59,7 @@ public class ViciousCore
     {
         instance = this;
         if(!CFG.firstLoad.getBoolean()) {
-            System.out.println("ViciousCore detected first load setup. Time to do some cool stuff and things!");
+            logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
             if(event.getSide() == Side.CLIENT) HeldItemOverrideCFG.copyFromResources(MODID,this.getClass());
         }
         logger = event.getModLog();

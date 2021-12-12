@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.common.configuration;
 
 import com.google.common.collect.Lists;
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.tracking.configuration.Config;
@@ -93,7 +94,7 @@ public class StructureComponentConfiguration extends Config {
                 }
                 if (i < vals.length - 1) writer.append(",");
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                ViciousCore.logger.error(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -102,7 +103,7 @@ public class StructureComponentConfiguration extends Config {
         try {
             Files.write(PATH, writer.toString().getBytes(), StandardOpenOption.WRITE);
         } catch (IOException e) {
-            System.out.println("Failed to save a Config " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
+            ViciousCore.logger.error("Failed to save a Config " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -123,7 +124,7 @@ public class StructureComponentConfiguration extends Config {
         } catch(Exception e){
             //IOE happens if the file doesn't exist. If it doesn't no values will be updated anyways which is totally fine.
             if(!(e instanceof FileNotFoundException)) {
-                System.out.println("Failed to read a jsontrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
+                ViciousCore.logger.error("Failed to read a jsontrackable " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
                 e.printStackTrace();
             }
         }

@@ -16,7 +16,7 @@ public class TrackableArrayValue<T> extends TrackableObject<SerializableArray<T>
     }
 
     @Override
-    public TrackableObject<SerializableArray<T>> setFromJSON(JSONObject jo) {
+    public TrackableArrayValue<T> setFromJSON(JSONObject jo) {
         try {
             SerializableArray<T> val = (SerializableArray<T>) jsonparsers.get(type).parse(jo, this);
             this.setWithoutUpdate(val);

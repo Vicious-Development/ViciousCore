@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.common.util.tracking.configuration;
 
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.tracking.JSONTrackable;
 import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
@@ -62,7 +63,7 @@ public class Config extends JSONTrackable<Config> {
                 }
                 if (i < vals.length - 1) writer.append(",");
             } catch(Exception e){
-                System.out.println(e.getMessage());
+                ViciousCore.logger.error(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -71,7 +72,7 @@ public class Config extends JSONTrackable<Config> {
         try {
             Files.write(PATH, writer.toString().getBytes(), StandardOpenOption.WRITE);
         } catch(IOException e){
-            System.out.println("Failed to save a Config " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
+            ViciousCore.logger.error("Failed to save a Config " + getClass().getCanonicalName() + " caused by: " + e.getMessage());
             e.printStackTrace();
         }
     }

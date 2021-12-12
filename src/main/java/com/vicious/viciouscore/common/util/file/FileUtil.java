@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.util.file;
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.Directories;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -35,7 +36,7 @@ public class FileUtil {
             try {
                 Files.createFile(p);
             } catch(IOException ex){
-                System.out.println("I'm not sure how we got here, but somehow the file you have created both exists and doesn't exist at the same time. Is this God?");
+                ViciousCore.logger.error("I'm not sure how we got here, but somehow the file you have created both exists and doesn't exist at the same time. Is this God?");
                 ex.printStackTrace();
             }
         }
@@ -48,7 +49,7 @@ public class FileUtil {
             return new JSONObject(jsonTxt);
 
         } catch (Exception ex){
-            System.out.println("Could not load, probably doesn't actually exist. " + p.toString() + " caused by: " + ex.getMessage());
+            ViciousCore.logger.error("Could not load, probably doesn't actually exist. " + p.toString() + " caused by: " + ex.getMessage());
             ex.printStackTrace();
             throw ex;
         }
@@ -92,7 +93,7 @@ public class FileUtil {
         }
         catch (Exception e)
         {
-            System.out.println(e.getMessage());
+            ViciousCore.logger.error(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -103,7 +104,7 @@ public class FileUtil {
         try {
             Files.createFile(p);
         } catch(Exception e){
-            System.out.println(e.getMessage());
+            ViciousCore.logger.error(e.getMessage());
             e.printStackTrace();
         }
     }

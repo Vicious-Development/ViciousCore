@@ -2,6 +2,7 @@ package com.vicious.viciouscore.common.util.reflect;
 
 import com.vicious.viciouscore.common.util.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
+import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,8 +13,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class Reflection {
 
@@ -37,35 +36,6 @@ public class Reflection {
         }
         return null;
     }
-    public static <T> T executeOnTargetClass(Function<Class<?>,T> funct, Class<?> start) {
-        Class<?>[] interfaces = start.getInterfaces();
-        T ret = null;
-        while(ret == null &&start != null){
-            ret = funct.apply(start);
-            if(ret != null) break;
-            for (Class<?> anInterface : interfaces) {
-                ret = funct.apply(anInterface);
-            }
-            start=start.getSuperclass();
-        }
-        return ret;
-    }
-    public static <T> T executeOnTargetClass(Function<Class<?>,T> funct, Predicate<Class<?>> doExec, Class<?> start) {
-        Class<?>[] interfaces;
-        while(start != null){
-            interfaces=start.getInterfaces();
-            if(doExec.test(start)) {
-                return funct.apply(start);
-            }
-            for (Class<?> anInterface : interfaces) {
-                if(doExec.test(anInterface)){
-                    return funct.apply(anInterface);
-                }
-            }
-            start=start.getSuperclass();
-        }
-        return null;
-    }
 
     public static Object accessField(Object obj, Field f){
         if(f != null){
@@ -82,7 +52,7 @@ public class Reflection {
     }
     public static Method getMethod(Object accessed, String methodname, Class<?>[] parameters){
         Class<?> clazz = accessed instanceof Class<?> ? (Class<?>)accessed : accessed.getClass();
-        return executeOnTargetClass((cls)->{
+        return SerializationUtil.executeOnTargetClass((cls)->{
             String target = methodname;
             if(MappingsReference.hasMappingForClass(cls)){
                 MappingsReference.Mapping mapping = MappingsReference.getMapping(cls);
@@ -131,7 +101,7 @@ public class Reflection {
     }*/
     public static Field getField(Object accessed, String fieldname) {
         Class<?> clazz = accessed instanceof Class<?> ? (Class<?>) accessed : accessed.getClass();
-        return executeOnTargetClass((cls)->{
+        return SerializationUtil.executeOnTargetClass((cls)->{
             String target = fieldname;
             if(MappingsReference.hasMappingForClass(cls)){
                 MappingsReference.Mapping mapping = MappingsReference.getMapping(cls);

@@ -5,6 +5,7 @@ import com.vicious.viciouscore.common.util.reflect.FieldRetrievalRoute;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -155,14 +156,14 @@ public class OverrideHandler {
                     if (toOverride != null && objectToAccess != null)
                         Reflection.setField(objectToAccess, toOverride, f.getName());
                     else{
-                        System.out.println("Not overriding " + route + " because the final object was null or the override object was null. \nFIELD: " + f.getName() + "\nTARGET: " + objectToAccess + "\nOVERRIDE" + toOverride);
+                        ViciousCore.logger.error("Not overriding " + route + " because the final object was null or the override object was null. \nFIELD: " + f.getName() + "\nTARGET: " + objectToAccess + "\nOVERRIDE" + toOverride);
                     }
                 }
                 else{
-                    System.out.println("Not overriding " + route + " because one of the route fields was missing.");
+                    ViciousCore.logger.info("Not overriding " + route + " because one of the route fields was missing.");
                 }
             } catch(ClassNotFoundException ignored){
-                System.out.println("Not overriding " + route + " because one of the route classes was missing.");
+                ViciousCore.logger.info("Not overriding " + route + " because one of the route classes was missing.");
                 //Mod isn't installed, don't finish execution.
             }
         });
