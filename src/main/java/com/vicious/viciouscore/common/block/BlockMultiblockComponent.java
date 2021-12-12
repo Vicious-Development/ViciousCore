@@ -2,7 +2,7 @@ package com.vicious.viciouscore.common.block;
 
 import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.tile.TileMultiBlockComponent;
-import com.vicious.viciouscore.overrides.IFieldCloner;
+import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;

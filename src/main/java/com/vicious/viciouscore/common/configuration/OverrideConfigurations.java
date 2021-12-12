@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.configuration;
 
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.worldgen.StructureConfiguration;
 
 import java.util.HashMap;

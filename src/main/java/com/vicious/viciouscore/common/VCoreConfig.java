@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common;
 
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.util.tracking.configuration.Config;
 import com.vicious.viciouscore.common.util.tracking.configuration.ConfigurationValue;
 

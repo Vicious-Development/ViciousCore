@@ -3,7 +3,7 @@ package com.vicious.viciouscore.common.structure;
 import com.vicious.viciouscore.common.configuration.StructureComponentConfiguration;
 import com.vicious.viciouscore.common.player.ViciousCorePlayerInfo;
 import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

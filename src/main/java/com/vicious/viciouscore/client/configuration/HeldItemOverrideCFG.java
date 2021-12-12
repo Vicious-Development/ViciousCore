@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.client.configuration;
 
 import com.vicious.viciouscore.common.configuration.IOverrideConfiguration;
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraft.client.model.*;
 import net.minecraft.item.Item;

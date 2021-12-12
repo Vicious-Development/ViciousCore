@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.client.render.item;
 
 import codechicken.lib.render.CCModel;
-import com.vicious.viciouscore.common.util.ViciousLoader;
+import com.vicious.viciouscore.common.util.resources.ViciousLoader;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 

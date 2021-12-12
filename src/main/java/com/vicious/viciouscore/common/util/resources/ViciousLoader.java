@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.util;
+package com.vicious.viciouscore.common.util.resources;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.OBJParser;

@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.client.configuration;
 
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.reflect.MappingsReference;
 import com.vicious.viciouscore.common.util.reflect.Reflection;

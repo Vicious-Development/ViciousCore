@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.client.configuration;
 
-import com.vicious.viciouscore.common.util.Directories;
 import net.minecraft.client.model.*;
 import net.minecraft.item.Item;
 

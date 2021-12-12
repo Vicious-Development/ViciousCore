@@ -1,6 +1,4 @@
-package com.vicious.viciouscore.overrides;
-
-import com.vicious.viciouscore.common.util.reflect.Reflection;
+package com.vicious.viciouscore.common.util.reflect;
 
 import java.lang.reflect.Field;
 

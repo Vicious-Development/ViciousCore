@@ -2,7 +2,7 @@ package com.vicious.viciouscore.common.configuration;
 
 import com.google.common.collect.Lists;
 import com.vicious.viciouscore.ViciousCore;
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.tracking.configuration.Config;
 import com.vicious.viciouscore.common.util.tracking.configuration.ConfigurationValue;

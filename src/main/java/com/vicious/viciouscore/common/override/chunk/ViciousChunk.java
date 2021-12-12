@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.override.chunk;
 
 import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
-import com.vicious.viciouscore.overrides.IFieldCloner;
+import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

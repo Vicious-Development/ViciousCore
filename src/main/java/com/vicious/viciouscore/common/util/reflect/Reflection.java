@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.util.reflect;
 
-import com.vicious.viciouscore.common.util.Directories;
+import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
 

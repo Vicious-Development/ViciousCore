@@ -1,7 +1,6 @@
 package com.vicious.viciouscore.common.util.file;
 
 import com.vicious.viciouscore.ViciousCore;
-import com.vicious.viciouscore.common.util.Directories;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;

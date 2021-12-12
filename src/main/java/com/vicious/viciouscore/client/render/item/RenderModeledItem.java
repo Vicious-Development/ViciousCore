@@ -12,7 +12,7 @@ import com.vicious.viciouscore.client.render.ICCModelConsumer;
 import com.vicious.viciouscore.client.render.ICCModelUser;
 import com.vicious.viciouscore.client.render.animation.CCModelFrameRunner;
 import com.vicious.viciouscore.client.configuration.ItemTransformOverrideCFG;
-import com.vicious.viciouscore.common.util.ResourceCache;
+import com.vicious.viciouscore.common.util.resources.ResourceCache;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;

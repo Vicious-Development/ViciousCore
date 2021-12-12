@@ -1,6 +1,5 @@
-package com.vicious.viciouscore.common.util;
+package com.vicious.viciouscore.common.util.file;
 
-import com.vicious.viciouscore.common.util.file.FileUtil;
 import net.minecraftforge.fml.common.Loader;
 
 import java.nio.file.Path;
