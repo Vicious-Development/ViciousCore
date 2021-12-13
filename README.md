@@ -15,7 +15,7 @@ Allows modification of mobs on the first tick after they spawn for the first tim
 To add a modificator execute MobSpawnModifier.entityModificators.put(entity class, consumer)
 By doing this, you can modify pretty much anything in the entity.
 
-#Overriding Vanilla item and entity rendering
+# Overriding Vanilla item and entity rendering
 Make sure to read this entire thing before attempting implementation.
 
 VCore Introduces a bunch of ways you can override Minecraft's default rendering system and adds an easy way of modifying rendering while the game is running. To get started, you will need to understand **IRenderOverride**.
