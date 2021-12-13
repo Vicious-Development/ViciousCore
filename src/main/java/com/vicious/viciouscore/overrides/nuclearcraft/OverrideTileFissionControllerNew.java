@@ -2,12 +2,14 @@ package com.vicious.viciouscore.overrides.nuclearcraft;
 
 import com.vicious.viciouscore.common.tile.INotifiable;
 import com.vicious.viciouscore.common.tile.INotifier;
-import com.vicious.viciouscore.common.util.reflect.Reflection;
 import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
+import com.vicious.viciouscore.common.util.reflect.Reflection;
+import nc.ModCheck;
 import nc.config.NCConfig;
 import nc.enumm.MetaEnums;
 import nc.init.NCBlocks;
 import nc.tile.dummy.TileFissionPort;
+import nc.tile.energyFluid.TileBuffer;
 import nc.tile.fluid.TileActiveCooler;
 import nc.tile.generator.TileFissionController;
 import nc.tile.internal.fluid.Tank;
@@ -37,6 +39,9 @@ import java.util.Map;
 public class OverrideTileFissionControllerNew extends TileFissionController.New implements INotifiable<Object>,IFieldCloner {
     public boolean doStructureAnalysis = true;
     public boolean structureFormed = false;
+    public double passiveHeat = 0.0;
+    public double passiveCooling = 0.0;
+    public double activeCooling = 0.0;
     public Field isActive = Reflection.getField(OverrideTileFissionControllerNew.class,"isActivated");
     public static Map<String,Integer> cachedCoolingStats = new HashMap<>();
     public Map<Item,FissionProcessData> cachedRuns = new HashMap<>();
@@ -45,14 +50,15 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
 
     public OverrideTileFissionControllerNew(){
         super();
+        if(cachedCoolingStats.isEmpty()) cacheCooling();
     }
     public OverrideTileFissionControllerNew(Object og){
         super();
+        if(cachedCoolingStats.isEmpty()) cacheCooling();
     }
     @Override
     public void updateGenerator() {
         if(world.isRemote) return;
-        if(cachedCoolingStats.isEmpty()) cacheCooling();
         boolean wasProcessing = this.isProcessing;
         Reflection.setField(this,this.isActivated(),isActive);
         this.isProcessing = this.isProcessing();
@@ -80,12 +86,13 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
             }
             else {
                 processPower = fpd.processPower;
-                heatChange = fpd.heatChange;
-                cooling = fpd.cooling;
+                passiveHeat = fpd.passiveHeat;
+                passiveCooling = fpd.passiveCooling;
             }
         }
-        activeCool();
         run();
+        activeCool();
+        updateHeat();
         if (overheat()) return;
         if (isProcessing) process();
         else getRadiationSource().setRadiationLevel(0D);
@@ -106,130 +113,24 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
             markDirty();
         }
     }
-    /*
-    private void newRun(boolean checkBlocks) {
-        double energyThisTick = 0.0D;
-        double fuelThisTick = 0.0D;
-        double heatThisTick = 0.0D;
-        double coolerHeatThisTick = 0.0D;
-        int cellCount = 0;
-        double energyMultThisTick = 0.0D;
-        double heatMultThisTick = 0.0D;
-        double baseRF = NCConfig.fission_power * this.baseProcessPower;
-        double baseHeat = NCConfig.fission_heat_generation * this.baseProcessHeat;
-        double moderatorPowerMultiplier = NCConfig.fission_moderator_extra_power / 6.0D;
-        double moderatorHeatMultiplier = NCConfig.fission_moderator_extra_heat / 6.0D;
-        this.ready = this.readyToProcess() && !(boolean)Reflection.accessField(this,isActive) ? 1 : 0;
-        if (checkBlocks) {
-            boolean isProcessing = this.isProcessing();
-            if (this.complete == 1) {
-                for(int z = this.minZ + 1; z <= this.maxZ - 1; ++z) {
-                    for(int x = this.minX + 1; x <= this.maxX - 1; ++x) {
-                        for(int y = this.minY + 1; y <= this.maxY - 1; ++y) {
-                            int extraCells;
-                            if (this.findCell(x, y, z)) {
-                                extraCells = 0;
-                                EnumFacing[] var28 = EnumFacing.VALUES;
-                                int var29 = var28.length;
-                                int var30 = 0;
 
-                                while(true) {
-                                    if (var30 >= var29) {
-                                        ++cellCount;
-                                        energyMultThisTick += (double)extraCells + 1.0D;
-                                        heatMultThisTick += ((double)extraCells + 1.0D) * ((double)extraCells + 2.0D) / 2.0D;
-                                        if (this.readyToProcess()) {
-                                            energyThisTick += baseRF * ((double)extraCells + 1.0D);
-                                            heatThisTick += baseHeat * ((double)extraCells + 1.0D) * ((double)extraCells + 2.0D) / 2.0D;
-                                        }
+    private void updateHeat() {
+        cooling = passiveCooling+activeCooling;
+        this.heatChange = (isActivated() ? passiveHeat : 0) - cooling;
+        activeCooling=0.0;
+    }
 
-                                        if (isProcessing) {
-                                            fuelThisTick += NCConfig.fission_fuel_use;
-                                        }
-
-                                        int moderatorAdjacentCount = this.moderatorAdjacentCount(x, y, z);
-                                        energyMultThisTick += moderatorPowerMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
-                                        heatMultThisTick += moderatorHeatMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
-                                        energyThisTick += baseRF * moderatorPowerMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
-                                        heatThisTick += baseHeat * moderatorHeatMultiplier * (double)moderatorAdjacentCount * ((double)extraCells + 1.0D);
-                                        break;
-                                    }
-
-                                    EnumFacing side = var28[var30];
-                                    if (this.findCellOnSide(x, y, z, side) || this.newFindModeratorThenCellOnSide(x, y, z, side)) {
-                                        ++extraCells;
-                                    }
-
-                                    ++var30;
-                                }
-                            }
-
-                            for(extraCells = 1; extraCells < MetaEnums.CoolerType.values().length; ++extraCells) {
-                                if (this.findCooler(x, y, z, extraCells) && this.coolerRequirements(x, y, z, extraCells)) {
-                                    coolerHeatThisTick -= MetaEnums.CoolerType.values()[extraCells].getCooling();
-                                    break;
-                                }
-                            }
-
-                            if (this.getFinder().find(x, y, z, new Object[]{NCBlocks.active_cooler})) {
-                                TileEntity tile = this.world.getTileEntity(this.getFinder().position(x, y, z));
-                                if (tile instanceof TileActiveCooler) {
-                                    TileActiveCooler cooler = (TileActiveCooler)tile;
-                                    Tank tank = (Tank)cooler.getTanks().get(0);
-                                    if (tank.getFluidAmount() > 0) {
-                                        boolean isInValidPosition = false;
-
-                                        for(int i = 1; i < MetaEnums.CoolerType.values().length; ++i) {
-                                            if (tank.getFluidName().equals(MetaEnums.CoolerType.values()[i].getFluidName()) && this.coolerRequirements(x, y, z, i)) {
-                                                coolerHeatThisTick -= NCConfig.fission_active_cooling_rate[i - 1] * (double)NCConfig.active_cooler_max_rate / 20.0D;
-                                                isInValidPosition = true;
-                                                break;
-                                            }
-                                        }
-
-                                        cooler.isActive = isInValidPosition && this.isActivated() && this.readyToProcess();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (this.complete == 1) {
-                this.heatChange = heatThisTick + coolerHeatThisTick;
-                this.cooling = coolerHeatThisTick;
-                this.cells = cellCount;
-                this.efficiency = cellCount == 0 ? 0.0D : 100.0D * energyMultThisTick / (double)cellCount;
-                this.heatMult = cellCount == 0 ? 0.0D : 100.0D * heatMultThisTick / (double)cellCount;
-                this.processPower = energyThisTick;
-                this.speedMultiplier = fuelThisTick;
-            } else {
-                this.heatChange = this.cooling = 0.0D;
-                this.efficiency = this.heatMult = 0.0D;
-                this.cells = 0;
-                this.processPower = this.speedMultiplier = 0.0D;
-            }
-        }
-
-        if (this.isProcessing) {
-            if (this.heat + this.heatChange >= 0.0D) {
-                this.heat += this.heatChange;
-            } else {
-                this.heat = 0.0D;
-            }
-        } else if (this.ready == 1 || this.complete == 1) {
-            if (this.heat + this.cooling >= 0.0D) {
-                this.heat += this.cooling;
-            } else {
-                this.heat = 0.0D;
-            }
-        }
-
-    }*/
     public void addNotificator(TileEntity te, BlockPos pos){
         if(te instanceof INotifier){
             ((INotifier)te).addParent(this);
+        }
+        else if(te instanceof TileBuffer){
+            OverrideTileBuffer tfc = new OverrideTileBuffer(te);
+            tfc.addParent(this);
+            world.setTileEntity(pos,tfc);
+        }
+        else if(te instanceof TileFissionPort){
+            //Do nothing for now.
         }
         else {
             TileFissionComponent tfc = new TileFissionComponent();
@@ -237,13 +138,14 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
             world.setTileEntity(pos,tfc);
         }
     }
-    /*public void refreshMultiblock(boolean checkBlocks) {
-        notify(this);
-    }*/
+
     public void run() {
-        if(this.isProcessing){
-            this.heat = Math.max(0, this.heat += this.heatChange);
-        }
+        this.heat = Math.max(0, this.heat += this.heatChange);
+    }
+
+    @Override
+    public void refreshMultiblock(boolean checkBlocks) {
+        //super.refreshMultiblock(checkBlocks);
     }
 
     public static void cacheCooling() {
@@ -258,18 +160,17 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
      * There really isn't any more improvements I can make to active cooling since it depends on a value that updates every tick.
      */
     public void activeCool(){
-        int activeCooling = 0;
         for (TileActiveCooler cooler : cachedCoolers) {
             Tank tank = cooler.getTanks().get(0);
             if (tank.getFluidAmount() > 0) {
-                cooler.isActive = isActivated() && readyToProcess() && heat + heatChange > 0;
+                cooler.isActive = heat+(isActivated() ? passiveHeat : 0.0)-passiveCooling-activeCooling > 0;
+                System.out.println(heat + ":" + passiveHeat + ":" + passiveCooling + ":" + activeCooling);
                 if (cooler.isActive) {
-                    activeCooling += NCConfig.fission_active_cooling_rate[cachedCoolingStats.get(tank.getFluidName())] * NCConfig.active_cooler_max_rate / 20;
+                    double coolingProvided = NCConfig.fission_active_cooling_rate[cachedCoolingStats.get(tank.getFluidName())-1];
+                    activeCooling+=coolingProvided;
                 }
             } else cooler.isActive = false;
         }
-        cooling+=activeCooling;
-        heatChange-=activeCooling;
     }
 
     private boolean isActivated() {
@@ -517,7 +418,7 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
             // Passive Coolers
             for (int i = 1; i < MetaEnums.CoolerType.values().length; i++) {
                 if (findCooler(x, y, z, i)) if (coolerRequirements(x, y, z, i)) {
-                    coolerHeatThisTick -= MetaEnums.CoolerType.values()[i].getCooling();
+                    coolerHeatThisTick += MetaEnums.CoolerType.values()[i].getCooling();
                     break;
                 }
             }
@@ -531,28 +432,21 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
                     if(tile instanceof INotifier) ((INotifier<Object>) tile).addParent(this);
                     if (tank.getFluidAmount() > 0) {
                         //double currentHeat = heat + (isProcessing ? heatThisTick : 0) + coolerHeatThisTick;
-                        boolean isInValidPosition = false;
-                        for (int i = 1; i < MetaEnums.CoolerType.values().length; i++) {
-                            if (tank.getFluidName().equals(MetaEnums.CoolerType.values()[i].getFluidName())) {
-                                if (coolerRequirements(x, y, z, i)) {
-                                    //Add the cooler to the cached coolers, reduce runtime lag.
-                                    cachedCoolers.add(cooler);
-                                    break;
-                                }
-                            }
+                        Integer i = cachedCoolingStats.get(tank.getFluidName());
+                        if(i != null && coolerRequirements(x, y, z, i)) {
+                            //Add the cooler to the cached coolers, reduce runtime lag.
+                            cachedCoolers.add(cooler);
+                            break;
                         }
                     }
                 }
             }
         }
-        heatChange = heatThisTick + coolerHeatThisTick;
-        cooling = coolerHeatThisTick;
         cells = cellCount;
         efficiency = cellCount == 0 ? 0D : 100D*energyMultThisTick/cellCount;
         heatMult = cellCount == 0 ? 0D : 100D*heatMultThisTick/cellCount;
-        processPower = energyThisTick;
         speedMultiplier = fuelThisTick;
-        FissionProcessData fpd = new FissionProcessData(heatChange,cooling,processPower);
+        FissionProcessData fpd = new FissionProcessData(heatThisTick,coolerHeatThisTick,energyThisTick);
         if(cachedRuns.putIfAbsent(recipeInfo.getRecipe().itemIngredients().get(0).getStack().getItem(), fpd) != null) {
             cachedRuns.replace(recipeInfo.getRecipe().itemIngredients().get(0).getStack().getItem(), fpd);
         }
@@ -573,6 +467,18 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
         stopActiveCooling();
         cachedRuns.clear();
         cachedCoolers.clear();
+        updateBlockType();
+        sendUpdateToListeningPlayers();
+    }
+    public void updateBlockType() {
+        if (ModCheck.ic2Loaded()) {
+            this.removeTileFromENet();
+        }
+        this.setState(this.isProcessing && structureFormed, this);
+        this.world.notifyNeighborsOfStateChange(this.pos, this.getBlockType(), true);
+        if (ModCheck.ic2Loaded()) {
+            this.addTileToENet();
+        }
     }
 
     // Finding Blocks

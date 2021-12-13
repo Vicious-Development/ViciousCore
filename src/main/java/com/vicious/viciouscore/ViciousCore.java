@@ -23,7 +23,6 @@ import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
 import com.vicious.viciouscore.common.util.file.Directories;
 import com.vicious.viciouscore.common.util.resources.ResourceCache;
-import com.vicious.viciouscore.common.util.tracking.VCTrackingHandler;
 import com.vicious.viciouscore.overrides.VCoreOverrides;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,7 +47,6 @@ public class ViciousCore
     public static VCoreConfig CFG;
     public static ViciousCore instance;
     static {
-        VCTrackingHandler.init();
         Directories.initializeConfigDependents();
         CFG = VCoreConfig.init();
     }
@@ -58,11 +56,11 @@ public class ViciousCore
     public void preInit(FMLPreInitializationEvent event)
     {
         instance = this;
+        logger = event.getModLog();
         if(!CFG.firstLoad.getBoolean()) {
             logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
             if(event.getSide() == Side.CLIENT) HeldItemOverrideCFG.copyFromResources(MODID,this.getClass());
         }
-        logger = event.getModLog();
         VEntityRegistry.register();
         if(event.getSide() == Side.CLIENT) {
             clientPreInit(event);
@@ -102,7 +100,9 @@ public class ViciousCore
         if(event.getSide() == Side.CLIENT) {
             clientInit(event);
         }
-        if(!CFG.firstLoad.getBoolean()) CFG.firstLoad.set(true);
+        if(!CFG.firstLoad.getBoolean()) {
+            CFG.firstLoad.set(true);
+        }
         VTileEntityRegistry.register();
         OverrideHandler.onInit();
     }

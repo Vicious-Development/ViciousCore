@@ -5,8 +5,6 @@ package com.vicious.viciouscore.overrides;
  * Why do we provide this content at all? Well, our override mechanism is designed to REQUIRE VCore as a dependency.
  * For this reason it doesn't make much sense for us to make separate mods specifically for our patches.
  * If you want your patch to be included in VCore feel free to submit a pull request.
- * ViciousCore by default patches out:
- * TechReborn's Centrifuge recipe bug.
  *
  * How do I make an Override?
  * 1. Create an override class that extends the original. Implement IFieldCloner

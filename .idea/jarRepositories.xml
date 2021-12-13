@@ -111,5 +111,10 @@
       <option name="name" value="BintrayJCenter" />
       <option name="url" value="https://jcenter.bintray.com/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="ViciousLib" />
+      <option name="name" value="ViciousLib" />
+      <option name="url" value="https://maven.pkg.github.com/Vicious-MCModding/ViciousLib" />
+    </remote-repository>
   </component>
 </project>

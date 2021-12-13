@@ -1,13 +1,13 @@
 package com.vicious.viciouscore.overrides.nuclearcraft;
 
 public class FissionProcessData {
-    public double cooling;
-    public double heatChange;
+    public double passiveCooling;
+    public double passiveHeat;
     public double processPower;
 
-    public FissionProcessData(double heatChange, double cooling, double processPower) {
-        this.heatChange=heatChange;
-        this.cooling=cooling;
+    public FissionProcessData(double passiveHeat, double passiveCooling, double processPower) {
+        this.passiveHeat=passiveHeat;
+        this.passiveCooling=passiveCooling;
         this.processPower=processPower;
     }
 }

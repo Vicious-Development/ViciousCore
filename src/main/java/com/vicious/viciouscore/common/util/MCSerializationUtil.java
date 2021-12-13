@@ -1,9 +1,9 @@
-package com.vicious.viciouscore.common.util.tracking.serialization;
+package com.vicious.viciouscore.common.util;
 
 import com.vicious.viciouscore.ViciousCore;
-import com.vicious.viciouscore.common.util.VUtil;
-import com.vicious.viciouscore.common.util.tracking.interfaces.TrackableValueStringParser;
-import com.vicious.viciouscore.common.util.tracking.values.TrackableArrayValue;
+import com.vicious.viciouslib.database.tracking.interfaces.TrackableValueStringParser;
+import com.vicious.viciouslib.database.tracking.values.TrackableArrayValue;
+import com.vicious.viciouslib.serialization.SerializableArray;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.*;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class SerializationUtil {
+public class MCSerializationUtil {
     public static final Map<Class<?>, TrackableValueStringParser<?>> stringparsers = new HashMap<>();
     public static final Map<Class<?>, BiFunction<String,Object[],?>> specialstringparsers = new HashMap<>();
     public static final Map<Class<?>, Function<Object,String>> serializers = new HashMap<>();
@@ -30,7 +30,7 @@ public class SerializationUtil {
         stringparsers.put(String.class,(j)-> j);
         stringparsers.put(UUID.class, UUID::fromString);
         stringparsers.put(Date.class, VUtil.DATEFORMAT::parse);
-        stringparsers.put(IBlockState.class,SerializationUtil::parseBlockState);
+        stringparsers.put(IBlockState.class,MCSerializationUtil::parseBlockState);
     }
     static {
         specialstringparsers.put(Template.BlockInfo.class,(nbt,o)-> parseBlockInfo(nbt, (TrackableArrayValue<IBlockState>) o[0]));
@@ -39,7 +39,7 @@ public class SerializationUtil {
         serializers.put(IBlockState.class, (o)->writeBlockState((IBlockState) o));
     }
     static {
-        specialserializers.put(SerializableArray.class,(o,exdat)-> ((SerializableArray<?>)o).serialize(exdat));
+        specialserializers.put(SerializableArray.class,(o, exdat)-> ((SerializableArray<?>)o).serialize(exdat));
         specialserializers.put(Template.BlockInfo.class,(o,exdat)-> writeBlockInfo((Template.BlockInfo) o,(ArrayList<IBlockState>) exdat[0]));
     }
     public static Template.BlockInfo parseBlockInfo(String nbt, TrackableArrayValue<IBlockState> palette) {

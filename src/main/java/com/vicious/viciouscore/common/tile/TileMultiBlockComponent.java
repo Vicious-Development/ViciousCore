@@ -14,6 +14,7 @@ import java.util.List;
 public class TileMultiBlockComponent extends ViciousTE implements INotifier<Object> {
     public List<INotifiable<Object>> parents = new ArrayList<>();
     public long lastTick = -1;
+    private boolean hasBeenValidatedAlready = false;
     public TileMultiBlockComponent(){}
     @SuppressWarnings({"rawtypes","unchecked"})
     public void notifyNeighbors(){
@@ -61,8 +62,12 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
     @Override
     public void validate() {
         super.validate();
+        //Prevents infinite looping on chunk gen.
+        if(hasBeenValidatedAlready) return;
+        hasBeenValidatedAlready = true;
         notifyNeighbors();
         notifyParent();
+
     }
 
     /**

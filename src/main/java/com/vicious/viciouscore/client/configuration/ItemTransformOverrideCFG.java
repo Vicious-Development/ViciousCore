@@ -1,14 +1,14 @@
 package com.vicious.viciouscore.client.configuration;
 
-import com.vicious.viciouscore.common.util.tracking.configuration.Config;
-import com.vicious.viciouscore.common.util.tracking.configuration.ConfigurationValue;
+import com.vicious.viciouslib.configuration.ConfigurationValue;
+import com.vicious.viciouslib.configuration.JSONConfig;
 
 import java.nio.file.Path;
 
 /**
  * Saves item transformation data.
  */
-public class ItemTransformOverrideCFG extends Config {
+public class ItemTransformOverrideCFG extends JSONConfig {
     public ConfigurationValue<Boolean> active = add(new ConfigurationValue<>("Active", ()->false, this).modifyOnRuntime(true));
     //Item Rotation - Controls the item rotation.
     public ConfigurationValue<Boolean> overrideRotation = add(new ConfigurationValue<>("OverrideRotation", ()->false, this).modifyOnRuntime(true).parent(active));

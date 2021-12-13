@@ -1,17 +1,18 @@
 package com.vicious.viciouscore.common.configuration;
 
+
 import com.google.common.collect.Lists;
 import com.vicious.viciouscore.ViciousCore;
+import com.vicious.viciouscore.common.util.MCSerializationUtil;
 import com.vicious.viciouscore.common.util.file.Directories;
-import com.vicious.viciouscore.common.util.file.FileUtil;
-import com.vicious.viciouscore.common.util.tracking.configuration.Config;
-import com.vicious.viciouscore.common.util.tracking.configuration.ConfigurationValue;
-import com.vicious.viciouscore.common.util.tracking.serialization.SerializableArray;
-import com.vicious.viciouscore.common.util.tracking.serialization.SerializationUtil;
-import com.vicious.viciouscore.common.util.tracking.values.TrackableArrayValue;
-import com.vicious.viciouscore.common.util.tracking.values.TrackableEnum;
-import com.vicious.viciouscore.common.util.tracking.values.TrackableObject;
-import com.vicious.viciouscore.common.util.tracking.values.TrackableValue;
+import com.vicious.viciouslib.configuration.ConfigurationValue;
+import com.vicious.viciouslib.configuration.JSONConfig;
+import com.vicious.viciouslib.database.tracking.values.TrackableArrayValue;
+import com.vicious.viciouslib.database.tracking.values.TrackableEnum;
+import com.vicious.viciouslib.database.tracking.values.TrackableObject;
+import com.vicious.viciouslib.database.tracking.values.TrackableValue;
+import com.vicious.viciouslib.serialization.SerializableArray;
+import com.vicious.viciouslib.util.FileUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
@@ -34,7 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-public class StructureComponentConfiguration extends Config {
+public class StructureComponentConfiguration extends JSONConfig {
     public TrackableObject<String> name = add(new TrackableObject<>("name",()->"",this));
 
     public TrackableObject<Integer> dimX = add(new TrackableObject<>("dimX",()->0,this));
@@ -132,7 +133,7 @@ public class StructureComponentConfiguration extends Config {
     }
 
     private SerializableArray<Template.BlockInfo> parseBlocks(JSONObject obj) {
-        return SerializationUtil.parseBlockInfoList(obj.getString("blocks"),palette);
+        return MCSerializationUtil.parseBlockInfoList(obj.getString("blocks"),palette);
     }
 
     public void writeBlocks(World in, BlockPos pos1, BlockPos pos2){

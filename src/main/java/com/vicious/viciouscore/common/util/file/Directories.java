@@ -11,6 +11,7 @@ public class Directories {
     public static Path viciousResourcesDirectory;
     public static Path viciousConfigDirectory;
     public static Path viciousCoreConfigPath;
+    public static Path viciousCoreOverrideConfigPath;
     public static Path itemRenderOverridesDirectory;
     public static Path viciousStructuresDirectory;
 
@@ -22,6 +23,7 @@ public class Directories {
         Directories.viciousStructuresDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"structures"));
         Directories.viciousConfigDirectory = FileUtil.createDirectoryIfDNE(directorize(configDirectory.toAbsolutePath().toString(),"vicious"));
         Directories.viciousCoreConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"viciouscore.json");
+        Directories.viciousCoreOverrideConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"overrides.json");
     }
 
     public static Path directorize(String dir, String path) {

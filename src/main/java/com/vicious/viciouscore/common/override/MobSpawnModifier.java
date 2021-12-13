@@ -1,13 +1,10 @@
 package com.vicious.viciouscore.common.override;
 
 import com.google.common.collect.Lists;
-import com.vicious.viciouscore.common.registries.VItemRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.*;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -29,13 +26,13 @@ public class MobSpawnModifier {
     public static boolean cancelOtherOverrides = false;
     //Override this to customize
     public static List<Consumer<EntityMob>> bipedOverriderList = Lists.newArrayList((EntityMob e)->{
-        double rand = Math.random();
+        /*double rand = Math.random();
         if(rand > weaponReplaceChance) {
             try {
                 e.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(VItemRegistry.ENERGO_RIFLE, 1));
                 MobSpawnModifier.cancelOtherOverrides = true;
             } catch(NullPointerException ignored){ }
-        }
+        }*/ //Disabled
     });
     static{
         entityModificators.put(EntityZombie.class,bipedOverriderList);

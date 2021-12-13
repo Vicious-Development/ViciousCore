@@ -16,7 +16,7 @@ import java.nio.file.*;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class FileUtil {
+public class FileUtil{
     public static Path createDirectoryIfDNE(Path p){
         if(!Files.isDirectory(p)){
             try {
