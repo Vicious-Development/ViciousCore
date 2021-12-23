@@ -36,7 +36,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'de.undercouch.download'
 
-version = '1.12.2-1.0.0'
+version = '1.12.2-1.0.2'
 group = 'com.vicious.viciouscore' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'viciouscore'
 
@@ -83,8 +83,8 @@ repositories {
 }
 dependencies {
     deobfProvided "net.industrial-craft:industrialcraft-2:2.8.178-ex112:api" // IC2 Api
-    compile "com.vicious:viciouslib:1.5.1"
-    compile "org.json:json:20171018"
+    compile "com.vicious:viciouslib:1.5.4"
+    compile "org.json:json:20211205"
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }
 
@@ -138,7 +138,7 @@ reobf {
 publishing {
     repositories {
         maven {
-            name = "ViciousLib"
+            name = "ViciousCore"
             url = uri("https://maven.pkg.github.com/Vicious-MCModding/ViciousCore")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
@@ -150,7 +150,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = 'com.vicious'
             artifactId = 'viciouscore'
-            version = "1.5.1"
+            version = "1.0.1"
             from components.java
         }
     }

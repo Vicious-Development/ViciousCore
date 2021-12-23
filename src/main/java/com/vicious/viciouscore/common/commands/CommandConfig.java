@@ -1,7 +1,6 @@
 package com.vicious.viciouscore.common.commands;
 
 import com.google.common.collect.Lists;
-import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouslib.configuration.ConfigurationValue;
 import com.vicious.viciouslib.database.tracking.values.TrackableValue;
@@ -40,7 +39,7 @@ public class CommandConfig extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         int mode = args[0].equalsIgnoreCase("set") ? 1 : 0;
         String fieldname = args[1];
-        VCoreConfig cfg = ViciousCore.CFG;
+        VCoreConfig cfg = VCoreConfig.getInstance();
         Object cfgval;
 
         if(mode == 0) {

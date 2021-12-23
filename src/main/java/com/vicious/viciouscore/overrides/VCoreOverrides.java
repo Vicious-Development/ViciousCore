@@ -19,6 +19,7 @@ import nc.tile.energyFluid.TileBuffer;
 import nc.tile.fluid.TileActiveCooler;
 import nc.tile.generator.TileFissionController;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import techreborn.tiles.fusionReactor.TileFusionControlComputer;
@@ -40,8 +41,15 @@ public class VCoreOverrides {
                 TileEntityOverrideHandler.registerOverrider("techreborn.tiles.fusionReactor.TileFusionControlComputer", new TileEntityOverrider(OverrideTileFusionControlComputer::new, modid, targetModid, priority));
             }
         }
+        //Yabba registers its tiles on the block registry event so we need to do so after it does.
+        targetModid = "yabba";
+        SpecialOverrideHandler.doYabba=Loader.isModLoaded(targetModid) && cfg.yabba.getBoolean();
+        if(SpecialOverrideHandler.doYabba){
+            MinecraftForge.EVENT_BUS.register(SpecialOverrideHandler.class);
+        }
+
         targetModid = "nuclearcraft";
-        if(Loader.isModLoaded("nuclearcraft")){
+        if(Loader.isModLoaded(targetModid)){
             //Checks if we are dealing with NCOverhauled or NCPreOverhaul. We want the pre.
             if(Global.MOD_NAME.length() == "NuclearCraft".length()){ //Lies intellij, lies
                 //Only need to override the new fission controller.
@@ -69,4 +77,5 @@ public class VCoreOverrides {
             }
         }
     }
+    //RegistryNamespaced< ResourceLocation, Class <? extends TileEntity>> reg = (RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>>) Reflection.accessField(TileEntity.class,"REGISTRY");
 }

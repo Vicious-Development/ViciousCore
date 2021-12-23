@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.util.file;
 import net.minecraftforge.fml.common.Loader;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Directories {
     public static Path configDirectory;
@@ -27,12 +26,11 @@ public class Directories {
     }
 
     public static Path directorize(String dir, String path) {
-
-        return Paths.get(dir + "\\" + path);
+        return com.vicious.viciouslib.util.FileUtil.toPath(dir + "/" + path);
     }
 
     public static String rootDir() {
-        String dir =  Loader.instance().getConfigDir().getParent();
+        String dir = Loader.instance().getConfigDir().getParent();
         return dir;
     }
 }

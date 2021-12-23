@@ -48,7 +48,7 @@ public class ViciousCore
     public static ViciousCore instance;
     static {
         Directories.initializeConfigDependents();
-        CFG = VCoreConfig.init();
+        CFG = VCoreConfig.getInstance();
     }
 
     public static Logger logger;

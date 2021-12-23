@@ -5,7 +5,6 @@ import com.vicious.viciouscore.common.util.reflect.FieldRetrievalRoute;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +22,7 @@ import java.util.Map;
  */
 @Mod.EventBusSubscriber(modid = ViciousCore.MODID)
 public class OverrideHandler {
+    private static Map<String,Runnable> modInit = new HashMap<>();
     private static Map<FieldRetrievalRoute, OverrideConverter<?>> preInit = new HashMap<>();
     private static Map<FieldRetrievalRoute, OverrideConverter<?>> init = new HashMap<>();
     private static Map<FieldRetrievalRoute, OverrideConverter<?>> postInit = new HashMap<>();
@@ -78,6 +78,11 @@ public class OverrideHandler {
     public static void onPostInit(){
         processOverrideMap(postInit);
         postInit=null;
+    }
+    public static void onModInit(String modid){
+        if(modInit.get(modid) != null){
+            modInit.remove(modid).run();
+        }
     }
     /*
 
@@ -167,6 +172,9 @@ public class OverrideHandler {
                 //Mod isn't installed, don't finish execution.
             }
         });
+    }
+    private static void executeOnModInit(String modid, Runnable exec){
+
     }
     //Overrider object
     //TODO: separate from this class.

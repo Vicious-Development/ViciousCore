@@ -8,6 +8,11 @@ import java.nio.file.Path;
 
 public class ViciousCoreOverrideConfig extends JSONConfig {
     private static ViciousCoreOverrideConfig instance;
+
+    public ViciousCoreOverrideConfig(Path pth) {
+        super(pth);
+    }
+
     public static ViciousCoreOverrideConfig getInstance(){
         if(instance == null) instance = new ViciousCoreOverrideConfig(Directories.viciousCoreOverrideConfigPath);
         return instance;
@@ -18,7 +23,6 @@ public class ViciousCoreOverrideConfig extends JSONConfig {
     public ConfigurationValue<Boolean> techreborn = add(new ConfigurationValue<>("TechrebornOverridesOn", ()->true, this).modifyOnRuntime(false).description("Should techreborn be overridden?"));
     public ConfigurationValue<Boolean> centrifuge = add(new ConfigurationValue<>("PatchCentrifuge", ()->true, this).modifyOnRuntime(false).description("Should the centrifuge be patched?").parent(techreborn));
     public ConfigurationValue<Boolean> fusion = add(new ConfigurationValue<>("PatchFusionReactor", ()->true, this).modifyOnRuntime(false).description("Should the fusion reactor be patched?").parent(techreborn));
-    public ViciousCoreOverrideConfig(Path f) {
-        super(f);
-    }
+    public ConfigurationValue<Boolean> yabba = add(new ConfigurationValue<>("YABBAOverridesOn", ()->true, this).modifyOnRuntime(false).description("Should YABBA be overridden?"));
+
 }
