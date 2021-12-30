@@ -18,10 +18,10 @@ buildscript {
             // Licenser
             url "https://plugins.gradle.org/m2/"
         }
-        //maven { url = 'https://repo.spongepowered.org/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
-        //classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
         classpath 'de.undercouch:gradle-download-task:3.4.3'}
@@ -35,6 +35,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'de.undercouch.download'
+apply plugin: 'org.spongepowered.mixin'
 
 version = '1.12.2-1.0.2'
 group = 'com.vicious.viciouscore' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -42,11 +43,10 @@ archivesBaseName = 'viciouscore'
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-
 minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
-    //coreMod = 'com.drathonix.nertweaks.NERTweaksLoadingPlugin'
+    coreMod = "${group}.ViciousCoreLoadingPlugin"
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
@@ -55,6 +55,10 @@ minecraft {
     mappings = "snapshot_20171003"
     //1.12_snapshot_20171003
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+}
+configurations {
+    embed
+    implementation.extendsFrom(embed)
 }
 
 repositories {
@@ -80,14 +84,23 @@ repositories {
             password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
         }
     }
+    maven { url = 'https://repo.spongepowered.org/maven' }
+
 }
+
 dependencies {
     deobfProvided "net.industrial-craft:industrialcraft-2:2.8.178-ex112:api" // IC2 Api
     compile "com.vicious:viciouslib:1.5.4"
     compile "org.json:json:20211205"
+    //compile 'org.spongepowered:mixin:0.8.2'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }
 
+sourceSets {
+    main {
+        ext.refMap = "mixins.${archivesBaseName}.refmap.json"
+    }
+}
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
@@ -98,6 +111,11 @@ jar {
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
             "Implementation-Vendor" :"vicious",
+            'FMLCorePluginContainsFMLMod': true,
+            'ForceLoadAsMod': true,
+            //'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'MixinConfigs': 'mixins.viciouscore.json',
+            'FMLCorePlugin': "${group}.ViciousCoreLoadingPlugin",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -127,7 +145,6 @@ processResources {
 jar.finalizedBy('reobfJar') 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
-
 reobf {
     shadowJar {
         mappingType = 'SEARGE'
@@ -155,3 +172,4 @@ publishing {
         }
     }
 }
+

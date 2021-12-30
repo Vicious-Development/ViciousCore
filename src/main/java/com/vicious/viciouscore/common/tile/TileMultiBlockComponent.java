@@ -18,7 +18,6 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
     public TileMultiBlockComponent(){}
     @SuppressWarnings({"rawtypes","unchecked"})
     public void notifyNeighbors(){
-        if(!chunkIsCorrect()) return;
         long worldTick = world != null ? world.getTotalWorldTime() : -1;
         forNeighborBlockTiles((bs,te,bpos)->{
             Block b = bs.getBlock();
@@ -75,7 +74,6 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
      * Remove the parent if the parent is no longer a valid parent.
      */
     public void notifyParent(){
-        if(!chunkIsCorrect()) return;
         for (int i = 0; i < parents.size(); i++) {
             INotifiable<Object> parent = parents.get(i);
             if(parent instanceof TileEntity) {

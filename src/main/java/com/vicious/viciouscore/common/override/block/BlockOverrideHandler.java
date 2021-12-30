@@ -7,7 +7,8 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -17,11 +18,19 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class BlockOverrideHandler {
-
     private static Map<Class<?>, BlockOverrider> overriders = new HashMap<>();
     private static Map<String, BlockOverrider> queued = new HashMap<>();
     private static Map<Block, Supplier<TileEntity>> tileInjectors = new HashMap<>();
-
+    public static void fixPos(World w, BlockPos p){
+        IBlockState state = w.getBlockState(p);
+        System.out.println("FIXED: " + w + " : " + p + " : " + state);
+        if (tileInjectors.containsKey(state.getBlock())) {
+            TileEntity te = tileInjectors.get(state.getBlock()).get();
+            if (w.getTileEntity(p) == null) {
+                w.setTileEntity(p,te);
+            }
+        }
+    }
     @SubscribeEvent
     @SuppressWarnings({"unchecked","rawtypes"})
     public static void onBlockEvent(BlockEvent ev) {
@@ -30,15 +39,7 @@ public class BlockOverrideHandler {
         IBlockState state = ev.getState();
 
         if(ev instanceof BlockEvent.PlaceEvent) {
-            if (tileInjectors.containsKey(state.getBlock())) {
-                TileEntity te = tileInjectors.get(state.getBlock()).get();
-                if (ev.getWorld().getTileEntity(ev.getPos()) == null) {
-                    ev.getWorld().setTileEntity(ev.getPos(),te);
-                    Chunk c = ev.getWorld().getChunkFromBlockCoords(ev.getPos());
-                    //te.validate();
-                    //((Map<BlockPos, TileEntity>)Reflection.accessField(c,"tileEntities")).put(ev.getPos(),te);
-                }
-            }
+            fixPos(ev.getWorld(),ev.getPos());
         }
         if(overriders.containsKey(state.getBlock().getClass())){
             Block overridden = overriders.get(state.getBlock().getClass()).block;

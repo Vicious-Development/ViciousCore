@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.override.chunk;
 
+import com.vicious.viciouscore.ViciousCoreLoadingPlugin;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -24,9 +25,9 @@ public class ChunkOverrideHandler {
 
     /**
      * Replace the vanilla chunk with a vicious chunk.
-     * @param c
      */
     public static void override(Chunk c){
+        if(ViciousCoreLoadingPlugin.isSpongeLoaded) return;
         ViciousChunk chunk = new ViciousChunk(c);
         IChunkProvider prov = chunk.getWorld().getChunkProvider();
         if(prov instanceof ChunkProviderServer){

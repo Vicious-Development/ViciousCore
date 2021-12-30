@@ -164,7 +164,6 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
             Tank tank = cooler.getTanks().get(0);
             if (tank.getFluidAmount() > 0) {
                 cooler.isActive = heat+(isActivated() ? passiveHeat : 0.0)-passiveCooling-activeCooling > 0;
-                System.out.println(heat + ":" + passiveHeat + ":" + passiveCooling + ":" + activeCooling);
                 if (cooler.isActive) {
                     double coolingProvided = NCConfig.fission_active_cooling_rate[cachedCoolingStats.get(tank.getFluidName())-1];
                     activeCooling+=coolingProvided;
