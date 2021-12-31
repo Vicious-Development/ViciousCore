@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common;
+package com.vicious.viciouscore.common.futurewip;
 
 import com.vicious.viciouscore.common.entity.projectile.OrbProjectile;
 import net.minecraft.entity.player.EntityPlayer;

@@ -23,7 +23,6 @@ public class BlockOverrideHandler {
     private static Map<Block, Supplier<TileEntity>> tileInjectors = new HashMap<>();
     public static void fixPos(World w, BlockPos p){
         IBlockState state = w.getBlockState(p);
-        System.out.println("FIXED: " + w + " : " + p + " : " + state);
         if (tileInjectors.containsKey(state.getBlock())) {
             TileEntity te = tileInjectors.get(state.getBlock()).get();
             if (w.getTileEntity(p) == null) {

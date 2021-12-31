@@ -12,9 +12,8 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = ViciousCore.MODID)
 public class VItemRegistry extends Registrator{
     private static List<Item> itemList = new ArrayList<>();
-    /*public static ItemEnergoRifle ENERGO_RIFLE = register(new ItemEnergoRifle("energorifle"));
     //Structure tools
-    public static ItemStructureAreaSelectionWand S_AREA_SELECTOR = register(new ItemStructureAreaSelectionWand("sareaselector"));
+    /*public static ItemStructureAreaSelectionWand S_AREA_SELECTOR = register(new ItemStructureAreaSelectionWand("sareaselector"));
     public static ItemStructurePasteWand S_PASTER = register(new ItemStructurePasteWand("spaster"));
 */
     public static <T extends Item> T register(T in){

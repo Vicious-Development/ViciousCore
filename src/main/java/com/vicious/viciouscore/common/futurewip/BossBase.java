@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common;
+package com.vicious.viciouscore.common.futurewip;
 
 import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
