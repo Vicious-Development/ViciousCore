@@ -4,3 +4,5 @@ This includes: item and entity rendering and animation, mob spawn detection and 
 Soon to come:
 Structure generation and modification.
 Tile Entities and Multiblocks.
+
+For rendering and animation, see [ViciousCoreClient](https://github.com/Vicious-MCModding/ViciousCoreClient). which is dependent on CodeChickenLib for more information.
