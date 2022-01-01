@@ -34,17 +34,17 @@ repositories {
     }
 }
 dependencies {
-    compile "com.vicious:viciouscore:VERSION"
+    compile "com.vicious:viciouscoreclient:VERSION"
 }
 ```
 2. If you don't have a GPR Key you need to make one. To do so, go here: [https://github.com/settings/tokens](https://github.com/settings/tokens)
-a. Click generate new token
-b. Click the read:packages checkbox
-c. Scroll down and generate that boyo. Copy the key, and in gradle.properties write
+* Click generate new token
+* Click the read:packages checkbox
+* Scroll down and generate that boyo. Copy the key, and in gradle.properties write
 ```
 gpr.user=YOUR GITHUB USERNAME
 gpr.key=THE KEY YOU JUST MADE.
 ```
-d. You should be good now BUT be warned. This key grants anyone with it special privileges (the ones you gave it in that checkbox section). Make sure that this key is kept private, you'll want your git system to ignore the gradle.properties file in this case. You could also just use the System Environment variables as well.
+* You should be good now BUT be warned. This key grants anyone with it special privileges (the ones you gave it in that checkbox section). Make sure that this key is kept private, you'll want your git system to ignore the gradle.properties file in this case. You could also just use the System Environment variables as well.
 
 Doing this will both provide you ALL dependencies for core and any of the dependencies for the dependencies (Wow its like magic).
