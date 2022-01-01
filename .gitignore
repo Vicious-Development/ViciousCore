@@ -3,3 +3,9 @@ gradle.properties
 build/*
 run/*
 !run/resources
+.idea
+.out
+crash-reports
+config
+logs
+saves
