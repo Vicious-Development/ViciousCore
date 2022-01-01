@@ -1,7 +1,6 @@
 package com.vicious.viciouscore.common.sampleblock;
 
 
-import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.block.ViciousBlock;
 import com.vicious.viciouscore.common.registries.VBlockRegistry;
 import net.minecraft.block.BlockHorizontal;
@@ -23,6 +22,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -32,46 +32,12 @@ public class SampleBlock extends ViciousBlock implements ITileEntityProvider {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
     public static final PropertyBool ACTIVE = PropertyBool.create("active"); // for machines
 
+
     public SampleBlock(String name) {
         super(name, Material.IRON);
+        TILE = TileEntitySampleBlock.class;
         setSoundType(SoundType.METAL);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
-    }
-
-    @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return Item.getItemFromBlock(VBlockRegistry.SAMPLE_BLOCK);
-    }
-
-    @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(VBlockRegistry.SAMPLE_BLOCK);
-    }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!worldIn.isRemote) {
-            playerIn.openGui(ViciousCore.instance, SampleBlockGui.value, worldIn, pos.getX(), pos.getY(), pos.getZ());
-        }
-        return true;
-    }
-
-    @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-        if (!worldIn.isRemote) {
-            // gen block states for all directions for when block is placed
-            IBlockState north = worldIn.getBlockState(pos.north());
-            IBlockState south = worldIn.getBlockState(pos.south());
-            IBlockState east = worldIn.getBlockState(pos.east());
-            IBlockState west = worldIn.getBlockState(pos.west());
-
-            EnumFacing face = state.getValue(FACING);
-            // determine direction to place block (to face player)
-            if (face == EnumFacing.NORTH && north.isFullBlock() && !south.isFullBlock()) face = EnumFacing.SOUTH;
-            else if (face == EnumFacing.SOUTH && !north.isFullBlock() && south.isFullBlock()) face = EnumFacing.NORTH;
-            else if (face == EnumFacing.EAST && east.isFullBlock() && !west.isFullBlock()) face = EnumFacing.WEST;
-            else if (face == EnumFacing.WEST && !east.isFullBlock() && west.isFullBlock()) face = EnumFacing.EAST;
-        }
     }
 
     public static void setState(boolean active, World worldIn, BlockPos pos) {
@@ -94,13 +60,15 @@ public class SampleBlock extends ViciousBlock implements ITileEntityProvider {
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+    public IBlockState getStateFromMeta(int meta) {
+        EnumFacing facing = EnumFacing.getFront(meta);
+        if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
+        return this.getDefaultState().withProperty(FACING, facing);
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        worldIn.setBlockState(pos, this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(FACING).getIndex();
     }
 
     @Override
@@ -114,19 +82,55 @@ public class SampleBlock extends ViciousBlock implements ITileEntityProvider {
     }
 
     @Override
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+        if (!worldIn.isRemote) {
+            // gen block states for all directions for when block is placed
+            IBlockState north = worldIn.getBlockState(pos.north());
+            IBlockState south = worldIn.getBlockState(pos.south());
+            IBlockState east = worldIn.getBlockState(pos.east());
+            IBlockState west = worldIn.getBlockState(pos.west());
+
+            EnumFacing face = state.getValue(FACING);
+            // determine direction to place block (to face player)
+            if (face == EnumFacing.NORTH && north.isFullBlock() && !south.isFullBlock()) face = EnumFacing.SOUTH;
+            else if (face == EnumFacing.SOUTH && !north.isFullBlock() && south.isFullBlock()) face = EnumFacing.NORTH;
+            else if (face == EnumFacing.EAST && east.isFullBlock() && !west.isFullBlock()) face = EnumFacing.WEST;
+            else if (face == EnumFacing.WEST && !east.isFullBlock() && west.isFullBlock()) face = EnumFacing.EAST;
+        }
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return Item.getItemFromBlock(VBlockRegistry.SAMPLE_BLOCK);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!worldIn.isRemote) {
+            playerIn.sendMessage(new TextComponentString(String.valueOf(SampleBlockGui.value)));
+//            playerIn.openGui(ViciousCore.instance, SampleBlockGui.value, worldIn, pos.getX(), pos.getY(), pos.getZ());
+            playerIn.displayGui((TileEntitySampleBlock) worldIn.getTileEntity(pos));
+        }
+        return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        worldIn.setBlockState(pos, this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+    }
+
+    @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, ACTIVE, FACING);
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        EnumFacing facing = EnumFacing.getFront(meta);
-        if(facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
-        return this.getDefaultState().withProperty(FACING, facing);
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        return new ItemStack(VBlockRegistry.SAMPLE_BLOCK);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(FACING).getIndex();
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 }

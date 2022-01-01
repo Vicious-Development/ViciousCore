@@ -13,8 +13,7 @@ public class SampleBlockGui extends GuiContainer {
     private final InventoryPlayer player;
     private final TileEntitySampleBlock tileEntity;
 
-    public SampleBlockGui(InventoryPlayer player, TileEntitySampleBlock tileEntity)
-    {
+    public SampleBlockGui(InventoryPlayer player, TileEntitySampleBlock tileEntity) {
         super(new ContainerSampleBlock(player, tileEntity));
         this.player = player;
         this.tileEntity = tileEntity;

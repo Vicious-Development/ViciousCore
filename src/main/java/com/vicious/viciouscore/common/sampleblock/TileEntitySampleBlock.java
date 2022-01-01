@@ -3,8 +3,10 @@ package com.vicious.viciouscore.common.sampleblock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,6 +15,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,22 +23,47 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntitySampleBlock extends TileEntity implements ITickable {
+public class TileEntitySampleBlock extends TileEntity implements ITickable, IInteractionObject {
     private final ItemStackHandler handler = new ItemStackHandler(4);
     private String customName;
 
     private int activeTime;
     private int currentActiveTime;
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+    @SideOnly(Side.CLIENT)
+    public static boolean isActive(TileEntitySampleBlock te) {
+        return te.getField(0) > 0;
+    }
+
+    public static int getItemBurnTime(ItemStack fuel) {
+        if (fuel.isEmpty()) return 0;
+        else {
+            Item item = fuel.getItem();
+
+            if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.AIR) {
+                Block block = Block.getBlockFromItem(item);
+
+                if (block == Blocks.WOODEN_SLAB) return 150;
+                if (block.getDefaultState().getMaterial() == Material.WOOD) return 300;
+                if (block == Blocks.COAL_BLOCK) return 16000;
+            }
+
+            if (item instanceof ItemTool && "WOOD".equals(((ItemTool) item).getToolMaterialName())) return 200;
+            if (item instanceof ItemSword && "WOOD".equals(((ItemSword) item).getToolMaterialName())) return 200;
+            if (item instanceof ItemHoe && "WOOD".equals(((ItemHoe) item).getMaterialName())) return 200;
+            if (item == Items.STICK) return 100;
+            if (item == Items.COAL) return 1600;
+            if (item == Items.LAVA_BUCKET) return 20000;
+            if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
+            if (item == Items.BLAZE_ROD) return 2400;
+
+            return ForgeEventFactory.getItemBurnTime(fuel);
+        }
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T) this.handler;
-        return super.getCapability(capability, facing);
+    public String getName() {
+        return null;
     }
 
     public boolean hasCustomName() {
@@ -44,11 +72,6 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
 
     public void setCustomName(String customName) {
         this.customName = customName;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return this.hasCustomName() ? new TextComponentString(this.customName) : new TextComponentTranslation("container.sampleblock.name");
     }
 
     @Override
@@ -71,13 +94,24 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
         return compound;
     }
 
-    public boolean isActive() {
-        return this.activeTime > 0;
+    @Override
+    public ITextComponent getDisplayName() {
+        return this.hasCustomName() ? new TextComponentString(this.customName) : new TextComponentTranslation("container.sampleblock.name");
     }
 
-    @SideOnly(Side.CLIENT)
-    public static boolean isActive(TileEntitySampleBlock te) {
-        return te.getField(0) > 0;
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T) this.handler;
+        return super.getCapability(capability, facing);
+    }
+
+    public boolean isActive() {
+        return this.activeTime > 0;
     }
 
     public void update() {
@@ -120,7 +154,7 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
     private boolean canSmelt() {
         if (this.handler.getStackInSlot(0).isEmpty() || this.handler.getStackInSlot(1).isEmpty()) return false;
         else {
-            ItemStack result = SampleBlockRecipes.getInstance().getUsageResult((ItemStack) this.handler.getStackInSlot(0), (ItemStack) this.handler.getStackInSlot(1));
+            ItemStack result = SampleBlockRecipes.getInstance().getUsageResult(this.handler.getStackInSlot(0), this.handler.getStackInSlot(1));
             if (result.isEmpty()) return false;
             else {
                 ItemStack output = this.handler.getStackInSlot(3);
@@ -129,32 +163,6 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
                 int res = output.getCount() + result.getCount();
                 return res <= 64 && res <= output.getMaxStackSize();
             }
-        }
-    }
-
-    public static int getItemBurnTime(ItemStack fuel) {
-        if (fuel.isEmpty()) return 0;
-        else {
-            Item item = fuel.getItem();
-
-            if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.AIR) {
-                Block block = Block.getBlockFromItem(item);
-
-                if (block == Blocks.WOODEN_SLAB) return 150;
-                if (block.getDefaultState().getMaterial() == Material.WOOD) return 300;
-                if (block == Blocks.COAL_BLOCK) return 16000;
-            }
-
-            if (item instanceof ItemTool && "WOOD".equals(((ItemTool) item).getToolMaterialName())) return 200;
-            if (item instanceof ItemSword && "WOOD".equals(((ItemSword) item).getToolMaterialName())) return 200;
-            if (item instanceof ItemHoe && "WOOD".equals(((ItemHoe) item).getMaterialName())) return 200;
-            if (item == Items.STICK) return 100;
-            if (item == Items.COAL) return 1600;
-            if (item == Items.LAVA_BUCKET) return 20000;
-            if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100;
-            if (item == Items.BLAZE_ROD) return 2400;
-
-            return ForgeEventFactory.getItemBurnTime(fuel);
         }
     }
 
@@ -182,5 +190,15 @@ public class TileEntitySampleBlock extends TileEntity implements ITickable {
                 this.currentActiveTime = value;
                 break;
         }
+    }
+
+    @Override
+    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+        return new ContainerSampleBlock(playerInventory, this);
+    }
+
+    @Override
+    public String getGuiID() {
+        return "viciouscore:sampleblock";
     }
 }

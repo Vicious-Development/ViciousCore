@@ -9,3 +9,7 @@ logs
 saves
 usercache.json
 usernamecache.json
+/options.txt
+/ViciousCore.iml
+/ViciousCore.ipr
+/ViciousCore.iws
