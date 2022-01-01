@@ -34,7 +34,7 @@ repositories {
     }
 }
 dependencies {
-    compile "com.vicious:viciouscoreclient:VERSION"
+    compile "com.vicious:viciouscore:VERSION"
 }
 ```
 2. If you don't have a GPR Key you need to make one. To do so, go here: [https://github.com/settings/tokens](https://github.com/settings/tokens)
