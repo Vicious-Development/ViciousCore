@@ -6,3 +6,45 @@ Structure generation and modification.
 Tile Entities and Multiblocks.
 
 For rendering and animation, see [ViciousCoreClient](https://github.com/Vicious-MCModding/ViciousCoreClient). which is dependent on CodeChickenLib for more information.
+
+## Common Features:
+- Mobspawn detection
+- Tile Entity Code overwriting
+- Field Code overwriting
+- Easy Config Creation
+## Client Features:
+- Rendering and animation
+- Entity rendering overwriting.
+## WIP Features:
+- Structure Generation
+- Tile Entities and MultiBlocks
+- GUI Systems.
+
+# Using as a Gradle Dependency
+1. Put this in your build script
+```gradle
+repositories {
+    maven {
+        name = "ViciousCore"
+        url = uri("https://maven.pkg.github.com/Vicious-MCModding/ViciousCore")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+        }
+    }
+}
+dependencies {
+    compile "com.vicious:viciouscore:VERSION"
+}
+```
+2. If you don't have a GPR Key you need to make one. To do so, go here: [https://github.com/settings/tokens](https://github.com/settings/tokens)
+a. Click generate new token
+b. Click the read:packages checkbox
+c. Scroll down and generate that boyo. Copy the key, and in gradle.properties write
+```
+gpr.user=YOUR GITHUB USERNAME
+gpr.key=THE KEY YOU JUST MADE.
+```
+d. You should be good now BUT be warned. This key grants anyone with it special privileges (the ones you gave it in that checkbox section). Make sure that this key is kept private, you'll want your git system to ignore the gradle.properties file in this case. You could also just use the System Environment variables as well.
+
+Doing this will both provide you ALL dependencies for core and any of the dependencies for the dependencies (Wow its like magic).
