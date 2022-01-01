@@ -1,8 +1,9 @@
 buildscript {
     repositories {
         maven {
-            url = 'https://files.minecraftforge.net/maven' }
-        maven {url = 'https://plugins.gradle.org/m2' }
+            url = 'https://files.minecraftforge.net/maven'
+        }
+        maven { url = 'https://plugins.gradle.org/m2' }
         maven {
             name 'CB Maven'
             url "http://chickenbones.net/maven/"
@@ -23,8 +24,8 @@ buildscript {
     dependencies {
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-        classpath 'de.undercouch:gradle-download-task:3.4.3'}
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+    }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -34,14 +35,13 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'de.undercouch.download'
 apply plugin: 'org.spongepowered.mixin'
 
 //Constants
 String mcver = "1.12.2"
 String forgever = "14.23.5.2847"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.0.2'
+String projectver = '1.0.8'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
 
@@ -98,9 +98,8 @@ repositories {
 
 dependencies {
     deobfProvided "net.industrial-craft:industrialcraft-2:2.8.178-ex112:api" // IC2 Api
-    compile "com.vicious:viciouslib:1.5.4"
+    compile "com.vicious:viciouslib:1.6.0"
     compile "org.json:json:20211205"
-    //compile 'org.spongepowered:mixin:0.8.2'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }
 
@@ -147,16 +146,19 @@ processResources {
 }
 
 
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
+publish.dependsOn('deobfJar')
+def manif = {
+}
 reobf {
     shadowJar {
         mappingType = 'SEARGE'
         classpath = sourceSets.main.compileClasspath
     }
+}
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest manif
 }
 
 publishing {

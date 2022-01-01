@@ -5,7 +5,7 @@ import com.vicious.viciouscore.common.ViciousCTab;
 import com.vicious.viciouscore.common.commands.CommandConfig;
 import com.vicious.viciouscore.common.commands.CommandStructure;
 import com.vicious.viciouscore.common.item.ViciousItem;
-import com.vicious.viciouscore.common.override.MobSpawnModifier;
+import com.vicious.viciouscore.common.override.MobSpawnListener;
 import com.vicious.viciouscore.common.override.OverrideHandler;
 import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
 import com.vicious.viciouscore.common.override.block.SpongeEventHandler;
@@ -36,7 +36,7 @@ public class ViciousCore
     }
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
-    public static final String VERSION = "1.0.2";
+    public static final String VERSION = "1.0.8";
     public static VCoreConfig CFG;
     public static ViciousCore instance;
     static {
@@ -55,7 +55,7 @@ public class ViciousCore
         }
         VEntityRegistry.register();
         spongePreInit();
-        MinecraftForge.EVENT_BUS.register(MobSpawnModifier.class);
+        MinecraftForge.EVENT_BUS.register(MobSpawnListener.class);
         MinecraftForge.EVENT_BUS.register(ViciousCorePlayerManager.class);
         MinecraftForge.EVENT_BUS.register(TileEntityOverrideHandler.class);
         MinecraftForge.EVENT_BUS.register(BlockOverrideHandler.class);
