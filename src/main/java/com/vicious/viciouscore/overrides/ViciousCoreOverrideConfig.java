@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.overrides;
 
-import com.vicious.viciouscore.common.util.file.Directories;
+import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouslib.configuration.ConfigurationValue;
 import com.vicious.viciouslib.configuration.JSONConfig;
 
@@ -14,7 +14,7 @@ public class ViciousCoreOverrideConfig extends JSONConfig {
     }
 
     public static ViciousCoreOverrideConfig getInstance(){
-        if(instance == null) instance = new ViciousCoreOverrideConfig(Directories.viciousCoreOverrideConfigPath);
+        if(instance == null) instance = new ViciousCoreOverrideConfig(ViciousDirectories.viciousCoreOverrideConfigPath);
         return instance;
     }
 

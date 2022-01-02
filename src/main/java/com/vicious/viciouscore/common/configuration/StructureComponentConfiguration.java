@@ -4,7 +4,7 @@ package com.vicious.viciouscore.common.configuration;
 import com.google.common.collect.Lists;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.util.MCSerializationUtil;
-import com.vicious.viciouscore.common.util.file.Directories;
+import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouslib.configuration.ConfigurationValue;
 import com.vicious.viciouslib.configuration.JSONConfig;
 import com.vicious.viciouslib.database.tracking.values.TrackableArrayValue;
@@ -61,7 +61,7 @@ public class StructureComponentConfiguration extends JSONConfig {
     public TrackableArrayValue<Template.BlockInfo> blockInfo = add(new TrackableArrayValue<>("blocks", Template.BlockInfo.class, this, 0));
 
     public StructureComponentConfiguration(String name) {
-        super(Directories.directorize(Directories.viciousStructuresDirectory.toAbsolutePath().toString(),name + ".json"));
+        super(ViciousDirectories.directorize(ViciousDirectories.viciousStructuresDirectory.toAbsolutePath().toString(),name + ".json"));
         this.name.set(name);
     }
 

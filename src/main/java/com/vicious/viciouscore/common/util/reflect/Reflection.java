@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.util.reflect;
 
-import com.vicious.viciouscore.common.util.file.Directories;
+import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouslib.serialization.SerializationUtil;
 
@@ -141,7 +141,7 @@ public class Reflection {
         }
     }
     private static void outputClass(Class<?> clazz) {
-        String path = Directories.rootDir()+"/classOPT.txt";
+        String path = ViciousDirectories.rootDir()+"/classOPT.txt";
         FileUtil.createDNE(path);
         try {
             Files.write(Paths.get(path), clazz.getName().getBytes(), StandardOpenOption.APPEND);

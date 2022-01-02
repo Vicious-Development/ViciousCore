@@ -84,7 +84,7 @@ public class FileUtil{
                 while(it.hasNext()) {
                     Path p = it.next();
                     String postTarget = p.toAbsolutePath().toString().replaceAll(resourcePath + "/", "");
-                    Path destination = Directories.directorize(targetDestination, postTarget);
+                    Path destination = ViciousDirectories.directorize(targetDestination, postTarget);
                     new File(destination.toString());
                     Files.copy(p, destination);
                 }

@@ -2,6 +2,7 @@ package com.vicious.viciouscore.common.commands;
 
 import com.google.common.collect.Lists;
 import com.vicious.viciouscore.common.VCoreConfig;
+import com.vicious.viciouscore.common.configuration.ViciousConfigManager;
 import com.vicious.viciouslib.configuration.ConfigurationValue;
 import com.vicious.viciouslib.database.tracking.values.TrackableValue;
 import net.minecraft.command.CommandBase;
@@ -27,7 +28,7 @@ public class CommandConfig extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "vconfig <set/see> <fieldname> <optional:value>)";
+        return "vconfig <reload/set/see> <fieldname> <optional:value>)";
     }
 
     @Override
@@ -37,7 +38,7 @@ public class CommandConfig extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        int mode = args[0].equalsIgnoreCase("set") ? 1 : 0;
+        int mode = args[0].equalsIgnoreCase("set") ? 1 : (args[0].equalsIgnoreCase("reload") ? 2 : 0);
         String fieldname = args[1];
         VCoreConfig cfg = VCoreConfig.getInstance();
         Object cfgval;
@@ -49,6 +50,9 @@ public class CommandConfig extends CommandBase {
             } catch(Exception e){
                 sender.sendMessage(new TextComponentString(fieldname + " does not exist in the config."));
             }
+        }
+        else if (mode == 2){
+            ViciousConfigManager.reload();
         }
         else{
             try {

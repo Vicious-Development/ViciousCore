@@ -14,7 +14,7 @@ import com.vicious.viciouscore.common.override.tile.TileEntityOverrideHandler;
 import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
-import com.vicious.viciouscore.common.util.file.Directories;
+import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.overrides.VCoreOverrides;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -36,11 +36,11 @@ public class ViciousCore
     }
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
-    public static final String VERSION = "1.0.8";
+    public static final String VERSION = "1.0.9";
     public static VCoreConfig CFG;
     public static ViciousCore instance;
     static {
-        Directories.initializeConfigDependents();
+        ViciousDirectories.initializeConfigDependents();
         CFG = VCoreConfig.getInstance();
     }
 

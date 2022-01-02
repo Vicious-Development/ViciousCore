@@ -1,6 +1,6 @@
 [
 {
-  "modid": "${}",
+  "modid": "${modid}",
   "name": "Vicious Core",
   "description": "A mod made specifically for the creation of epic battles.",
   "version": "${version}",
