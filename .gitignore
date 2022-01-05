@@ -9,6 +9,9 @@ logs
 saves
 usercache.json
 usernamecache.json
+gradle.properties
+src.zip
+.gitignore
 /options.txt
 /ViciousCore.iml
 /ViciousCore.ipr
