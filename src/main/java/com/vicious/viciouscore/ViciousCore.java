@@ -27,6 +27,9 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Sponge;
 
+/**
+ * WET BUILD
+ */
 @Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, acceptableRemoteVersions = "*", dependencies = "after:reborncore;after:techreborn;after:nuclearcraft;after:sponge")
 public class ViciousCore
 {
