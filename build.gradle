@@ -1,7 +1,9 @@
 buildscript {
     repositories {
         maven {
-            url = 'https://files.minecraftforge.net/maven' }
+            url = 'https://files.minecraftforge.net/maven'
+        }
+        maven { url = 'https://plugins.gradle.org/m2' }
         maven {
             name 'CB Maven'
             url "http://chickenbones.net/maven/"
@@ -13,77 +15,115 @@ buildscript {
         maven {
             url = "https://www.cursemaven.com"
         }
-        jcenter()
-        mavenCentral()
+        maven {
+            // Licenser
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
-version = '1.0'
-group = 'com.vicious.viciouscore' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'viciouscore'
+//Constants
+String mcver = "1.12.2"
+String forgever = "14.23.5.2847"
+String archivesBaseName = 'viciouscore'
+String projectver = '1.0.9'
+String organization = 'vicious'
+String asmVersion = "5.0.3"
+String gitlink = "github.com/Vicious-MCModding/ViciousCore"
+
+version = "${mcver}-${projectver}"
+group = "com.${organization}.${archivesBaseName}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    version = "1.12.2-14.23.5.2847"
+    version = "${mcver}-${forgever}"
     runDir = "run"
-
+    coreMod = "${group}.ViciousCoreLoadingPlugin"
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20171003"
+    //1.12_snapshot_20171003
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
+configurations {
+    embed
+    implementation.extendsFrom(embed)
+}
 
-
-dependencies {
-    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
-    // You may put jars on which you depend on in ./libs or you may define them like so..
-    // compile "some.group:artifact:version:classifier"
-    // compile "some.group:artifact:version"
-
-    // Real examples
-    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // These dependencies get remapped to your current MCP mappings
-    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+repositories {
+    maven {
+        // RebornCore, TR
+        name = "Modmuss50"
+        url = "http://maven.modmuss50.me/"
+    }
+    maven {
+        // JEI
+        name "JEI"
+        url "https://dvs1.progwml6.com/files/maven"
+    }
+    maven { // IC2 repo
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
+    }
+    maven {
+        name = "ViciousLib"
+        url = uri("https://maven.pkg.github.com/Vicious-MCModding/ViciousLib")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+        }
+    }
+    maven { url = 'https://repo.spongepowered.org/maven' }
 
 }
 
+dependencies {
+    deobfProvided "net.industrial-craft:industrialcraft-2:2.8.178-ex112:api" // IC2 Api
+    compile "com.vicious:viciouslib:1.6.1"
+    compile "org.json:json:20211205"
+    compileOnly(fileTree(dir: 'lib', include: ['*.jar']))
+}
+
+sourceSets {
+    main {
+        ext.refMap = "mixins.${archivesBaseName}.refmap.json"
+    }
+}
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"        : "${archivesBaseName}",
+                "Specification-Vendor"       : "${organization}",
+                "Specification-Version"      : "${projectver}", // We are version 1 of ourselves
+                "Implementation-Title"       : project.name,
+                "Implementation-Version"     : "${version}",
+                "Implementation-Vendor"      : "${organization}",
+                'FMLCorePluginContainsFMLMod': true,
+                'ForceLoadAsMod'             : true,
+                'MixinConfigs'               : "mixins.${archivesBaseName}.json",
+                'FMLCorePlugin'              : "${group}.ViciousCoreLoadingPlugin",
+                "Implementation-Timestamp"   : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
@@ -97,7 +137,7 @@ processResources {
         include 'mcmod.info'
 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
     // copy everything else except the mcmod.info
@@ -107,21 +147,38 @@ processResources {
 }
 
 
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
+publish.dependsOn('deobfJar')
+def manif = {
+}
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+        classpath = sourceSets.main.compileClasspath
+    }
+}
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest manif
+}
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "ViciousCore"
+            url = uri("https://maven.pkg.${gitlink}")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+                password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            groupId = "com.${organization}"
+            artifactId = "${archivesBaseName}"
+            version = "${projectver}"
+            from components.java
         }
     }
 }
