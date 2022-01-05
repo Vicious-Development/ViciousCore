@@ -1,10 +1,7 @@
 package com.vicious.viciouscore;
 
-import com.vicious.viciouscore.common.util.resources.GameResourceHelper;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -19,14 +16,6 @@ public class ViciousCoreLoadingPlugin implements IFMLLoadingPlugin
     public static boolean isSpongeLoaded = false;
     public ViciousCoreLoadingPlugin()
     {
-        try{
-            Class.forName("org.spongepowered.asm.launch.MixinBootstrap");
-        } catch(ClassNotFoundException e){
-            return;
-        }
-        MixinBootstrap.init();
-        isSpongeLoaded = attemptLoadMixin("sponge");
-        MixinBootstrap.init();
     }
     @Override
     public String[] getASMTransformerClass()
@@ -55,12 +44,4 @@ public class ViciousCoreLoadingPlugin implements IFMLLoadingPlugin
         return null;
     }
 
-    private boolean attemptLoadMixin(String modid) {
-        if(GameResourceHelper.load(modid)){
-            Mixins.addConfiguration("mixin/mixins.viciouscore." + modid + ".json");
-            System.out.println("ViciousCore loaded " + modid + " mixins successfully.");
-            return true;
-        }
-        return false;
-    }
 }

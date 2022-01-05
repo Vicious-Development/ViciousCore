@@ -8,7 +8,6 @@ import com.vicious.viciouscore.common.item.ViciousItem;
 import com.vicious.viciouscore.common.override.MobSpawnListener;
 import com.vicious.viciouscore.common.override.OverrideHandler;
 import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
-import com.vicious.viciouscore.common.override.block.SpongeEventHandler;
 import com.vicious.viciouscore.common.override.chunk.ChunkOverrideHandler;
 import com.vicious.viciouscore.common.override.tile.TileEntityOverrideHandler;
 import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
@@ -17,7 +16,6 @@ import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.overrides.VCoreOverrides;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -25,7 +23,6 @@ import net.minecraftforge.fml.common.event.FMLModDisabledEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.Sponge;
 
 @Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, acceptableRemoteVersions = "*", dependencies = "after:reborncore;after:techreborn;after:nuclearcraft;after:sponge")
 public class ViciousCore
@@ -54,7 +51,6 @@ public class ViciousCore
             logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
         }
         VEntityRegistry.register();
-        spongePreInit();
         MinecraftForge.EVENT_BUS.register(MobSpawnListener.class);
         MinecraftForge.EVENT_BUS.register(ViciousCorePlayerManager.class);
         MinecraftForge.EVENT_BUS.register(TileEntityOverrideHandler.class);
@@ -63,10 +59,6 @@ public class ViciousCore
         VCoreOverrides.init();
         OverrideHandler.onPreInit();
         TileEntityOverrideHandler.init();
-    }
-    public void spongePreInit(){
-        if(!Loader.isModLoaded("sponge")) return;
-        Sponge.getEventManager().registerListeners(this, new SpongeEventHandler());
     }
 
     @EventHandler

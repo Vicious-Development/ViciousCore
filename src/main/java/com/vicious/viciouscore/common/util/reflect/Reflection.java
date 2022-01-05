@@ -4,10 +4,7 @@ import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.common.util.file.FileUtil;
 import com.vicious.viciouslib.serialization.SerializationUtil;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -74,6 +71,7 @@ public class Reflection {
     public static Object invokeMethod(Object accessed, String methodname, Class<?>[] parameters, Object[] args){
         Method m = getMethod(accessed,methodname,parameters);
         try {
+            if(!m.isAccessible()) m.setAccessible(true);
             if (m.getReturnType() == void.class) {
                 m.invoke(accessed, args);
             } else return m.invoke(accessed, args);
@@ -82,6 +80,7 @@ public class Reflection {
     }
     public static Object invokeMethod(Object accessed, Method m, Object[] args){
         try {
+            if(!m.isAccessible()) m.setAccessible(true);
             if (m.getReturnType() == void.class) {
                 m.invoke(accessed, args);
             } else return m.invoke(accessed, args);
@@ -172,6 +171,12 @@ public class Reflection {
             }
         }
     }
+    public static Constructor<?> getConstructor(Class<?> accessed, Class<?>[] params){
+        try {
+            return accessed.getConstructor(params);
+        } catch(NoSuchMethodException ignored){}
+        return null;
+    }
     public static Object accessStaticField(Class<?> accessed, String fieldname){
         Field f = null;
         try {
@@ -200,16 +205,11 @@ public class Reflection {
         }
         return null;
     }
-    public static <T> T construct(Class<T> type, Object[] params){
-        Class<?>[] types = new Class<?>[params.length];
-        for(int i = 0; i < types.length; i++){
-            types[i] = params[i].getClass();
-        }
+    public static Object construct(Constructor<?> constructor, Object[] params){
         try {
-            return type.getConstructor(types).newInstance(params);
-        }
-        catch (Exception e){
-
+            return constructor.newInstance(params);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
         return null;
     }
