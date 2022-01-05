@@ -5,7 +5,7 @@ import com.vicious.viciouslib.configuration.JSONConfig;
 import java.util.ArrayList;
 
 public class ViciousConfigManager {
-    private static ArrayList<JSONConfig> cfgs;
+    private static ArrayList<JSONConfig> cfgs = new ArrayList<>();
     public static void register(JSONConfig cfg){
         cfgs.add(cfg);
     }
