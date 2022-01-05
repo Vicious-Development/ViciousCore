@@ -132,8 +132,9 @@ public class Reflection {
                 if (!f.isAccessible()) {
                     f.setAccessible(true);
                 }
-                Field.class.getDeclaredField("modifiers")
-                        .setInt(f, f.getModifiers() & ~Modifier.FINAL);
+                Field finfield = Field.class.getDeclaredField("modifiers");
+                finfield.setAccessible(true);
+                finfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
 
             } catch(IllegalAccessException | NoSuchFieldException ignored){
 
