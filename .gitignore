@@ -1,0 +1,17 @@
+.gradle
+build/*
+run/*
+.out
+.idea
+config
+crash-reports
+logs
+saves
+usercache.json
+usernamecache.json
+gradle.properties
+src.zip
+/options.txt
+ViciousCore-wet.iml
+ViciousCore-wet.ipr
+ViciousCore-wet.iws
