@@ -47,7 +47,7 @@ public class ViciousCore
     }
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.2";
     public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
     public static VCoreConfig CFG;
     public static ViciousCore instance;
