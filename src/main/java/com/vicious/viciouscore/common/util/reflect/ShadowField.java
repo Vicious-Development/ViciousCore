@@ -2,6 +2,7 @@ package com.vicious.viciouscore.common.util.reflect;
 
 import java.lang.reflect.Field;
 
+
 public class ShadowField<T> {
     private Field reflectiveField;
     public ShadowField(Class<?> cls, String fieldName){

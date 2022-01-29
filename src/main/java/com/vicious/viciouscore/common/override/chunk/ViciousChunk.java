@@ -27,6 +27,9 @@ public class ViciousChunk extends Chunk implements IFieldCloner {
     public ViciousChunk(World worldIn, ChunkPrimer primer, int x, int z) {
         super(worldIn, primer, x, z);
     }
+    /**
+     * Overwritten to fix issues with TileMultiBlockComponent causing an infinite loop.
+     */
     @SuppressWarnings("unchecked")
     public void addTileEntity(BlockPos pos, TileEntity tileEntityIn)
     {

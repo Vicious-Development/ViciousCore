@@ -14,6 +14,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Do not port
+ */
 public class MCSerializationUtil {
     public static final Map<Class<?>, TrackableValueStringParser<?>> stringparsers = new HashMap<>();
     public static final Map<Class<?>, BiFunction<String,Object[],?>> specialstringparsers = new HashMap<>();
