@@ -41,7 +41,7 @@ apply plugin: 'org.spongepowered.mixin'
 String mcver = "1.12.2"
 String forgever = "14.23.5.2847"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.1.2'
+String projectver = '1.1.3'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
 
@@ -98,7 +98,7 @@ repositories {
 
 dependencies {
     deobfProvided "net.industrial-craft:industrialcraft-2:2.8.178-ex112:api" // IC2 Api
-    compile "com.vicious:viciouslib:1.6.6"
+    compile "com.vicious:viciouslib:1.7.8"
     compile "org.json:json:20211205"
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }
