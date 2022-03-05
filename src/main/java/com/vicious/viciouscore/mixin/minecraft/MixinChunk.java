@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.mixin.sponge;
+package com.vicious.viciouscore.mixin.minecraft;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

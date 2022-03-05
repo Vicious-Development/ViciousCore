@@ -25,6 +25,7 @@ public class ViciousCoreLoadingPlugin implements IFMLLoadingPlugin
             return;
         }
         MixinBootstrap.init();
+        Mixins.addConfiguration("mixin/mixins.viciouscore.minecraft.json");
         isSpongeLoaded = attemptLoadMixin("sponge");
         MixinBootstrap.init();
     }

@@ -4,7 +4,6 @@ import com.vicious.viciouscore.common.tile.INotifiable;
 import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
 import com.vicious.viciouscore.common.util.reflect.Reflection;
-import com.vicious.viciouscore.common.util.reflect.ShadowField;
 import nc.ModCheck;
 import nc.config.NCConfig;
 import nc.enumm.MetaEnums;
@@ -22,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +42,7 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
     public double passiveHeat = 0.0;
     public double passiveCooling = 0.0;
     public double activeCooling = 0.0;
-    public static ShadowField<Boolean> isActivated = new ShadowField<>(OverrideTileFissionControllerNew.class,"isActivated");
+    public static Field active = Reflection.getField(OverrideTileFissionControllerNew.class,"isActivated");
     public static Map<String,Integer> cachedCoolingStats = new HashMap<>();
     public Map<Item,FissionProcessData> cachedRuns = new HashMap<>();
     public List<TileActiveCooler> cachedCoolers = new ArrayList<>();
@@ -60,7 +60,7 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
     public void updateGenerator() {
         if(world.isRemote) return;
         boolean wasProcessing = this.isProcessing;
-        isActivated.set(this,this.isActivated());
+        Reflection.setField(this,this.isActivated(), active);
         this.isProcessing = this.isProcessing();
         //Prevent tick acceleration.
         if(lastTick == world.getTotalWorldTime()) return;
@@ -134,6 +134,7 @@ public class OverrideTileFissionControllerNew extends TileFissionController.New 
         }
         else {
             TileFissionComponent tfc = new TileFissionComponent();
+            System.out.println(tfc);
             tfc.addParent(this);
             world.setTileEntity(pos,tfc);
         }

@@ -1,12 +1,12 @@
 {
   "required": true,
-  "package": "com.vicious.viciouscore.mixin.sponge",
+  "package": "com.vicious.viciouscore.mixin.minecraft",
   "refmap": "mixins.viciouscore.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlock",
-    "MixinChunk"
+    "MixinChunk",
+    "MixinBlock"
   ]
 }

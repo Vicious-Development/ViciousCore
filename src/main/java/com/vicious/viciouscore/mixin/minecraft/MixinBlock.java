@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.mixin.sponge;
+package com.vicious.viciouscore.mixin.minecraft;
 
 
 import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;

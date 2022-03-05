@@ -16,7 +16,6 @@ import com.vicious.viciouscore.common.override.MobSpawnListener;
 import com.vicious.viciouscore.common.override.OverrideHandler;
 import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
 import com.vicious.viciouscore.common.override.block.SpongeEventHandler;
-import com.vicious.viciouscore.common.override.chunk.ChunkOverrideHandler;
 import com.vicious.viciouscore.common.override.tile.TileEntityOverrideHandler;
 import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
@@ -74,7 +73,6 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(ViciousCorePlayerManager.class);
         MinecraftForge.EVENT_BUS.register(TileEntityOverrideHandler.class);
         MinecraftForge.EVENT_BUS.register(BlockOverrideHandler.class);
-        MinecraftForge.EVENT_BUS.register(ChunkOverrideHandler.class);
         MinecraftForge.EVENT_BUS.register(ViciousCoreCommonEventHandler.class);
         VCoreOverrides.init();
         OverrideHandler.onPreInit();
