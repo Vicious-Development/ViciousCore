@@ -7,8 +7,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CommonKeyBinding {
-    @SideOnly(Side.CLIENT)
     private static int nextId = -1;
+    @SideOnly(Side.CLIENT)
     public KeyBinding clientKey;
     public final String name;
     public final int defaultKeyCode;
