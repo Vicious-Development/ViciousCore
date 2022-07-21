@@ -2,8 +2,7 @@ package com.vicious.viciouscore.client;
 
 
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
-import com.vicious.viciouscore.common.network.SMessageButtonUpdate;
-import com.vicious.viciouscore.common.network.handlers.CButtonPressHandler;
+import com.vicious.viciouscore.common.network.packets.SMessageButtonUpdate;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

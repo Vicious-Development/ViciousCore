@@ -115,12 +115,13 @@ repositories {
         }
     }
     maven { url = 'https://repo.spongepowered.org/maven' }
+    mavenCentral()
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mcver}-${forgever}"
-    implementation "com.vicious:viciouslib:1.7.8"
-    implementation "org.json:json:20211205"
+    implementation "com.vicious:viciouslib:2.0.8"
+    implementation 'org.json:json:20220320'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }

@@ -8,9 +8,8 @@ import com.vicious.viciouscore.common.commands.CommandStructure;
 import com.vicious.viciouscore.common.event.ViciousCoreCommonEventHandler;
 import com.vicious.viciouscore.common.item.ViciousItem;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
-import com.vicious.viciouscore.common.network.CMessageButtonPressReceived;
-import com.vicious.viciouscore.common.network.SMessageButtonUpdate;
-import com.vicious.viciouscore.common.network.handlers.CButtonPressHandler;
+import com.vicious.viciouscore.common.network.packets.CMessageButtonPressReceived;
+import com.vicious.viciouscore.common.network.packets.SMessageButtonUpdate;
 import com.vicious.viciouscore.common.network.handlers.SButtonPressHandler;
 import com.vicious.viciouscore.common.override.MobSpawnListener;
 import com.vicious.viciouscore.common.override.OverrideHandler;
@@ -21,22 +20,12 @@ import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
-import com.vicious.viciouscore.overrides.VCoreOverrides;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLModDisabledEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.network.NetworkRegistry;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.Sponge;
 
-@Mod(modid = ViciousCore.MODID, name = ViciousCore.NAME, version = ViciousCore.VERSION, acceptableRemoteVersions = "*", dependencies = "after:reborncore;after:techreborn;after:nuclearcraft;after:sponge")
+@Mod("viciouscore")
 public class ViciousCore
 {
     private static int nextPacketId = -1;
@@ -47,7 +36,6 @@ public class ViciousCore
     public static final String MODID = "viciouscore";
     public static final String NAME = "Vicious Core";
     public static final String VERSION = "1.1.5";
-    public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
     public static VCoreConfig CFG;
     public static ViciousCore instance;
     static {
