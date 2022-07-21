@@ -4,6 +4,9 @@ import com.vicious.viciouscore.common.configuration.ViciousConfigManager;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouslib.configuration.ConfigurationValue;
 import com.vicious.viciouslib.configuration.JSONConfig;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.IChunkProvider;
 
 import java.nio.file.Path;
 

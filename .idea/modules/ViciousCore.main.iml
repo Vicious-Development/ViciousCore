@@ -4,10 +4,16 @@
     <facet type="minecraft" name="Minecraft">
       <configuration>
         <autoDetectTypes>
-          <platformType>SPONGE</platformType>
-          <platformType>MIXIN</platformType>
+          <platformType>FORGE</platformType>
+          <platformType>MCP</platformType>
         </autoDetectTypes>
       </configuration>
     </facet>
+  </component>
+  <component name="McpModuleSettings">
+    <option name="mappingFile" value="C:\Users\jacks\IdeaProjects\ViciousCore\build\createMcpToSrg\output.tsrg" />
+    <option name="mcpVersion" value="official_1.19" />
+    <option name="minecraftVersion" value="1.19" />
+    <option name="srgType" value="TSRG" />
   </component>
 </module>
