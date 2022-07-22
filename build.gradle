@@ -171,7 +171,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = "com.${organization}"
             artifactId = "${archivesBaseName}"
-            version = "${projectver}"
+            version = "${mcver}-${projectver}"
             from components.java
         }
     }

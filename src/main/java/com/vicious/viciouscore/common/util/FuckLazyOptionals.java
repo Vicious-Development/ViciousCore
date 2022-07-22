@@ -2,6 +2,10 @@ package com.vicious.viciouscore.common.util;
 
 import net.minecraftforge.common.util.LazyOptional;
 
+/**
+ * IHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThemIHateThem
+ * Null Checks Are Cool.
+ */
 public class FuckLazyOptionals {
     public static boolean isPresent(LazyOptional<?> opt){
         return opt.isPresent() && opt.resolve().isPresent();
