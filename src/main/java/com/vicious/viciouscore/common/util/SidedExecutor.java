@@ -10,4 +10,11 @@ public class SidedExecutor {
             return null;
         });
     }
+
+    public static void serverOnly(Runnable run) {
+        DistExecutor.unsafeCallWhenOn(Dist.DEDICATED_SERVER,()->()->{
+            run.run();
+            return null;
+        });
+    }
 }

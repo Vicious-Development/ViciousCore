@@ -44,7 +44,7 @@ public class BlockMultiblockComponent extends ViciousBlock implements ITileEntit
     @Override
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(world, pos, neighbor);
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if(te == null) return;
         notifyParent(te.getWorld(),pos);
     }

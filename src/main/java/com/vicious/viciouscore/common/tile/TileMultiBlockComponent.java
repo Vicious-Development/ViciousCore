@@ -1,12 +1,15 @@
 package com.vicious.viciouscore.common.tile;
 
+import com.vicious.viciouscore.common.util.SidedExecutor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,81 +18,90 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
     public List<INotifiable<Object>> parents = new ArrayList<>();
     public long lastTick = -1;
     private boolean hasBeenValidatedAlready = false;
-    public TileMultiBlockComponent(){}
+
+    public TileMultiBlockComponent(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
+        super(p_155228_, p_155229_, p_155230_);
+        //Prevents infinite looping on chunk gen.
+    }
+
+    /**
+     * Equivalent of validate()
+     */
+    @Override
+    public void setLevel(Level p_155231_) {
+        super.setLevel(p_155231_);
+        notifyNeighbors();
+        notifyParent();
+    }
+
     @SuppressWarnings({"rawtypes","unchecked"})
     public void notifyNeighbors(){
-        long worldTick = world != null ? world.getTotalWorldTime() : -1;
-        forNeighborBlockTiles((bs,te,bpos)->{
-            Block b = bs.getBlock();
-            TileMultiBlockComponent tmbc = null;
-            if(te instanceof TileMultiBlockComponent){
-                tmbc = (TileMultiBlockComponent) te;
-            }
-            if (tmbc != null) {
-                if(tmbc.lastTick != worldTick) {
-                    tmbc.lastTick = worldTick;
-                    List<INotifiable<Object>> parentList = tmbc.getParents();
-                    for (INotifiable<Object> parent : parentList) {
-                        if (!parents.contains(parent)) parents.add(parent);
-                    }
-                    tmbc.setParents(parents);
+        SidedExecutor.serverOnly(()->{
+            long worldTick = level != null ? level.getGameTime() : -1;
+            forNeighborBlockTiles((bs,te,bpos)->{
+                Block b = bs.getBlock();
+                TileMultiBlockComponent tmbc = null;
+                if(te instanceof TileMultiBlockComponent){
+                    tmbc = (TileMultiBlockComponent) te;
                 }
-            }
+                if (tmbc != null) {
+                    if(tmbc.lastTick != worldTick) {
+                        tmbc.lastTick = worldTick;
+                        List<INotifiable<Object>> parentList = tmbc.getParents();
+                        for (INotifiable<Object> parent : parentList) {
+                            if (!parents.contains(parent)) parents.add(parent);
+                        }
+                        tmbc.setParents(parents);
+                    }
+                }
+            });
         });
     }
 
-
     @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
         notifyParent();
     }
 
     @Override
-    public void updateContainingBlockInfo() {
-        super.updateContainingBlockInfo();
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
         notifyParent();
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
+    public void setRemoved() {
+        super.setRemoved();
         notifyNeighbors();
         notifyParent();
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        //Prevents infinite looping on chunk gen.
-        if(hasBeenValidatedAlready) return;
-        hasBeenValidatedAlready = true;
-        notifyNeighbors();
-        notifyParent();
 
-    }
 
     /**
      * Notify the parent that it should do something.
      * Remove the parent if the parent is no longer a valid parent.
      */
     public void notifyParent(){
-        for (int i = 0; i < parents.size(); i++) {
-            INotifiable<Object> parent = parents.get(i);
-            if(parent instanceof TileEntity) {
-                if (((TileEntity) parent).isInvalid()) {
+        SidedExecutor.serverOnly(()->{
+            for (int i = 0; i < parents.size(); i++) {
+                INotifiable<Object> parent = parents.get(i);
+                if(parent instanceof BlockEntity) {
+                    if (((BlockEntity) parent).isRemoved()) {
+                        parents.remove(i);
+                        i--;
+                    }
+                    else if (parent != null) {
+                        parent.notify(this);
+                    }
+                }
+                else {
                     parents.remove(i);
                     i--;
                 }
-                else if (parent != null) {
-                    parent.notify(this);
-                }
             }
-            else {
-                parents.remove(i);
-                i--;
-            }
-        }
+        });
     }
 
     @Override
@@ -108,19 +120,8 @@ public class TileMultiBlockComponent extends ViciousTE implements INotifier<Obje
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        return super.writeToNBT(compound);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-    }
-
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
+    public @NotNull CompoundTag getUpdateTag() {
         notifyParent();
-        return super.getUpdatePacket();
+        return super.getUpdateTag();
     }
 }
