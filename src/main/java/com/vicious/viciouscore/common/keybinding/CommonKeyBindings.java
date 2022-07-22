@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class CommonKeyBindings {
     public static Map<Integer,CommonKeyBinding> keyBindingList = new HashMap<>();
-    public static CommonKeyBinding VCSHOOT = new CommonKeyBinding("key.vc.shoot", -99, "key.viciouscore.category"));
-    public static CommonKeyBinding VCAIM = new CommonKeyBinding("key.vc.aim", -100, "key.viciouscore.category"));
+    public static CommonKeyBinding VCSHOOT = add(new CommonKeyBinding("key.vc.shoot", -99, "key.viciouscore.category"));
+    public static CommonKeyBinding VCAIM = add(new CommonKeyBinding("key.vc.aim", -100, "key.viciouscore.category"));
     public static void setup(){}
     public static void register(RegisterKeyMappingsEvent event){
         for (CommonKeyBinding key : keyBindingList.values()) {

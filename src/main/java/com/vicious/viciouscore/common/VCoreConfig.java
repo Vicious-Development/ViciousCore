@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.common;
 
-import com.vicious.viciouscore.common.configuration.ViciousConfigManager;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouslib.configuration.ConfigurationValue;
 import com.vicious.viciouslib.configuration.JSONConfig;
@@ -16,7 +15,6 @@ public class VCoreConfig extends JSONConfig {
     public static VCoreConfig getInstance() {
         if (instance == null) {
             instance = new VCoreConfig(ViciousDirectories.viciousCoreConfigPath);
-            ViciousConfigManager.register(instance);
         }
         return instance;
     }

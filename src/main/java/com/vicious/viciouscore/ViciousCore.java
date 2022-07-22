@@ -3,11 +3,9 @@ package com.vicious.viciouscore;
 import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.event.ViciousCoreCommonEventHandler;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
-import com.vicious.viciouscore.common.registries.VEntityRegistry;
-import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
+import com.vicious.viciouscore.common.tile.VCBlockEntities;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,7 +44,7 @@ public class ViciousCore
         });
     }
 
-    private static final Logger logger = LogManager.getLogger();
+    public static final Logger logger = LogManager.getLogger();
     public void setup(FMLCommonSetupEvent event)
     {
         instance = this;
@@ -56,10 +54,9 @@ public class ViciousCore
         CommonKeyBindings.setup();
         //Initialize the network.
         VCNetwork.getInstance();
-        VEntityRegistry.register();
-        MinecraftForge.EVENT_BUS.register(ViciousCoreCommonEventHandler.class);
         MinecraftForge.EVENT_BUS.register(VCCapabilities.class);
         MinecraftForge.EVENT_BUS.register(CommonKeyBindings.class);
+        VCBlockEntities.init();
     }
     public void networkInit(){
         VCNetwork.getInstance();
@@ -72,7 +69,6 @@ public class ViciousCore
         if(isFirstLoad()) {
             CFG.firstLoad.set(true);
         }
-        VTileEntityRegistry.register();
     }
 
     public void serverInit(ServerStartingEvent event) {

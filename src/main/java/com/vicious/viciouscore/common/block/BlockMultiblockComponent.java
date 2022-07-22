@@ -2,57 +2,56 @@ package com.vicious.viciouscore.common.block;
 
 import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.tile.TileMultiBlockComponent;
-import com.vicious.viciouscore.common.util.reflect.IFieldCloner;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 
 /**
  * Block that notifies a parent TileEntity when updated.
  * All mods should do this, it reduces the need to recheck if the multiblock has been damaged.
  */
-public class BlockMultiblockComponent extends ViciousBlock implements ITileEntityProvider, IFieldCloner {
-    public BlockMultiblockComponent(Material materialIn) {
-        super(materialIn);
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileMultiBlockComponent();
+public class BlockMultiblockComponent extends ViciousBlock implements EntityBlock {
+    public BlockMultiblockComponent(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public void onBlockDestroyed(World worldIn, BlockPos pos) {
+    public void onBlockDestroyed(Level worldIn, BlockPos pos) {
         notifyParent(worldIn, pos);
         super.onBlockDestroyed(worldIn, pos);
     }
 
     @Override
-    public void onBlockUpdated(World worldIn, BlockPos pos) {
+    public void onBlockUpdated(Level worldIn, BlockPos pos) {
         //Disabled notify for now to allow more control.
         //notifyParent(worldIn, pos);
         super.onBlockUpdated(worldIn, pos);
     }
 
     @Override
-    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(world, pos, neighbor);
-        TileEntity te = world.getBlockEntity(pos);
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(state, level, pos, neighbor);
+        BlockEntity te = level.getBlockEntity(pos);
         if(te == null) return;
-        notifyParent(te.getWorld(),pos);
+        te.getLevel();
+        notifyParent(level,pos);
     }
 
-    public void notifyParent(World worldin, BlockPos pos){
-        TileEntity tile = worldin.getTileEntity(pos);
+    public void notifyParent(LevelReader worldin, BlockPos pos){
+        BlockEntity tile = worldin.getBlockEntity(pos);
         if(tile instanceof INotifier){
-            ((INotifier)tile).notifyParent();
+            ((INotifier<?>)tile).notifyParent();
         }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState blockState) {
+        return new TileMultiBlockComponent(pos,blockState);
     }
 }

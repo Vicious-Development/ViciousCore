@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViciousTE extends BlockEntity {
-    public ViciousTE(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
-        super(p_155228_, p_155229_, p_155230_);
+    public ViciousTE(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     public List<BlockEntity> getNeighborBEntitys(){
