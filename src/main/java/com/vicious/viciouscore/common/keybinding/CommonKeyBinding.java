@@ -1,15 +1,16 @@
 package com.vicious.viciouscore.common.keybinding;
 
-import net.minecraft.client.settings.KeyBinding;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CommonKeyBinding {
     private static int nextId = -1;
-    @SideOnly(Side.CLIENT)
-    public KeyBinding clientKey;
+    @OnlyIn(Dist.CLIENT)
+    public KeyMapping clientKey;
     public final String name;
     public final int defaultKeyCode;
     public String category;
@@ -28,11 +29,12 @@ public class CommonKeyBinding {
         this.category=category;
         this.ID=identifier;
     }
-    @SideOnly(Side.CLIENT)
-    public KeyBinding toClientKeyBinding(IKeyConflictContext context, KeyModifier modifier) {
-        if(context == null) clientKey = new KeyBinding(name, defaultKeyCode, category);
+    @OnlyIn(Dist.CLIENT)
+    public KeyMapping toClientKeyBinding(IKeyConflictContext context, KeyModifier modifier) {
+        if(context == null) clientKey = new KeyMapping(name, defaultKeyCode, category);
         else {
-            clientKey = modifier != null ? new KeyBinding(name, context, modifier, defaultKeyCode, category) : new KeyBinding(name, context, defaultKeyCode, category);
+
+            clientKey = modifier != null ? new KeyMapping(name, context, modifier,InputConstants.Type.KEYSYM, defaultKeyCode, category) : new KeyMapping(name, context,InputConstants.Type.KEYSYM, defaultKeyCode, category);
         }
         return clientKey;
     }

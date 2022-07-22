@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.common.util.resources;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.coremod.CoreMod;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 
 import java.io.*;
@@ -58,7 +59,7 @@ public class GameResourceHelper {
             try {
                 File modjar = getModJarFromId(modid);
                 ((LaunchClassLoader) GameResourceHelper.class.getClassLoader()).addURL(modjar.toURI().toURL());
-                CoreModManager.getReparseableCoremods().add(modjar.getName());
+                .getReparseableCoremods().add(modjar.getName());
                 return true;
             }
             catch(MalformedURLException e) {

@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.common.recipe;
 
-import net.minecraft.item.ItemStack;
+
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class RecipeValidator {
         return true;
     }
     public static boolean itemEqualsAndSufficient(ItemStack in, ItemStack expected){
-        boolean ret = in.isItemEqual(expected) && in.getCount() >= expected.getCount();
+        boolean ret = in.is(expected.getItem()) && in.getCount() >= expected.getCount();
         if(!ret) return false;
-        if(in.getTagCompound() != null) ret = in.getTagCompound().equals(expected.getTagCompound());
+        if(in.getTag() != null) ret = in.getTag().equals(expected.getTag());
         return ret;
     }
 }

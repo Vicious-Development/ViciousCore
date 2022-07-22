@@ -2,34 +2,28 @@ package com.vicious.viciouscore;
 
 import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
-import com.vicious.viciouscore.common.ViciousCTab;
-import com.vicious.viciouscore.common.commands.CommandConfig;
-import com.vicious.viciouscore.common.commands.CommandStructure;
+import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.event.ViciousCoreCommonEventHandler;
-import com.vicious.viciouscore.common.item.ViciousItem;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
-import com.vicious.viciouscore.common.network.packets.CMessageButtonPressReceived;
-import com.vicious.viciouscore.common.network.packets.SMessageButtonUpdate;
-import com.vicious.viciouscore.common.network.handlers.SButtonPressHandler;
-import com.vicious.viciouscore.common.override.MobSpawnListener;
-import com.vicious.viciouscore.common.override.OverrideHandler;
-import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
-import com.vicious.viciouscore.common.override.block.SpongeEventHandler;
-import com.vicious.viciouscore.common.override.tile.TileEntityOverrideHandler;
-import com.vicious.viciouscore.common.player.ViciousCorePlayerManager;
+import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.registries.VEntityRegistry;
 import com.vicious.viciouscore.common.registries.VTileEntityRegistry;
+import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.GameShuttingDownEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod("viciouscore")
 public class ViciousCore
 {
-    private static int nextPacketId = -1;
-    public static ViciousCTab TABVICIOUS = new ViciousCTab("viciouscreativetab", new ViciousItem("creativeicon", false));
     public boolean isFirstLoad(){
         return !CFG.firstLoad.getBoolean();
     }
@@ -42,63 +36,51 @@ public class ViciousCore
         ViciousDirectories.initializeConfigDependents();
         CFG = VCoreConfig.getInstance();
     }
+    public ViciousCore(){
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onStop);
+        SidedExecutor.clientOnly(()->{
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        });
+    }
 
-    public static Logger logger;
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    private static final Logger logger = LogManager.getLogger();
+    public void setup(FMLCommonSetupEvent event)
     {
         instance = this;
-        logger = event.getModLog();
-        if(event.getSide() == Side.CLIENT) clientPreInit();
         if(isFirstLoad()) {
             logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
         }
-        CommonKeyBindings.init();
-        networkInit();
+        CommonKeyBindings.setup();
+        //Initialize the network.
+        VCNetwork.getInstance();
         VEntityRegistry.register();
-        spongePreInit();
-        MinecraftForge.EVENT_BUS.register(MobSpawnListener.class);
-        MinecraftForge.EVENT_BUS.register(ViciousCorePlayerManager.class);
-        MinecraftForge.EVENT_BUS.register(TileEntityOverrideHandler.class);
-        MinecraftForge.EVENT_BUS.register(BlockOverrideHandler.class);
         MinecraftForge.EVENT_BUS.register(ViciousCoreCommonEventHandler.class);
-        VCoreOverrides.init();
-        OverrideHandler.onPreInit();
-        TileEntityOverrideHandler.init();
+        MinecraftForge.EVENT_BUS.register(VCCapabilities.class);
+        MinecraftForge.EVENT_BUS.register(CommonKeyBindings.class);
     }
     public void networkInit(){
-        NETWORK.registerMessage(new SButtonPressHandler(), SMessageButtonUpdate.class,nextPacketId(), Side.SERVER);
-        NETWORK.registerMessage(CButtonPressHandler.getInstance(), CMessageButtonPressReceived.class,nextPacketId(),Side.CLIENT);
+        VCNetwork.getInstance();
     }
-    public void spongePreInit(){
-        if(!Loader.isModLoaded("sponge")) return;
-        Sponge.getEventManager().registerListeners(this, new SpongeEventHandler());
-    }
-    public void clientPreInit(){
+    public void clientSetup(FMLClientSetupEvent event){
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);
     }
-
-    @EventHandler
-    public void init(FMLInitializationEvent event)
+    public void postInit(FMLLoadCompleteEvent event)
     {
         if(isFirstLoad()) {
             CFG.firstLoad.set(true);
         }
         VTileEntityRegistry.register();
-        OverrideHandler.onInit();
     }
 
-    @EventHandler
-    public static void serverInit(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandConfig());
-        event.registerServerCommand(new CommandStructure());
+    public void serverInit(ServerStartingEvent event) {
+        //TODO: commands
+        //event.getServer().com(new CommandConfig());
+        //event.registerServerCommand(new CommandStructure());
     }
-    @EventHandler
-    public void onStop(FMLModDisabledEvent event){
+    public void onStop(GameShuttingDownEvent event){
         CFG.save();
-    }
-    private int nextPacketId(){
-        nextPacketId++;
-        return nextPacketId;
     }
 }

@@ -1,7 +1,5 @@
 package com.vicious.viciouscore.common.util.file;
 
-import net.minecraftforge.fml.common.Loader;
-
 import java.nio.file.Path;
 
 public class ViciousDirectories {
@@ -31,7 +29,7 @@ public class ViciousDirectories {
     }
 
     public static String rootDir() {
-        String dir = Loader.instance().getConfigDir().getParent();
+        String dir = ".";
         return dir;
     }
 }

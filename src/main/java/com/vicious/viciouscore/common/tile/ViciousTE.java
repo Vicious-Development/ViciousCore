@@ -1,16 +1,21 @@
 package com.vicious.viciouscore.common.tile;
 
-import com.vicious.viciouscore.ViciousCoreLoadingPlugin;
+import com.mojang.datafixers.types.Type;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.spongepowered.common.bridge.world.chunk.ActiveChunkReferantBridge;
 import org.spongepowered.common.bridge.world.chunk.ChunkBridge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ViciousTE extends TileEntity {
     public List<TileEntity> getNeighborTiles(){

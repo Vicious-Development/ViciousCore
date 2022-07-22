@@ -1,23 +1,9 @@
 package com.vicious.viciouscore.common.commands;
 
-import com.google.common.collect.Lists;
-import com.vicious.viciouscore.common.VCoreConfig;
-import com.vicious.viciouscore.common.configuration.ViciousConfigManager;
-import com.vicious.viciouslib.configuration.ConfigurationValue;
-import com.vicious.viciouslib.database.tracking.values.TrackableValue;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-
-import java.util.List;
-
-
-/**
+/* TODO: REIMPL
  * Changes configuration values while the game is running if possible.
- */
-public class CommandConfig extends CommandBase {
+
+public class CommandConfig extends Command {
     private final List<String> alias = Lists.newArrayList("vconfig", "vcfg");
 
     @Override
@@ -68,3 +54,4 @@ public class CommandConfig extends CommandBase {
         }
     }
 }
+ */

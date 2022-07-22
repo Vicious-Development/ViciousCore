@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.common.worldgen;
 
-import com.vicious.viciouscore.common.util.WorldUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenStructure;
