@@ -1,11 +1,12 @@
 package com.vicious.viciouscore.client.gui.widgets;
 
-import com.vicious.viciouscore.client.util.Vector2i;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.util.WindowGetter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
-
-import java.awt.*;
 
 public class WidgetImage extends VCWidget {
     private static Minecraft minecraft = Minecraft.getInstance();
@@ -13,31 +14,27 @@ public class WidgetImage extends VCWidget {
     //Used to control what part of the image is shown.
     public int cutOffRight = 0, cutOffLeft = 0, cutOffTop = 0, cutOffBottom = 0;
     public ResourceLocation source;
-    public WidgetImage(int x, int y, int w, int h, TextComponent text, ResourceLocation widgetResource) {
-        super(x, y, w, h, text);
+    public WidgetImage(RootWidget root, int x, int y, int w, int h, ResourceLocation widgetResource) {
+        super(root, x, y, w, h);
         source = widgetResource;
     }
-    public WidgetImage(int x, int y, int w, int h, Vector2i tv, TextComponent text, ResourceLocation widgetResource) {
-        super(x, y, w, h, tv, text);
-        source = widgetResource;
 
-    }
-    //Renders four widget corners accounting for horizontal and vertical cutoff masking.
-    public void renderWidget(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    @Override
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(WindowGetter.window == null || !visible) return;
-        MainWindow window = WindowGetter.window;
-        minecraft.getTextureManager().bindTexture(source);
+        Window window = WindowGetter.window;
+        minecraft.getTextureManager().bindForSetup(source);
         boolean doRender = true;
         boolean DRL = true;
         boolean DRR = true;
         boolean DRU = true;
         boolean DRD = true;
-        int uvy = -(this.getYImage(this.isHovered())) + 1;
+        int uvy = -(this.getYImage(this.hovered)) + 1;
         int uvx = 0;
-        int newX = x;// + relativisticPos.getActualX();
-        int newY = y;// + relativisticPos.getActualY();
-        int width = getWidth();
-        int height = getHeight();
+        int newX = actualPosition.x;
+        int newY = actualPosition.y;
+        int width = actualWH.x;
+        int height = actualWH.y;
         int halfWidthLeft = width / 2;
         int halfWidthRight = width % 2 == 0 ? halfWidthLeft : halfWidthLeft + 1;
         int halfHeightTop = height / 2;
@@ -113,33 +110,26 @@ public class WidgetImage extends VCWidget {
         //Image shown must also be the bottom, however the renderer renders top down meaning the top is shown rather than the bottom
         //Solution: shift the rendering start position down
 
-        //TODO:Implement bottom-up rendering.
         if(doRender) {
             //Left Top
-            if(DRU && DRL) blit(matrixStack, newX, newY, uvx-uvxshift, uvy-uvyshift, halfWidthLeft, halfHeightTop, width, height);
+            if(DRU && DRL) Screen.blit(matrixStack, newX, newY, uvx - uvxshift, uvy - uvyshift, halfWidthLeft, halfHeightTop, width, height);
             //Left Bottom
-            if(DRD && DRL) blit(matrixStack, newX, newY + halfHeightTop, uvx-uvxshift, uvy - halfHeightBottom, halfWidthLeft, halfHeightBottom, width, height);
+            if(DRD && DRL) Screen.blit(matrixStack, newX, newY + halfHeightTop, uvx-uvxshift, uvy - halfHeightBottom, halfWidthLeft, halfHeightBottom, width, height);
             //Right Top
-            if(DRU && DRR) blit(matrixStack, newX + halfWidthLeft, newY, width - halfWidthLeft, uvy-uvyshift, halfWidthRight, halfHeightTop, width, height);
+            if(DRU && DRR) Screen.blit(matrixStack, newX + halfWidthLeft, newY, width - halfWidthLeft, uvy-uvyshift, halfWidthRight, halfHeightTop, width, height);
             //Right Bottom
-            if(DRD && DRR) blit(matrixStack, newX + halfWidthLeft, newY + halfHeightTop, width - halfWidthLeft, uvy - halfHeightBottom, halfWidthRight, halfHeightBottom, width, height);
+            if(DRD && DRR) Screen.blit(matrixStack, newX + halfWidthLeft, newY + halfHeightTop, width - halfWidthLeft, uvy - halfHeightBottom, halfWidthRight, halfHeightBottom, width, height);
         }
-        this.renderBg(matrixStack, minecraft, mouseX, mouseY);
-    }
-    public WidgetImage getUpdatedWidget(){
-        WidgetImage updated = new WidgetImage(x, y, width, height, startPos, getMessage(), source);
-        updated.children = updateChildren();
-        return updated;
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
     protected int getYImage(boolean isHovered) {
-        int i = 1;
-        if (!this.active) {
-            i = 0;
-        } else if (isHovered && !(this instanceof WidgetDraggable)) {
-            i = 2;
+        if (isHovered) {
+            return 2;
         }
-
-        return i;
+        return 1;
+    }
+    private void resetColor(){
+        RenderSystem.setShaderColor(1,1,1,1);
     }
 }
 

@@ -2,8 +2,8 @@ package com.vicious.viciouscore.client;
 
 
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
-import com.vicious.viciouscore.common.network.packets.CPacketButtonPressReceived;
-import com.vicious.viciouscore.common.network.packets.SPacketButtonUpdate;
+import com.vicious.viciouscore.common.network.packets.keybindpress.CPacketButtonPressReceived;
+import com.vicious.viciouscore.common.network.packets.keybindpress.SPacketButtonUpdate;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.network.packets;
+package com.vicious.viciouscore.common.network.packets.keybindpress;
 
 import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.capability.keypresshandler.KeyPressHandler;
