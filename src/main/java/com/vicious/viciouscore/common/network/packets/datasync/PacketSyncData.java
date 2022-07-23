@@ -6,23 +6,23 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class PacketSyncData extends VCPacket {
     private final CompoundTag nbt;
-    private final int instanceId;
+    private final int targetID;
     public PacketSyncData(int windowId, CompoundTag tag){
-        this.instanceId=windowId;
+        this.targetID =windowId;
         this.nbt = tag;
     }
     public PacketSyncData(FriendlyByteBuf buf){
-        instanceId = buf.readUnsignedByte();
+        targetID = buf.readUnsignedByte();
         nbt = buf.readNbt();
     }
     @Override
     public void toBytes(FriendlyByteBuf buf){
-        buf.writeByte(this.instanceId);
+        buf.writeByte(this.targetID);
         buf.writeNbt(this.nbt);
     }
 
-    public int getInstanceId() {
-        return instanceId;
+    public int getTargetID() {
+        return targetID;
     }
 
     public CompoundTag getNBT() {

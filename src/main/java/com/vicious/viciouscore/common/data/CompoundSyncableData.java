@@ -1,50 +1,56 @@
 package com.vicious.viciouscore.common.data;
 
-import com.vicious.viciouscore.common.network.VCNetwork;
-import com.vicious.viciouscore.common.network.packets.datasync.CPacketSyncDataIDs;
-import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.function.Consumer;
 
-public class CompoundSyncableData {
-    protected List<SyncableData> tosync = new ArrayList<>();
-    public void updateClient(ServerPlayer player){
-        for(int i = 0; i < tosync.size(); i++){
-            tosync.get(i).updateClient(player);
+public class CompoundSyncableData implements ICapabilityProvider {
+    protected LinkedHashMap<Capability<?>,SyncableData> tosync = new LinkedHashMap<>();
+    public void forEachSyncable(Consumer<SyncableData> cons){
+        for (Capability<?> capability : tosync.keySet()) {
+            cons.accept(tosync.get(capability));
         }
     }
-    public void initializeClientWindow(int window, ServerPlayer plr){
-        List<Integer> lst = new ArrayList<>();
-        for (SyncableData syncableData : tosync) {
-            lst.add(syncableData.instanceID);
-        }
-        VCNetwork.getInstance().sendToPlayer(plr,new CPacketSyncDataIDs.Window(lst,window));
+    public void updateClient(ServerPlayer player){
+        forEachSyncable((s)->s.updateClient(player));
     }
     public void putIntoNBT(CompoundTag nbt){
-        for(SyncableData sync : tosync){
-            sync.putIntoNBT(nbt);
-        }
+        forEachSyncable((s)->putIntoNBT(nbt));
     }
     public void readFromNBT(CompoundTag nbt, DataEditor editor) {
-        for(SyncableData sync : tosync){
-            sync.readFromNBT(nbt, editor);
-        }
+        forEachSyncable((s)->s.readFromNBT(nbt,editor));
     }
-    public <T extends SyncableData> T add(T data){
-        tosync.add(data);
+    public <T extends SyncableData> T put(T data){
+        tosync.put(data.getCapabilityToken(),data);
         return data;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void handleCreationPacket(CPacketSyncDataIDs.Window pkt) {
-        IntList ints = pkt.instanceIDs;
-        for (int i = 0; i < ints.size(); i++) {
-            tosync.get(i).instanceID=ints.getInt(i);
+    @Override
+    @SuppressWarnings("unchecked")
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        T sync = (T) tosync.get(cap);
+        if(sync instanceof SidedSyncableData sided){
+            if(sided.isAccessible(side)){
+                return LazyOptional.of(()->sync);
+            }
+            return LazyOptional.empty();
         }
+        else return LazyOptional.of(()->sync);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        T sync = (T)tosync.get(cap);
+        if(sync == null) return LazyOptional.empty();
+        return LazyOptional.of(()->sync);
     }
 }

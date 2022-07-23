@@ -1,5 +1,9 @@
-package com.vicious.viciouscore.common.tile;
+package com.vicious.viciouscore.common.tile.tickless;
 
+import com.vicious.viciouscore.common.tile.INotifiable;
+import com.vicious.viciouscore.common.tile.INotifier;
+import com.vicious.viciouscore.common.tile.VCBlockEntities;
+import com.vicious.viciouscore.common.tile.VCTE;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: make multiblockcomponents notify each other less.
-public class TileMultiBlockComponent extends ViciousTE implements INotifier<Object> {
+public class TileMultiBlockComponent extends VCTE implements INotifier<Object> {
     public List<INotifiable<Object>> parents = new ArrayList<>();
     public long lastTick = -1;
     private boolean hasBeenValidatedAlready = false;

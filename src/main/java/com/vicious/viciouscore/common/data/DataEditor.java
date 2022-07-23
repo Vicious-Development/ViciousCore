@@ -4,7 +4,7 @@ import com.vicious.viciouscore.ViciousCore;
 import net.minecraft.server.level.ServerPlayer;
 
 public class DataEditor {
-    public static DataEditor SERVER = new Server();
+    public static DataEditor LOCAL = new Local();
 
     public static DataEditor.Remote of(ServerPlayer sender) {
         return new DataEditor.Remote(sender);
@@ -18,12 +18,7 @@ public class DataEditor {
     /**
      * For when the server modifies local data.
      */
-    private static class Server extends DataEditor{}
-
-    /**
-     * For when the client modifies local data.
-     */
-    public static class Client extends DataEditor{}
+    public static class Local extends DataEditor{}
 
     /**
      * In client-server comms, on the server end all player packet requests go through a RemoteDataEditor.

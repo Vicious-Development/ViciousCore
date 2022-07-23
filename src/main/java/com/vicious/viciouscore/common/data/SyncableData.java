@@ -1,20 +1,21 @@
 package com.vicious.viciouscore.common.data;
 
 
-import com.vicious.viciouscore.common.data.storage.Syncable;
-import com.vicious.viciouscore.common.data.storage.SyncableValue;
+import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
+import com.vicious.viciouscore.common.data.values.Syncable;
+import com.vicious.viciouscore.common.data.values.SyncableValue;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.packets.datasync.SPacketSyncData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyncableData{
+public abstract class SyncableData implements IVCCapabilityHandler {
     protected List<Syncable<?>> tosync = new ArrayList<>();
     protected int instanceID = -1;
-    SyncableData(){}
 
     public void track(Syncable<?> totrack){
         tosync.add(totrack);
@@ -22,9 +23,9 @@ public class SyncableData{
     public void updateClient(ServerPlayer player){
         CompoundTag nbt = new CompoundTag();
         for (Syncable<?> syncable : tosync) {
-            syncable.putIntoNBT(nbt);
+            if(syncable.clientReadable()) syncable.putIntoNBT(nbt);
         }
-        if(!nbt.isEmpty()) VCNetwork.getInstance().sendToPlayer(player,new SPacketSyncData(instanceID,nbt));
+        if(!nbt.isEmpty()) VCNetwork.getInstance().sendToPlayer(player,new SPacketSyncData.Window(instanceID,nbt));
     }
     public void putIntoNBT(CompoundTag nbt){
         for(Syncable<?> sync : tosync){
@@ -47,6 +48,8 @@ public class SyncableData{
             }
         }
     }
+    public abstract Capability<?> getCapabilityToken();
+
     public boolean isInitialized(){
         return instanceID > -1;
     }

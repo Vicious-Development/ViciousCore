@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.data.storage;
+package com.vicious.viciouscore.common.data.values;
 
 
 import net.minecraft.nbt.CompoundTag;
@@ -8,6 +8,7 @@ public abstract class Syncable<T> {
     public boolean doSave = true;
     protected boolean alwaysDirty = false;
     protected boolean clientEditable = false;
+    protected boolean clientReadable = true;
 
     protected void markDirty() {
         dirty = true;
@@ -36,5 +37,12 @@ public abstract class Syncable<T> {
     public static <S extends Syncable> S alwaysDirty(S s){
         s.alwaysDirty = true;
         return s;
+    }
+
+    /**
+     * Determines if the data will be sent to the client. Do note that even if a value is readable, it may not be editable and vice versa.
+     */
+    public boolean clientReadable() {
+        return clientReadable;
     }
 }

@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class ViciousBlock extends Block {
+public class VCBlock extends Block {
 
 
-    public ViciousBlock(Properties properties) {
+    public VCBlock(Properties properties) {
         super(properties);
     }
 

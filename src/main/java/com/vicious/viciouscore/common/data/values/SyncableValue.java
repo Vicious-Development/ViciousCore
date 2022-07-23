@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.data.storage;
+package com.vicious.viciouscore.common.data.values;
 
 public abstract class SyncableValue<T> extends Syncable<T>{
     protected T value;

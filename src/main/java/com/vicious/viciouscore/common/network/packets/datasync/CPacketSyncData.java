@@ -1,26 +1,41 @@
 package com.vicious.viciouscore.common.network.packets.datasync;
 
 import com.vicious.viciouscore.common.data.DataEditor;
-import com.vicious.viciouscore.common.data.VCDataSyncHandler;
+import com.vicious.viciouscore.common.inventory.container.GenericContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class CPacketSyncData extends PacketSyncData{
-    private static final DataEditor.Client editor = new DataEditor.Client();
+public abstract class CPacketSyncData extends PacketSyncData{
 
-    public CPacketSyncData(int windowId, CompoundTag tag) {
-        super(windowId, tag);
+    public CPacketSyncData(int targetID, CompoundTag tag) {
+        super(targetID, tag);
     }
 
     public CPacketSyncData(FriendlyByteBuf buf) {
         super(buf);
     }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> context) {
-        VCDataSyncHandler.getInstance().get(getInstanceId()).readFromNBT(getNBT(), editor);
+    public static class Window extends CPacketSyncData{
+        public Window(int targetID, CompoundTag tag) {
+            super(targetID, tag);
+        }
+
+        public Window(FriendlyByteBuf buf) {
+            super(buf);
+        }
+
+        @Override
+        @SuppressWarnings("all")
+        public void handle(Supplier<NetworkEvent.Context> context) {
+            AbstractContainerMenu target = Minecraft.getInstance().player.containerMenu;
+            if (target.containerId == getTargetID() && target instanceof GenericContainer<?> gc) {
+                gc.getCompoundData().readFromNBT(getNBT(), DataEditor.LOCAL);
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.data.storage;
+package com.vicious.viciouscore.common.data.values;
 
 
 import net.minecraft.nbt.CompoundTag;

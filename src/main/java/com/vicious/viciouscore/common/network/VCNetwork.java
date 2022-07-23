@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.common.network;
 
-import com.vicious.viciouscore.common.network.packets.datasync.CPacketSyncDataIDs;
 import com.vicious.viciouscore.common.network.packets.datasync.CPacketSyncData;
 import com.vicious.viciouscore.common.network.packets.datasync.SPacketSyncData;
 import com.vicious.viciouscore.common.network.packets.keybindpress.CPacketButtonPressReceived;
@@ -24,9 +23,8 @@ public class VCNetwork {
     public VCNetwork(){
         VCPacket.register(CPacketButtonPressReceived.class, CPacketButtonPressReceived::new);
         VCPacket.register(SPacketButtonUpdate.class, SPacketButtonUpdate::new);
-        VCPacket.register(CPacketSyncData.class, CPacketSyncData::new);
-        VCPacket.register(SPacketSyncData.class, SPacketSyncData::new);
-        VCPacket.register(CPacketSyncDataIDs.Window.class, CPacketSyncDataIDs.Window::new);
+        VCPacket.register(CPacketSyncData.Window.class, CPacketSyncData.Window::new);
+        VCPacket.register(SPacketSyncData.Window.class, SPacketSyncData.Window::new);
     }
 
     public static String getProtocolVersion(){
