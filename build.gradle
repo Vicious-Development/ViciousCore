@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.1.9'
+String projectver = '1.2.0'
 String vlibver = '2.0.9'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
@@ -152,11 +152,12 @@ jar {
 }
 jar.finalizedBy('reobfJar')
 
-publish.dependsOn('deobfJar')
+publish.dependsOn('deobfShadowJar')
 def manif = {
 }
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
+
+task deobfShadowJar(type: Jar) {
+    from shadowJar
     classifier = 'deobf'
     manifest manif
 }
