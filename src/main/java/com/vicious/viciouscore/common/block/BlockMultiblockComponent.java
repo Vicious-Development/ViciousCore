@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.block;
 
-import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.tile.tickless.TileMultiBlockComponent;
+import com.vicious.viciouslib.util.interfaces.INotifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;

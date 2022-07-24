@@ -1,10 +1,10 @@
 package com.vicious.viciouscore.common.tile.tickless;
 
-import com.vicious.viciouscore.common.tile.INotifiable;
-import com.vicious.viciouscore.common.tile.INotifier;
 import com.vicious.viciouscore.common.tile.VCBlockEntities;
 import com.vicious.viciouscore.common.tile.VCTE;
 import com.vicious.viciouscore.common.util.SidedExecutor;
+import com.vicious.viciouslib.util.interfaces.INotifiable;
+import com.vicious.viciouslib.util.interfaces.INotifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

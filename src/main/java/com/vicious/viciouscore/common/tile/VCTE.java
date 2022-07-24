@@ -5,7 +5,7 @@ import com.vicious.viciouscore.common.data.DataEditor;
 import com.vicious.viciouscore.common.data.SyncableData;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
 import com.vicious.viciouscore.common.util.VCMath;
-import com.vicious.viciouslib.util.TriConsumer;
+import com.vicious.viciouslib.util.interfaces.TriConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

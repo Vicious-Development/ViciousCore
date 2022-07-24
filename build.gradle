@@ -32,7 +32,8 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.1.7'
+String projectver = '1.1.9'
+String vlibver = '2.0.9'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
 
@@ -124,10 +125,14 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mcver}-${forgever}"
-    implementation "com.vicious:viciouslib:2.0.8"
-    implementation 'org.json:json:20220320'
+    embed "com.vicious:viciouslib:${vlibver}"
+    embed 'org.json:json:20220320'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
+}
+
+shadowJar{
+    configurations = [project.configurations.embed]
 }
 
 
