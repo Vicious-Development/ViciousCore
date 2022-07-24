@@ -1,9 +1,8 @@
 package com.vicious.viciouscore.common.data.values;
 
 import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
-import net.minecraft.nbt.CompoundTag;
 
-public class SyncableInventoryHandler extends SyncableValue<FastItemStackHandler>{
+public class SyncableInventoryHandler extends SyncableObject<FastItemStackHandler>{
     public SyncableInventoryHandler(int size, String name) {
         super(new FastItemStackHandler(size), name);
     }
@@ -15,15 +14,4 @@ public class SyncableInventoryHandler extends SyncableValue<FastItemStackHandler
     public boolean clientEditable() {
         return false;
     }
-
-    @Override
-    public void readFromNBT(CompoundTag nbtTagCompound) {
-        value.deserializeNBT(nbtTagCompound);
-    }
-
-    @Override
-    public void putIntoNBT(CompoundTag tag) {
-        tag.put(name,value.serializeNBT());
-    }
-
 }

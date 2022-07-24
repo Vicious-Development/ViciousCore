@@ -17,7 +17,7 @@ public class VCBlockEntities {
     public static RegistryObject<BlockEntityType<TileMultiBlockComponent>> MULTIBLOCKCOMPONENT = register("multiblockcomponent",TileMultiBlockComponent.class,TileMultiBlockComponent::new);
     public static <T extends VCTE> RegistryObject<BlockEntityType<T>> register(String tileID, Class<T> cls, BlockEntityType.BlockEntitySupplier<T> constructor, Block... associatedBlocks){
         BlockEntityType<T> bet = BlockEntityType.Builder.of(constructor,associatedBlocks).build(null);
-        RegistryObject<BlockEntityType<T>> ro = BER.register(ViciousCore.MODID + "tile" + tileID,()->bet);
+        RegistryObject<BlockEntityType<T>> ro = BER.register("tile." + tileID,()->bet);
         tiles.put(cls,ro);
         return ro;
     }

@@ -1,15 +1,13 @@
 package com.vicious.viciouscore.common.util.item;
 
 
-import com.vicious.viciouscore.common.util.item.types.ItemType;
+import com.vicious.viciouscore.common.recipe.ingredients.type.ItemTypeKey;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * I found myself using a Map Material,ItemStack so much that I decided to create a version of a hashmap specifically for ItemStacks.
@@ -18,17 +16,13 @@ import java.util.Map;
  */
 public class ItemStackMap extends ItemTypeMap<ItemStack> {
     public ItemStackMap() {}
-
-    public ItemStackMap(Map<Item, List<ItemType<?, ?>>> sharedMetaMap) {
-        super(sharedMetaMap);
-    }
-
+    
     /**
      * @param stack the stack to add.
      * @return if the Material was already present.
      */
     public boolean add(ItemStack stack){
-        ItemType<?,?> mat = getItemType(stack);
+        ItemTypeKey mat = getItemType(stack);
         if(putIfAbsent(mat,stack.copy()) != null){
             ItemStack mappedStack = get(mat);
             mappedStack.setCount(mappedStack.getCount()+stack.getCount());
@@ -44,7 +38,7 @@ public class ItemStackMap extends ItemTypeMap<ItemStack> {
      * @return
      */
     public boolean reduceBy(ItemStack stack){
-        ItemType<?,?> mat = getItemType(stack);
+        ItemTypeKey mat = getItemType(stack);
         ItemStack mappedStack = get(mat);
         if(mappedStack == null) return false;
         mappedStack.setCount(mappedStack.getCount()-stack.getCount());
@@ -104,7 +98,7 @@ public class ItemStackMap extends ItemTypeMap<ItemStack> {
     public boolean hasAll(List<ItemStack> stacks){
         //Map to unify stacks.
         ItemStackMap mapped = new ItemStackMap().addAll(stacks);
-        for (ItemType<?,?> k : mapped.keySet()) {
+        for (ItemTypeKey k : mapped.keySet()) {
             ItemStack mapStack = get(k);
             if (mapStack == null) return false;
             ItemStack expected = mapped.get(k);
@@ -113,13 +107,5 @@ public class ItemStackMap extends ItemTypeMap<ItemStack> {
         }
         //Mapped should be empty by the end of this.
         return mapped.size() == 0;
-    }
-
-    /**
-     * Warning this is a lossy process, the rough stack map stores items without NBT data. Do not do this unless you intend to use it as a data source rather than an item container.
-     * @return
-     */
-    public RoughItemStackMap asRoughMap(){
-        return new RoughItemStackMap().addAll(values());
     }
 }

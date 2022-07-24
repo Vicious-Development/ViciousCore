@@ -26,6 +26,7 @@ import java.util.List;
 
 public class VCTE extends BlockEntity  {
     protected final CompoundSyncableData data = new CompoundSyncableData();
+    protected
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {

@@ -2,23 +2,18 @@ package com.vicious.viciouscore.common.inventory;
 
 import com.vicious.viciouscore.common.util.item.ItemSlotMap;
 import com.vicious.viciouscore.common.util.item.ItemStackMap;
-import com.vicious.viciouscore.common.util.item.types.ItemType;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class FastItemStackHandler extends ItemStackHandler {
-    protected Map<Item, List<ItemType<?,?>>> sharedMetaMap = new HashMap<>();
-    protected ItemStackMap map = new ItemStackMap(sharedMetaMap);
-    protected ItemSlotMap slotMemory = new ItemSlotMap(sharedMetaMap);
+    protected ItemStackMap map = new ItemStackMap();
+    protected ItemSlotMap slotMemory = new ItemSlotMap();
     protected List<Consumer<FastItemStackHandler>> changeListeners = new ArrayList<>();
     public FastItemStackHandler()
     {

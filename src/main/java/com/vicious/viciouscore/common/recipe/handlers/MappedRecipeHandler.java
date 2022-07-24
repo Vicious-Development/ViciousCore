@@ -1,15 +1,18 @@
 package com.vicious.viciouscore.common.recipe.handlers;
 
+import com.google.common.collect.Lists;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.recipe.VCRecipe;
+import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
+import com.vicious.viciouscore.common.util.item.ItemStackMap;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MappedRecipeHandler<INGREDIENT,T extends VCRecipe<INGREDIENT>> extends VCRecipeHandler<INGREDIENT,T> {
-    protected final Map<INGREDIENT,List<T>> recipeMap = new HashMap<>();
-    public void removeRecipe(List<INGREDIENT> inputs){
+public class MappedRecipeHandler<T extends VCRecipe> extends VCRecipeHandler<T> {
+    protected final Map<TypeKey<?>,List<T>> recipeMap = new HashMap<>();
+    public void removeRecipe(List<Object> inputs){
         T recipe = getRecipe(inputs);
         if(recipe == null){
             ViciousCore.logger.warn("Failed to remove a recipe: Did not find a recipe containing the inputs: " + inputs);
@@ -19,7 +22,7 @@ public class MappedRecipeHandler<INGREDIENT,T extends VCRecipe<INGREDIENT>> exte
     }
     public void removeRecipe(T recipe){
         super.removeRecipe(recipe);
-        for (INGREDIENT rin : recipe.getInputs()) {
+        for (TypeKey<?> rin : recipe.getInputs().keySet()) {
             List<T> recList = recipeMap.get(rin);
             recList.remove(recipe);
             if (recList.isEmpty()) recipeMap.remove(rin);
@@ -27,12 +30,37 @@ public class MappedRecipeHandler<INGREDIENT,T extends VCRecipe<INGREDIENT>> exte
     }
 
     @Override
-    public T getRecipe(List<INGREDIENT> in) {
-        for (INGREDIENT input : in) {
-            List<T> recipeList = recipeMap.get(input);
-            if(recipeList == null) continue;
-            for (T recipe : recipeList) {
-                if(recipe.validateMatches(in)) return recipe;
+    public void addRecipe(T recipe) {
+        super.addRecipe(recipe);
+        for (TypeKey<?> typeKey : recipe.getInputs().keySet()) {
+            if(recipeMap.putIfAbsent(typeKey, Lists.newArrayList(recipe)) != null){
+                recipeMap.get(typeKey).add(recipe);
+            }
+        }
+    }
+
+    @Override
+    public T getRecipe(List<Object> in) {
+        for (Object o : in) {
+            TypeKey<?> key = TypeKey.of(o);
+            List<T> options = recipeMap.get(key);
+            for (T option : options) {
+                if(option.containsThis(in)){
+                    return option;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public T getRecipe(ItemStackMap ism) {
+        for (TypeKey<?> key : ism.keySet()) {
+            List<T> options = recipeMap.get(key);
+            for (T option : options) {
+                if(option.containsThis(ism)){
+                    return option;
+                }
             }
         }
         return null;

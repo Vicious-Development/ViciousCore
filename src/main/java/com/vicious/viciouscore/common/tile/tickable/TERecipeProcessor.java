@@ -17,18 +17,6 @@ public abstract class TERecipeProcessor<INGREDIENT,RECIPETYPE extends VCRecipe<I
         super(type, pos, state);
     }
 
-    public boolean verifyRecipe(List<INGREDIENT> ingredients, VCRecipeHandler<INGREDIENT,RECIPETYPE> handler){
-        if(activeRecipe != null && activeRecipe.validateMatches(ingredients)) return true;
-        else{
-            activeRecipe = ingredients.size() > 0 ? handler.getRecipe(ingredients) : null;
-        }
-        if(activeRecipe == null){
-            reset();
-            return false;
-        }
-        return true;
-    }
-
     protected void reset(){
         tickData.tickTimeElapsed.set(0);
         tickData.tickTimeForCompletion.set(0);
