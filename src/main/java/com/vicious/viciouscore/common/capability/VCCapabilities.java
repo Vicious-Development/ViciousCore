@@ -3,6 +3,7 @@ package com.vicious.viciouscore.common.capability;
 import com.vicious.viciouscore.common.capability.interfaces.ICapabilityDeathPersistant;
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.capability.keypresshandler.KeyPressHandler;
+import com.vicious.viciouscore.common.data.SyncableInventory;
 import com.vicious.viciouscore.common.data.SyncableTickableData;
 import com.vicious.viciouscore.common.resource.VCResources;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
@@ -24,6 +25,7 @@ public class VCCapabilities {
     private static Map<Class<? extends IVCCapabilityHandler>, Capability<? extends IVCCapabilityHandler>> capabilityTokens = new HashMap<>();
     public static final Capability<KeyPressHandler> KEYPRESS = addToken(KeyPressHandler.class);
     public static final Capability<SyncableTickableData> TICKABLE = addToken(SyncableTickableData.class);
+    public static final Capability<SyncableInventory> FASTITEMSTACKHANDLER = addToken(SyncableInventory.class);
 
     public static <T extends IVCCapabilityHandler> T getCapability(ICapabilityProvider provider, Class<T> cls) {
         return FuckLazyOptionals.getOrNull(provider.getCapability(getToken(cls)));
@@ -45,7 +47,7 @@ public class VCCapabilities {
         return (Capability<T>) capabilityTokens.get(capabilityClass);
     }
 
-    private static <T extends IVCCapabilityHandler> Capability<T> addToken(Class<T> cls) {
+    public static <T extends IVCCapabilityHandler> Capability<T> addToken(Class<T> cls) {
         Capability<T> capToken = CapabilityManager.get(new CapabilityToken<>() {
         });
         capabilityTokens.put(cls, capToken);

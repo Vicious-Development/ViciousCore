@@ -3,6 +3,10 @@ package com.vicious.viciouscore.common.data.values;
 
 import net.minecraft.nbt.CompoundTag;
 
+
+/**
+ * A packet writable value that can be read by both client and server and sometimes edited by either side.
+ */
 public abstract class Syncable<T> {
     protected boolean dirty;
     public boolean doSave = true;
@@ -16,12 +20,15 @@ public abstract class Syncable<T> {
     public abstract void readFromNBT(CompoundTag nbtTagCompound);
     public abstract void putIntoNBT(CompoundTag tag);
 
-    /**
-     * Whether the value can be modified by the client.
-     */
-    public boolean clientEditable(){
-        return clientEditable;
+    public <V extends Syncable<T>> V setClientEditable(boolean value){
+        clientEditable=value;
+        return (V) this;
     }
+    public <V extends Syncable<T>> V setClientReadable(boolean value){
+        clientReadable=value;
+        return (V) this;
+    }
+
 
     /**
      * Prevents the syncable from being saved to chunk NBT. Useful for if the data has a default setting and/or a setting determined by another piece of data.
@@ -45,4 +52,11 @@ public abstract class Syncable<T> {
     public boolean clientReadable() {
         return clientReadable;
     }
+    /**
+     * Whether the value can be modified by the client.
+     */
+    public boolean clientEditable(){
+        return clientEditable;
+    }
+
 }

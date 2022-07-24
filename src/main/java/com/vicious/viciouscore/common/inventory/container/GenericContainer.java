@@ -25,22 +25,30 @@ public abstract class GenericContainer<T> extends AbstractContainerMenu {
     protected static final int PLAYER_INVENTORY_FIRST_SLOT_INDEX = HOTBAR_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT;
     protected static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
     protected static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
-    protected final ArrayList<RangedInteger> slotGroups = new ArrayList<>();
     public static final RangedInteger PLAYER_MAIN_INVENTORY = new RangedInteger(PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_SLOT_COUNT);
     public static final RangedInteger PLAYER_HOTBAR = new RangedInteger(HOTBAR_FIRST_SLOT_INDEX, HOTBAR_SLOT_COUNT);
-    protected final T obj;
+    protected final T target;
+    /**
+     * Does not include the player slots.
+     */
     public final ArrayList<VCSlot> slots = new ArrayList<>();
     public final ArrayList<VCSlot> playerSlots = new ArrayList<>();
 
     public static final int PLAYER_INVENTORY_XPOS = 8;
     public static final int PLAYER_INVENTORY_YPOS = 125;
 
-    protected GenericContainer(@Nullable MenuType<?> type, int windowId, T obj) {
+    protected GenericContainer(@Nullable MenuType<?> type, int windowId, T target) {
         super(type, windowId);
-        this.obj =obj;
+        this.target = target;
     }
 
-    public abstract VCSlot overwriteSlot(VCSlot slotOld, VCSlot slotNew);
+    public VCSlot overwriteSlot(VCSlot slotOld, VCSlot slotNew){
+        if(slotOld instanceof SlotPlayerInv36){
+            playerSlots.set(slotOld.index,slotNew);
+        }
+        else slots.set(slotOld.index,slotNew);
+        return slotNew;
+    }
 
     public abstract void handleStateChange(CompoundTag nbt);
     public boolean transferStackOutOfContainer(Player player, ItemStack stack){
@@ -55,8 +63,7 @@ public abstract class GenericContainer<T> extends AbstractContainerMenu {
     }
     protected void addHoloInventory(Inventory invPlayer, int hotbarx, int hotbary, int slotxspacing, int slotyspacing){
         for (int x = 0; x < HOTBAR_SLOT_COUNT; x++) {
-            int slotNumber = x;
-            addSlot(new SlotPlayerInv36(invPlayer, slotNumber, hotbarx + slotxspacing * x, hotbary, PLAYER_HOTBAR));
+            addSlot(new SlotPlayerInv36(invPlayer, x, hotbarx + slotxspacing * x, hotbary, PLAYER_HOTBAR));
         }
         // Add the rest of the players inventory to the gui
         for (int y = 0; y < PLAYER_INVENTORY_ROW_COUNT; y++) {
@@ -64,7 +71,7 @@ public abstract class GenericContainer<T> extends AbstractContainerMenu {
                 int slotNumber = HOTBAR_SLOT_COUNT + y * PLAYER_INVENTORY_COLUMN_COUNT + x;
                 int xpos = hotbarx + x * slotxspacing;
                 int ypos = hotbary - 2 - (y+1) * slotyspacing;
-                addSlot(new SlotPlayerInv36(invPlayer, slotNumber,  xpos, ypos, PLAYER_HOTBAR));
+                addSlot(new SlotPlayerInv36(invPlayer, slotNumber,  xpos, ypos, PLAYER_MAIN_INVENTORY));
             }
         }
     }

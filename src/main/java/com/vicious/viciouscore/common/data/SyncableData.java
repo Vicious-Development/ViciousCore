@@ -15,17 +15,16 @@ import java.util.List;
 
 public abstract class SyncableData implements IVCCapabilityHandler {
     protected List<Syncable<?>> tosync = new ArrayList<>();
-    protected int instanceID = -1;
 
     public void track(Syncable<?> totrack){
         tosync.add(totrack);
     }
-    public void updateClient(ServerPlayer player){
+    public void updateClient(ServerPlayer player, int window){
         CompoundTag nbt = new CompoundTag();
         for (Syncable<?> syncable : tosync) {
             if(syncable.clientReadable()) syncable.putIntoNBT(nbt);
         }
-        if(!nbt.isEmpty()) VCNetwork.getInstance().sendToPlayer(player,new SPacketSyncData.Window(instanceID,nbt));
+        if(!nbt.isEmpty()) VCNetwork.getInstance().sendToPlayer(player,new SPacketSyncData.Window(window,nbt));
     }
     public void putIntoNBT(CompoundTag nbt){
         for(Syncable<?> sync : tosync){
@@ -48,9 +47,5 @@ public abstract class SyncableData implements IVCCapabilityHandler {
             }
         }
     }
-    public abstract Capability<?> getCapabilityToken();
-
-    public boolean isInitialized(){
-        return instanceID > -1;
-    }
+    public abstract List<Capability<?>> getCapabilityTokens();
 }

@@ -6,6 +6,7 @@ import com.vicious.viciouscore.client.gui.widgets.VCWidget;
 import com.vicious.viciouscore.client.gui.widgets.WidgetFreeDrag;
 import com.vicious.viciouscore.client.gui.widgets.WidgetSlot;
 import com.vicious.viciouscore.client.textures.VCTextures;
+import com.vicious.viciouscore.client.util.WindowGetter;
 import com.vicious.viciouscore.common.inventory.container.GenericContainer;
 import com.vicious.viciouscore.common.inventory.slots.VCSlot;
 import net.minecraft.client.Minecraft;
@@ -22,11 +23,13 @@ public abstract class GenericGUI<T extends GenericContainer<T>> extends Abstract
     protected int resizeX;
     protected int resizeY;
     protected boolean initialized = false;
-    protected boolean truelyInitialized = false;
     protected int prevX = 0, prevY = 0;
+    protected int guiTop = 0, guiLeft = 0;
 
     public GenericGUI(T menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+        prevX = WindowGetter.window.getWidth()/2/(int)WindowGetter.window.getGuiScale();
+        prevY = WindowGetter.window.getHeight()/2/(int)WindowGetter.window.getGuiScale();
     }
 
     @Override

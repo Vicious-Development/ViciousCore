@@ -19,8 +19,8 @@ public class CompoundSyncableData implements ICapabilityProvider {
             cons.accept(tosync.get(capability));
         }
     }
-    public void updateClient(ServerPlayer player){
-        forEachSyncable((s)->s.updateClient(player));
+    public void updateClient(ServerPlayer player, int windowID){
+        forEachSyncable((s)->s.updateClient(player,windowID));
     }
     public void putIntoNBT(CompoundTag nbt){
         forEachSyncable((s)->putIntoNBT(nbt));
@@ -29,7 +29,9 @@ public class CompoundSyncableData implements ICapabilityProvider {
         forEachSyncable((s)->s.readFromNBT(nbt,editor));
     }
     public <T extends SyncableData> T put(T data){
-        tosync.put(data.getCapabilityToken(),data);
+        for (Capability<?> capabilityToken : data.getCapabilityTokens()) {
+            tosync.put(capabilityToken,data);
+        }
         return data;
     }
 

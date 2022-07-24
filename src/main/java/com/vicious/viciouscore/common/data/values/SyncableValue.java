@@ -7,4 +7,7 @@ public abstract class SyncableValue<T> extends Syncable<T>{
         this.value = value;
         this.name = name;
     }
+    public T get(){
+        return value;
+    }
 }
