@@ -1,6 +1,7 @@
 package com.vicious.viciouscore.common.inventory.container;
 
-import com.vicious.viciouscore.common.data.CompoundSyncableData;
+import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
+import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import com.vicious.viciouscore.common.inventory.slots.SlotPlayerInv36;
 import com.vicious.viciouscore.common.inventory.slots.VCSlot;
 import com.vicious.viciouscore.common.util.RangedInteger;
@@ -14,8 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public abstract class GenericContainer<T> extends AbstractContainerMenu {
-    protected final CompoundSyncableData syncableData = new CompoundSyncableData();
+public abstract class GenericContainer<T extends ISyncableCompoundHolder> extends AbstractContainerMenu implements ISyncableCompoundHolder{
     protected static final int HOTBAR_SLOT_COUNT = 9;
     protected static final int PLAYER_INVENTORY_ROW_COUNT = 3;
     protected static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
@@ -27,6 +27,7 @@ public abstract class GenericContainer<T> extends AbstractContainerMenu {
     protected static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     public static final RangedInteger PLAYER_MAIN_INVENTORY = new RangedInteger(PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_SLOT_COUNT);
     public static final RangedInteger PLAYER_HOTBAR = new RangedInteger(HOTBAR_FIRST_SLOT_INDEX, HOTBAR_SLOT_COUNT);
+
     protected final T target;
     /**
      * Does not include the player slots.
@@ -83,7 +84,8 @@ public abstract class GenericContainer<T> extends AbstractContainerMenu {
         return (T) super.addSlot(slotIn);
     }
 
-    public CompoundSyncableData getCompoundData() {
-        return syncableData;
+
+    public SyncableCompound getData() {
+        return target.getData();
     }
 }

@@ -34,7 +34,7 @@ public abstract class CPacketSyncData extends PacketSyncData{
         public void handle(Supplier<NetworkEvent.Context> context) {
             AbstractContainerMenu target = Minecraft.getInstance().player.containerMenu;
             if (target.containerId == getTargetID() && target instanceof GenericContainer<?> gc) {
-                gc.getCompoundData().readFromNBT(getNBT(), DataEditor.LOCAL);
+                gc.getData().deserializeNBT(getNBT(), DataEditor.LOCAL);
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.tile.tickless;
 
+import com.vicious.viciouscore.common.tile.PhysicalTile;
 import com.vicious.viciouscore.common.tile.VCBlockEntities;
-import com.vicious.viciouscore.common.tile.VCTE;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouslib.util.interfaces.INotifiable;
 import com.vicious.viciouslib.util.interfaces.INotifier;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: make multiblockcomponents notify each other less.
-public class TileMultiBlockComponent extends VCTE implements INotifier<Object> {
+public class TileMultiBlockComponent extends PhysicalTile implements INotifier<Object> {
     public List<INotifiable<Object>> parents = new ArrayList<>();
     public long lastTick = -1;
     private boolean hasBeenValidatedAlready = false;

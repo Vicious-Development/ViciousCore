@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.2.3'
+String projectver = '1.2.5'
 String vlibver = '2.0.9'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"

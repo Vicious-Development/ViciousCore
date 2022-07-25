@@ -30,9 +30,11 @@ public abstract class SPacketSyncData extends PacketSyncData{
 
         @Override
         public void handle(Supplier<NetworkEvent.Context> context) {
-            AbstractContainerMenu target = context.get().getSender().containerMenu;
+            NetworkEvent.Context ctx = context.get();
+            if(ctx.getSender() == null) return;
+            AbstractContainerMenu target = ctx.getSender().containerMenu;
             if(target.containerId == getTargetID() && target instanceof GenericContainer<?> gc){
-                gc.getCompoundData().readFromNBT(getNBT(),DataEditor.of(context.get().getSender()));
+                gc.getData().deserializeNBT(getNBT(),DataEditor.of(context.get().getSender()));
             }
         }
     }

@@ -3,8 +3,12 @@ package com.vicious.viciouscore.common.capability;
 import com.vicious.viciouscore.common.capability.interfaces.ICapabilityDeathPersistant;
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.capability.keypresshandler.KeyPressHandler;
-import com.vicious.viciouscore.common.data.SyncableInventory;
-import com.vicious.viciouscore.common.data.SyncableTickableData;
+import com.vicious.viciouscore.common.data.implementations.SyncableInventory;
+import com.vicious.viciouscore.common.data.implementations.SyncableRecipeState;
+import com.vicious.viciouscore.common.data.implementations.SyncableTickState;
+import com.vicious.viciouscore.common.data.structures.SyncableCompound;
+import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
+import com.vicious.viciouscore.common.data.structures.SyncablePrimitive;
 import com.vicious.viciouscore.common.resource.VCResources;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +28,12 @@ import java.util.Map;
 public class VCCapabilities {
     private static Map<Class<? extends IVCCapabilityHandler>, Capability<? extends IVCCapabilityHandler>> capabilityTokens = new HashMap<>();
     public static final Capability<KeyPressHandler> KEYPRESS = addToken(KeyPressHandler.class);
-    public static final Capability<SyncableTickableData> TICKABLE = addToken(SyncableTickableData.class);
+    public static final Capability<SyncableTickState> TICKABLE = addToken(SyncableTickState.class);
     public static final Capability<SyncableInventory> FASTITEMSTACKHANDLER = addToken(SyncableInventory.class);
+    public static final Capability<SyncableRecipeState> RECIPEPROCESSOR = addToken(SyncableRecipeState.class);
+    public static final Capability<SyncablePrimitive> PRIMITIVE = addToken(SyncablePrimitive.class);
+    public static final Capability<SyncableINBTCompound> INBT = addToken(SyncableINBTCompound.class);
+    public static final Capability<SyncableCompound> COMPOUND = addToken(SyncableCompound.class);
 
     public static <T extends IVCCapabilityHandler> T getCapability(ICapabilityProvider provider, Class<T> cls) {
         return FuckLazyOptionals.getOrNull(provider.getCapability(getToken(cls)));

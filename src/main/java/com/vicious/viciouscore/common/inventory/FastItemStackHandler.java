@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.inventory;
 
+import com.vicious.viciouscore.common.data.state.IFastItemHandler;
 import com.vicious.viciouscore.common.util.item.ItemSlotMap;
 import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.core.NonNullList;
@@ -11,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class FastItemStackHandler extends ItemStackHandler {
+public class FastItemStackHandler extends ItemStackHandler implements IFastItemHandler {
     protected ItemStackMap map = new ItemStackMap();
     protected ItemSlotMap slotMemory = new ItemSlotMap();
-    protected List<Consumer<FastItemStackHandler>> changeListeners = new ArrayList<>();
+    protected List<Consumer<IFastItemHandler>> changeListeners = new ArrayList<>();
     public FastItemStackHandler()
     {
         this(1);
@@ -166,15 +167,15 @@ public class FastItemStackHandler extends ItemStackHandler {
         return push;
     }
 
-    public void listenChanged(Consumer<FastItemStackHandler> cons){
+    public void listenChanged(Consumer<IFastItemHandler> cons){
         changeListeners.add(cons);
     }
-    public void stopListening(Consumer<FastItemStackHandler> cons){
+    public void stopListening(Consumer<IFastItemHandler> cons){
         changeListeners.remove(cons);
     }
 
-    protected void onUpdate() {
-        for (Consumer<FastItemStackHandler> changeListener : changeListeners) {
+    public void onUpdate() {
+        for (Consumer<IFastItemHandler> changeListener : changeListeners) {
             changeListener.accept(this);
         }
     }
