@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.tile;
 
 import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -19,5 +18,4 @@ public class PhysicalTile extends VCTE{
     public SyncableCompound getData() {
         return data;
     }
-    BlockEntityTicker
 }
