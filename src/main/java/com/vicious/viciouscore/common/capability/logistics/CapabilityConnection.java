@@ -9,11 +9,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.Objects;
 
 public class CapabilityConnection<T> implements ISyncableCompoundHolder {
-    private final SyncableCompound data = new SyncableCompound("capcon");
-    private final SyncableINBTCompound<SidedWorldPos> pos;
+    protected final SyncableCompound data = new SyncableCompound("capcon");
+    protected final SyncableINBTCompound<SidedWorldPos> pos;
 
-    private final LazyOptional<T> optional;
-    private boolean valid;
+    protected final LazyOptional<T> optional;
+    protected boolean valid;
 
 
     public CapabilityConnection(LazyOptional<T> optional, SidedWorldPos pos){
