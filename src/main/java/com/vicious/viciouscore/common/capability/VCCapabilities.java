@@ -8,6 +8,7 @@ import com.vicious.viciouscore.common.data.implementations.SyncableRecipeState;
 import com.vicious.viciouscore.common.data.implementations.SyncableTickState;
 import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
+import com.vicious.viciouscore.common.data.structures.SyncableIVCNBT;
 import com.vicious.viciouscore.common.data.structures.SyncablePrimitive;
 import com.vicious.viciouscore.common.resource.VCResources;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
@@ -34,6 +35,7 @@ public class VCCapabilities {
     public static final Capability<SyncablePrimitive> PRIMITIVE = addToken(SyncablePrimitive.class);
     public static final Capability<SyncableINBTCompound> INBT = addToken(SyncableINBTCompound.class);
     public static final Capability<SyncableCompound> COMPOUND = addToken(SyncableCompound.class);
+    public static final Capability<SyncableIVCNBT> IVCNBT = addToken(SyncableIVCNBT.class);
 
     public static <T extends IVCCapabilityHandler> T getCapability(ICapabilityProvider provider, Class<T> cls) {
         return FuckLazyOptionals.getOrNull(provider.getCapability(getToken(cls)));

@@ -1,13 +1,45 @@
 package com.vicious.viciouscore.common.data.implementations;
 
-import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
+import com.vicious.viciouscore.common.capability.VCCapabilities;
+import com.vicious.viciouscore.common.data.DataAccessor;
+import com.vicious.viciouscore.common.data.IVCNBTSerializable;
+import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouscore.common.util.ArrayHashSet;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.capabilities.Capability;
 
-import java.util.function.Function;
+import java.util.List;
+import java.util.function.Supplier;
 
-public class SyncableArrayHashSet<T> extends SyncableINBTCompound<ArrayHashSet<T>> {
-    public SyncableArrayHashSet(String key, Function<Tag,T> deserializer) {
-        super(key, new ArrayHashSet<T>(deserializer));
+public class SyncableArrayHashSet<T extends IVCNBTSerializable> extends SyncableValue<ArrayHashSet<T>> {
+    private final Supplier<T> def;
+    public SyncableArrayHashSet(String key, Supplier<T> def) {
+        super(key, new ArrayHashSet<>());
+        this.def = def;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag, DataAccessor sender) {
+        tag = tag.getCompound(KEY);
+        for (String key : tag.getAllKeys()) {
+            T val = def.get();
+            val.deserializeNBT(tag.getCompound(key),sender);
+            value.add(val);
+        }
+    }
+
+    @Override
+    public void serializeNBT(CompoundTag tag, DataAccessor destination) {
+        CompoundTag inner = new CompoundTag();
+        for (int i = 0; i < value.size(); i++) {
+            CompoundTag vtag = new CompoundTag();
+            value.get(i).serializeNBT(vtag,destination);
+            inner.put(""+i,vtag);
+        }
+    }
+
+    @Override
+    protected List<Capability<?>> getCapabilityTokens() {
+        return List.of(VCCapabilities.INBT);
     }
 }

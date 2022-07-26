@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import java.util.Objects;
 
 public class SidedWorldPos extends WorldPosition implements INBTSerializable<CompoundTag> {
-    private Direction side;
+    public Direction side;
     public SidedWorldPos(Level level, BlockPos position, Direction side) {
         super(level, position);
         this.side = side;

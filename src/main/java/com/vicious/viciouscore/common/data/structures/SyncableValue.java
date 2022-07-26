@@ -2,14 +2,14 @@ package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.data.DataAccessor;
+import com.vicious.viciouscore.common.data.IVCNBTSerializable;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
 
-public abstract class SyncableValue<T> implements IVCCapabilityHandler {
+public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSerializable {
     /**
      * Only used by the server. Determines if the client will be synced.
      */
@@ -82,9 +82,6 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler {
             return sideAccessibility[dir.ordinal()];
         }
     }
-
-    public abstract void serializeNBT(CompoundTag tag, DataAccessor destination);
-    public abstract void deserializeNBT(CompoundTag tag, DataAccessor sender);
 
     protected boolean changed() {
         return isDirty;

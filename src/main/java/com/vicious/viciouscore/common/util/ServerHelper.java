@@ -28,6 +28,13 @@ public class ServerHelper {
         return dat.getLevelName();
     }
 
+    public static ServerLevel getMainLevel() {
+        for (ServerLevel l : server.getAllLevels()) {
+            return l;
+        }
+        return null;
+    }
+
     @SubscribeEvent
     public void onServerStarted(ServerAboutToStartEvent event){
         server = event.getServer();
