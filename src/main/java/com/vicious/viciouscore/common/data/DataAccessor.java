@@ -5,12 +5,17 @@ import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.VCPacket;
 import net.minecraft.server.level.ServerPlayer;
 
-public class DataEditor {
-    public static DataEditor LOCAL = new Local();
+public class DataAccessor {
+    public static DataAccessor REMOTE = new Remote(null);
+    public static DataAccessor LOCAL = new Local();
+    /**
+     * Acts as a local accessor, intended only for permitting authorized users access to data.
+     */
+    public static DataAccessor FORCEREMOTE = new Local();
     public void sendPacket(VCPacket packet){}
 
-    public static DataEditor.Remote of(ServerPlayer sender) {
-        return new DataEditor.Remote(sender);
+    public static DataAccessor.Remote of(ServerPlayer sender) {
+        return new DataAccessor.Remote(sender);
     }
 
     public boolean isRemoteEditor(){
@@ -21,12 +26,12 @@ public class DataEditor {
     /**
      * For when the server or client modifies local data.
      */
-    public static class Local extends DataEditor{}
+    public static class Local extends DataAccessor {}
 
     /**
      * For when the client sends updates to the server.
      */
-    public static class Server extends DataEditor{
+    public static class Server extends DataAccessor {
         @Override
         public void sendPacket(VCPacket packet) {
             VCNetwork.getInstance().sendToServer(packet);
@@ -34,9 +39,9 @@ public class DataEditor {
     }
 
     /**
-     * Used on the server side to control client editing permission. A remote editor is only used when a client to server data packet is received.
+     * Used on the server side to control client editing/reading permission.
      */
-    public static class Remote extends DataEditor{
+    public static class Remote extends DataAccessor {
         public ServerPlayer editor;
         public Remote(ServerPlayer editor){
             this.editor=editor;

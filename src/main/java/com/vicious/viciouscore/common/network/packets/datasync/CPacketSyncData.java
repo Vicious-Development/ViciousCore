@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.network.packets.datasync;
 
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.inventory.container.GenericContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ public abstract class CPacketSyncData extends PacketSyncData{
         public void handle(Supplier<NetworkEvent.Context> context) {
             AbstractContainerMenu target = Minecraft.getInstance().player.containerMenu;
             if (target.containerId == getTargetID() && target instanceof GenericContainer<?> gc) {
-                gc.getData().deserializeNBT(getNBT(), DataEditor.LOCAL);
+                gc.getData().deserializeNBT(getNBT(), DataAccessor.LOCAL);
             }
         }
     }

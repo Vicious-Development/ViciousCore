@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +24,7 @@ public class SyncablePrimitive<T> extends SyncableValue<T> {
     }
 
     @Override
-    public void serializeNBT(CompoundTag tag, DataEditor destination){
+    public void serializeNBT(CompoundTag tag, DataAccessor destination){
         if(value instanceof Integer v){
             tag.putInt(KEY, v);
         }
@@ -58,7 +58,7 @@ public class SyncablePrimitive<T> extends SyncableValue<T> {
     }
     @SuppressWarnings("unchecked")
     @Override
-    public void deserializeNBT(CompoundTag tag, DataEditor sender){
+    public void deserializeNBT(CompoundTag tag, DataAccessor sender){
         if(value instanceof Integer){
             value = (T)(Integer)tag.getInt(KEY);
         }

@@ -7,6 +7,7 @@ import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.phantom.PhantomMemoryManager;
 import com.vicious.viciouscore.common.tile.VCBlockEntities;
+import com.vicious.viciouscore.common.util.ServerHelper;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import net.minecraftforge.common.MinecraftForge;
@@ -58,6 +59,7 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(VCCapabilities.class);
         MinecraftForge.EVENT_BUS.register(CommonKeyBindings.class);
         MinecraftForge.EVENT_BUS.register(PhantomMemoryManager.class);
+        MinecraftForge.EVENT_BUS.register(ServerHelper.class);
         VCBlockEntities.init();
     }
     public void networkInit(){

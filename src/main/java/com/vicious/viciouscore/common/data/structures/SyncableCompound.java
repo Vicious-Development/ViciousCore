@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.SyncTarget;
 import com.vicious.viciouscore.common.network.packets.datasync.CPacketSyncData;
 import com.vicious.viciouscore.common.network.packets.datasync.SPacketSyncData;
@@ -22,7 +22,7 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
     }
 
     @Override
-    public void serializeNBT(CompoundTag tag, DataEditor destination) {
+    public void serializeNBT(CompoundTag tag, DataAccessor destination) {
         CompoundTag inner = new CompoundTag();
         for (Capability<?> capability : keySet()) {
             for (SyncableValue<?> syncableValue : get(capability)) {
@@ -36,7 +36,7 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag, DataEditor sender) {
+    public void deserializeNBT(CompoundTag tag, DataAccessor sender) {
         tag = tag.getCompound(KEY);
         for (Capability<?> capability : keySet()) {
             for (SyncableValue<?> syncableValue : get(capability)) {

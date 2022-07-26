@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.network.packets.datasync;
 
 
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.inventory.container.GenericContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +34,7 @@ public abstract class SPacketSyncData extends PacketSyncData{
             if(ctx.getSender() == null) return;
             AbstractContainerMenu target = ctx.getSender().containerMenu;
             if(target.containerId == getTargetID() && target instanceof GenericContainer<?> gc){
-                gc.getData().deserializeNBT(getNBT(),DataEditor.of(context.get().getSender()));
+                gc.getData().deserializeNBT(getNBT(), DataAccessor.of(context.get().getSender()));
             }
         }
     }

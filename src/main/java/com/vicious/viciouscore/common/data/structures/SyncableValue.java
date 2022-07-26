@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -34,8 +34,8 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler {
         lop = LazyOptional.of(()->this);
     }
 
-    public boolean canEdit(DataEditor editor){
-        return !(editor instanceof DataEditor.Remote) || readRemote;
+    public boolean canEdit(DataAccessor editor){
+        return !(editor instanceof DataAccessor.Remote) || readRemote;
     }
     public <V extends SyncableValue<T>> V sendRemote(boolean sendRemote){
         this.sendRemote=sendRemote;
@@ -83,15 +83,17 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler {
         }
     }
 
-    public abstract void serializeNBT(CompoundTag tag, DataEditor destination);
-    public abstract void deserializeNBT(CompoundTag tag, DataEditor sender);
+    public abstract void serializeNBT(CompoundTag tag, DataAccessor destination);
+    public abstract void deserializeNBT(CompoundTag tag, DataAccessor sender);
 
     protected boolean changed() {
         return isDirty;
     }
     protected abstract List<Capability<?>> getCapabilityTokens();
 
-    protected boolean shouldSend(DataEditor destination) {
+    protected boolean shouldSend(DataAccessor destination) {
         return !(destination.isRemoteEditor()) || sendRemote;
     }
+
+
 }

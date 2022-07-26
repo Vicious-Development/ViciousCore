@@ -9,9 +9,9 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Opposite of a PhantomTile, requires the chunk to be loaded to function.
  */
-public class PhysicalTile extends VCTE{
+public class PhysicalTE extends VCTE{
     protected final SyncableCompound data = new SyncableCompound("vcdat").readRemote(true);
-    public PhysicalTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public PhysicalTE(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
     @Override

@@ -6,8 +6,8 @@ import net.minecraft.world.level.Level;
 import java.util.Objects;
 
 public class WorldPosition {
-    public final Level level;
-    public final BlockPos position;
+    public Level level;
+    public BlockPos position;
     public WorldPosition(Level level, BlockPos position) {
         this.level = level;
         this.position = position;

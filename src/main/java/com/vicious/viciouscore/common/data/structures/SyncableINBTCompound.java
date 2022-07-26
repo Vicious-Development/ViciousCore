@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -14,12 +14,12 @@ public class SyncableINBTCompound<T extends INBTSerializable<CompoundTag>> exten
     }
 
     @Override
-    public void serializeNBT(CompoundTag tag, DataEditor destination) {
+    public void serializeNBT(CompoundTag tag, DataAccessor destination) {
         tag.put(KEY,value.serializeNBT());
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag, DataEditor sender) {
+    public void deserializeNBT(CompoundTag tag, DataAccessor sender) {
         value.deserializeNBT(tag.getCompound(KEY));
     }
 
@@ -27,4 +27,5 @@ public class SyncableINBTCompound<T extends INBTSerializable<CompoundTag>> exten
     protected List<Capability<?>> getCapabilityTokens() {
         return List.of(VCCapabilities.INBT);
     }
+
 }

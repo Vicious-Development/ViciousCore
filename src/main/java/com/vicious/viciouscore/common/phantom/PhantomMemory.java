@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.phantom;
 
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import net.minecraft.nbt.CompoundTag;
@@ -45,11 +45,11 @@ public class PhantomMemory implements ISyncableCompoundHolder {
         return Objects.hash(ID);
     }
 
-    public void serializeNBT(CompoundTag tag, DataEditor editor) {
+    public void serializeNBT(CompoundTag tag, DataAccessor editor) {
         data.serializeNBT(tag,editor);
     }
 
-    public void deserializeNBT(CompoundTag nbt, DataEditor editor) {
+    public void deserializeNBT(CompoundTag nbt, DataAccessor editor) {
         data.deserializeNBT(nbt,editor);
     }
 }

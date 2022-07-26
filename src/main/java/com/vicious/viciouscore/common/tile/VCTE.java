@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.tile;
 
-import com.vicious.viciouscore.common.data.DataEditor;
+import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
 import com.vicious.viciouscore.common.util.VCMath;
@@ -63,6 +63,13 @@ public abstract class VCTE extends BlockEntity implements ISyncableCompoundHolde
         return getData().getCapability(cap,side);
     }
 
+    @Override
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag supe = super.getUpdateTag();
+        getData().serializeNBT(supe, DataAccessor.REMOTE);
+        return supe;
+    }
+
     public <T> List<T> getNeighborCapabilities(Capability<T> token){
         List<T> caps = new ArrayList<>();
         if(level == null) return caps;
@@ -80,18 +87,18 @@ public abstract class VCTE extends BlockEntity implements ISyncableCompoundHolde
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        getData().deserializeNBT(nbt, DataEditor.LOCAL);
+        getData().deserializeNBT(nbt, DataAccessor.LOCAL);
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag supe = super.serializeNBT();
-        getData().serializeNBT(supe,DataEditor.LOCAL);
+        getData().serializeNBT(supe, DataAccessor.LOCAL);
         return supe;
     }
     @Override
     public void load(CompoundTag tag) {
-        getData().deserializeNBT(tag, DataEditor.LOCAL);
+        getData().deserializeNBT(tag, DataAccessor.LOCAL);
     }
 
     public boolean isWithinAccessRange(Player player) {
