@@ -1,12 +1,15 @@
 package com.vicious.viciouscore.common.recipe;
 
 
+import com.vicious.viciouscore.common.recipe.ingredients.IRecipeOutputAcceptor;
 import com.vicious.viciouscore.common.recipe.ingredients.IngredientStackMap;
+import com.vicious.viciouscore.common.recipe.ingredients.stack.IngredientStack;
 import com.vicious.viciouscore.common.recipe.ingredients.type.ItemTypeKey;
 import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
 import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class VCRecipe {
@@ -41,7 +44,18 @@ public abstract class VCRecipe {
         this.outputs = new IngredientStackMap().addAll(outputs);
     }
 
-    public abstract IngredientStackMap getInputs();
-    public abstract IngredientStackMap getOutputs();
+    public IngredientStackMap getInputs(){
+        return inputs;
+    }
+    public IngredientStackMap getOutputs(){
+        return outputs;
+    }
+    public void addToOutputs(IRecipeOutputAcceptor<Object> acceptor){
+        List<Object> outputs = new ArrayList<>();
+        for (IngredientStack<?> stack : this.outputs.getStacks()) {
+            outputs.add(stack.deingredify());
+        }
+        acceptor.acceptOutputs(outputs);
+    }
 
 }

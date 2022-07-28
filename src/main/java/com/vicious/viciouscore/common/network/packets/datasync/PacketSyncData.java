@@ -1,28 +1,29 @@
 package com.vicious.viciouscore.common.network.packets.datasync;
 
+import com.vicious.viciouscore.common.data.SyncTarget;
 import com.vicious.viciouscore.common.network.VCPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public abstract class PacketSyncData extends VCPacket {
+public abstract class PacketSyncData<T extends SyncTarget> extends VCPacket {
     private final CompoundTag nbt;
-    private final int targetID;
-    public PacketSyncData(int windowId, CompoundTag tag){
-        this.targetID =windowId;
+    private final T target;
+    public PacketSyncData(T target, CompoundTag tag){
+        this.target =target;
         this.nbt = tag;
     }
-    public PacketSyncData(FriendlyByteBuf buf){
-        targetID = buf.readUnsignedByte();
+    public PacketSyncData(T target, FriendlyByteBuf buf){
+        this.target=target;
         nbt = buf.readNbt();
     }
     @Override
     public void toBytes(FriendlyByteBuf buf){
-        buf.writeByte(this.targetID);
+        target.toBytes(buf);
         buf.writeNbt(this.nbt);
     }
 
-    public int getTargetID() {
-        return targetID;
+    public T getTarget() {
+        return target;
     }
 
     public CompoundTag getNBT() {

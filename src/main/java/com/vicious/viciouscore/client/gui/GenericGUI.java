@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.Slot;
 /**
  * Generic GUI used to create a default GUI system which means I can fabricate guis rather than create a gui image for every gui I'll need.
  */
-public abstract class GenericGUI<T extends GenericContainer<T>> extends AbstractContainerScreen<T> {
+public abstract class GenericGUI<T extends GenericContainer<?>> extends AbstractContainerScreen<T> {
     protected RootWidget root = new RootWidget();
     protected int resizeX;
     protected int resizeY;

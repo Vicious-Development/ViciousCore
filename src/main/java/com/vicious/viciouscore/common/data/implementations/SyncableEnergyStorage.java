@@ -51,4 +51,7 @@ public class SyncableEnergyStorage extends SyncableINBT<EnergyStorage> implement
         return value.canReceive();
     }
 
+    public boolean isFull(){
+        return getEnergyStored() >= getMaxEnergyStored();
+    }
 }

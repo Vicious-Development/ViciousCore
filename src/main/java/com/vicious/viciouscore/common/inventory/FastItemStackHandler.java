@@ -4,6 +4,7 @@ import com.vicious.viciouscore.common.data.state.IFastItemHandler;
 import com.vicious.viciouscore.common.util.item.ItemSlotMap;
 import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -89,6 +90,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
      * @return the extracted stack with count less than or equal to requested.
      */
     public ItemStack extractItem(ItemStack requested, boolean simulate){
+        requested = requested.copy();
         List<Integer> possibleSlots = slotMemory.get(requested);
         int toRemove = requested.getCount();
         for (int i = 0; i < possibleSlots.size(); i++) {
@@ -130,6 +132,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
      * @return the extracted stack with count less than or equal to requested.
      */
     public ItemStack insertItem(ItemStack push, boolean simulate){
+        push = push.copy();
         ItemStack pushClone = push.copy();
         List<Integer> prioritySlots = slotMemory.get(push);
         int remaining = push.getCount();
@@ -178,5 +181,26 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         for (Consumer<IFastItemHandler> changeListener : changeListeners) {
             changeListener.accept(this);
         }
+    }
+
+    public NonNullList<ItemStack> getItems(){
+        return stacks;
+    }
+
+    public boolean isEmpty(){
+        return map.isEmpty();
+    }
+
+    public void forEachSlot(Consumer<Integer> cons){
+        for (int i = 0; i < getSlots(); i++) {
+            cons.accept(i);
+        }
+    }
+
+    public Container asContainer(){
+        return new FastItemHandlerContainer(this);
+    }
+    public ItemStackMap getMap(){
+        return map;
     }
 }

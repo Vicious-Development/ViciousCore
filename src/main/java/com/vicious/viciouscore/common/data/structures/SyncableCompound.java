@@ -20,6 +20,16 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
     public SyncableCompound(String key) {
         super(key, new LinkedHashMap<>());
     }
+    private List<Runnable> onChange = new ArrayList<>();
+
+    @Override
+    public <V extends SyncableValue<LinkedHashMap<Capability<?>, List<? extends SyncableValue<?>>>>> V isDirty(boolean isDirty) {
+        V ret = super.isDirty(isDirty);
+        if(isDirty) for (Runnable runnable : this.onChange) {
+            runnable.run();
+        }
+        return ret;
+    }
 
     @Override
     public void serializeNBT(CompoundTag tag, DataAccessor destination) {
@@ -94,6 +104,7 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
     public <V extends SyncableValue<?>> V add(V val){
         for (Capability<?> token : val.getCapabilityTokens()) {
             List vals = get(token);
+            val.parent = this;
             vals.add(val);
         }
         return val;
@@ -163,17 +174,30 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
         return value.entrySet();
     }
 
+    public void listenChanged(Runnable run){
+        onChange.add(run);
+    }
+    public void stopListenChanged(Runnable run){
+        onChange.add(run);
+    }
+
     public void syncRemote(SyncTarget target){
         CompoundTag write = new CompoundTag();
         serializeNBT(write,target.editor);
         if(target.editor.isRemoteEditor()){
             if(target instanceof SyncTarget.Window twindow) {
-                target.editor.sendPacket(new CPacketSyncData.Window(twindow.window,write));
+                target.editor.sendPacket(new CPacketSyncData.Window(twindow,write));
+            }
+            if(target instanceof SyncTarget.Tile ttile) {
+                target.editor.sendPacket(new CPacketSyncData.Tile(ttile, write));
             }
         }
         else{
             if(target instanceof SyncTarget.Window twindow) {
-                target.editor.sendPacket(new SPacketSyncData.Window(twindow.window,write));
+                target.editor.sendPacket(new SPacketSyncData.Window(twindow,write));
+            }
+            if(target instanceof SyncTarget.Tile ttile){
+                target.editor.sendPacket(new SPacketSyncData.Tile(ttile,write));
             }
         }
     }

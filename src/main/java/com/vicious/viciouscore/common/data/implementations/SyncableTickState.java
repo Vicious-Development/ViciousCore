@@ -16,4 +16,29 @@ public class SyncableTickState extends SyncableINBTCompound<TickState> {
     protected List<Capability<?>> getCapabilityTokens() {
         return List.of(VCCapabilities.TICKABLE);
     }
+    public void tick(){
+        value.tick();
+        isDirty(true);
+    }
+    public void reset(){
+        value.progress=0;
+        isDirty(true);
+    }
+    public void setRequired(int ticks){
+        value.completion=ticks;
+        isDirty(true);
+    }
+    public double fractionOfTickTimeComplete() {
+        return (double)value.progress/value.completion;
+    }
+    public int getProgress(){
+        return value.progress;
+    }
+    public int getCompletion(){
+        return value.completion;
+    }
+    public boolean hasCompleted(){
+        return getProgress() >= getCompletion();
+    }
 }
+

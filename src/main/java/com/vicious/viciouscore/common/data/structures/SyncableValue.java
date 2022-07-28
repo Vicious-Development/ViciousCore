@@ -27,6 +27,7 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     public final String KEY;
 
     public T value;
+    protected SyncableValue<?> parent;
 
     public SyncableValue(String key, T defVal) {
         KEY = key;
@@ -47,6 +48,7 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     }
     public <V extends SyncableValue<T>> V isDirty(boolean isDirty){
         this.isDirty=isDirty;
+        if(isDirty) parent.isDirty(isDirty);
         return (V) this;
     }
     public <V extends SyncableValue<T>> V shouldSave(boolean shouldSave){
@@ -91,6 +93,12 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     protected boolean shouldSend(DataAccessor destination) {
         return !(destination.isRemoteEditor()) || sendRemote;
     }
-
+    public boolean isDirty(){
+        return isDirty;
+    }
+    public void setValue(T newVal){
+        this.value=newVal;
+        isDirty(true);
+    }
 
 }

@@ -21,6 +21,6 @@ public class WidgetSlot extends WidgetNoInteraction {
         container.overwriteSlot(linkedSlot, newSlot);
         linkedSlot = newSlot;
         int index = linkedSlot.getSlotIndex() + linkedSlot.getRange().firstIndex;
-        if(index != -1) container.slots.set(index, newSlot);
+        if(index != -1) container.machineSlots.set(index, newSlot);
     }
 }

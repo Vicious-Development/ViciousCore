@@ -33,9 +33,9 @@ public class RecipeState<RECIPETYPE extends VCRecipe> implements INBTSerializabl
         }
         else{
             current = ingredients.size() > 0 ? handler.getRecipe(ingredients) : null;
-            currentRecipe= current == null ? -1 : current.ID;
+            currentRecipe = current == null ? -1 : current.ID;
         }
-        return currentRecipe == -1;
+        return currentRecipe != -1;
     }
     public boolean verifyRecipe(ItemStackMap ingredients){
         RECIPETYPE current = getCurrent();
@@ -46,7 +46,7 @@ public class RecipeState<RECIPETYPE extends VCRecipe> implements INBTSerializabl
             current = ingredients.size() > 0 ? handler.getRecipe(ingredients) : null;
             currentRecipe= current == null ? -1 : current.ID;
         }
-        return currentRecipe == -1;
+        return currentRecipe != -1;
     }
 
     public RECIPETYPE getCurrent(){

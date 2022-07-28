@@ -12,6 +12,7 @@ public class TileCapabilityConnection<T> extends CapabilityConnection<SyncableSi
     }
     public TileCapabilityConnection(SyncableSidedWorldPos key) {
         super(key);
+
     }
 
     public TileCapabilityConnection(LazyOptional<T> optional, SidedWorldPos key) {

@@ -55,12 +55,13 @@ public class VCWidget implements Widget {
     public Extents getExtents(){
         return extents;
     }
-    public void addChild(VCWidget child){
+    public <T extends VCWidget> T addChild(T child){
         children.add(child);
         child.setParent(this);
+        return child;
     }
 
-    private void setParent(VCWidget parent) {
+    protected void setParent(VCWidget parent) {
         this.parent=parent;
     }
 
@@ -161,5 +162,11 @@ public class VCWidget implements Widget {
     public void setVisible(boolean visible){
         this.visible = visible;
         forEachChild((c)->c.setVisible(true));
+    }
+    public int getWidth(){
+        return width;
+    }
+    public int getHeight(){
+        return height;
     }
 }

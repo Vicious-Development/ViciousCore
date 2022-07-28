@@ -4,8 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class TickState implements INBTSerializable<CompoundTag> {
-    private int progress = 0;
-    private int completion;
+    public int progress = 0;
+    public int completion;
     public TickState(int completion){
         this.completion=completion;
     }

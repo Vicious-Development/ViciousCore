@@ -6,6 +6,7 @@ import com.vicious.viciouscore.common.recipe.VCRecipe;
 import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
 import com.vicious.viciouscore.common.util.item.ItemStackMap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,5 +65,9 @@ public class MappedRecipeHandler<T extends VCRecipe> extends VCRecipeHandler<T> 
             }
         }
         return null;
+    }
+    public List<T> getRecipesOfIngedrient(Object stack){
+        List<T> lst = recipeMap.get(TypeKey.of(stack));
+        return lst != null ? lst : new ArrayList<>();
     }
 }
