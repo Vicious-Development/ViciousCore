@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.6.0'
+String projectver = '1.6.1'
 String vlibver = '2.0.9'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
@@ -102,13 +102,17 @@ minecraft {
 
 mixin {
     add sourceSets.main, "viciouscore.refmap.json"
-    config "viciouscore.mixins.json"
+    config "mixins.viciouscore.json"
 }
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 
 configurations {
     embed
     implementation.extendsFrom(embed)
+}
+configurations.runtimeOnly{
+    exclude group: "org.slf4j", module: "slf4j-api"
 }
 
 repositories {
@@ -125,9 +129,9 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mcver}-${forgever}"
-    embed "com.vicious:viciouslib:${vlibver}"
-    embed 'org.json:json:20220320'
+    minecraft ("net.minecraftforge:forge:${mcver}-${forgever}")
+    embed("com.vicious:viciouslib:${vlibver}")
+    embed ('org.json:json:20220320')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }
@@ -151,6 +155,7 @@ jar {
         ])
     }
 }
+
 //jar.finalizedBy('reobfJar')
 
 publish.dependsOn('deobfJar')
@@ -160,6 +165,12 @@ def manif = {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
+    manifest manif
+}
+task reobfShadowJar(type: Jar){
+    from shadowJar
+    finalizedBy('reobfJar')
+    classifier = 'reobf'
     manifest manif
 }
 
