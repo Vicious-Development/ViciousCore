@@ -1,24 +1,14 @@
 # ViciousCore
 Vicious Core is a powerful mod designed to eliminate the tediousness of many processes in modding Minecraft while keeping everything as server efficient as possible. 
-This includes: item and entity rendering and animation, mob spawn detection and handling.
-Soon to come:
-Structure generation and modification.
-Tile Entities and Multiblocks.
+Provides:
+## Common
+- Simple data syncing between client and server.
+- Common keybindings which sync their state on the client and server.
+- All features provided in ViciousLib
 
-For rendering and animation, see [ViciousCoreClient](https://github.com/Vicious-MCModding/ViciousCoreClient). which is dependent on CodeChickenLib for more information.
-
-## Common Features:
-- Mobspawn detection
-- Tile Entity Code overwriting
-- Field Code overwriting
-- Easy Config Creation
-## Client Features:
-- Rendering and animation
-- Entity rendering overwriting.
-## WIP Features:
-- Structure Generation
-- Tile Entities and MultiBlocks
-- GUI Systems.
+## Client
+- Relativistic GUI system.
+- Holoinv GUI
 
 # Using as a Gradle Dependency
 1. Put this in your build script
@@ -34,7 +24,7 @@ repositories {
     }
 }
 dependencies {
-    compile "com.vicious:viciouscore:VERSION"
+    compile "com.vicious:viciouscore:MCVER-VCVER"
 }
 ```
 2. If you don't have a GPR Key you need to make one. To do so, go here: [https://github.com/settings/tokens](https://github.com/settings/tokens)
@@ -45,6 +35,6 @@ dependencies {
 gpr.user=YOUR GITHUB USERNAME
 gpr.key=THE KEY YOU JUST MADE.
 ```
-* You should be good now BUT be warned. This key grants anyone with it special privileges (the ones you gave it in that checkbox section). Make sure that this key is kept private, you'll want your git system to ignore the gradle.properties file in this case. You could also just use the System Environment variables as well.
+* You should be good now BUT be warned. This key grants anyone with it special privileges (the ones you gave it in that checkbox section). Make sure that this key is kept private, you'll want your git system to ignore the gradle.properties file in this case. YOU SHOULD just use the System Environment variables as well.
 
 Doing this will both provide you ALL dependencies for core and any of the dependencies for the dependencies (Wow its like magic).
