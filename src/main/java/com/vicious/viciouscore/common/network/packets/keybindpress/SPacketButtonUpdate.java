@@ -35,14 +35,18 @@ public class SPacketButtonUpdate extends VCPacket {
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> context) {
-        NetworkEvent.Context ctx = context.get();
-        ctx.setPacketHandled(true);
-        ServerPlayer plr = ctx.getSender();
-        if(plr == null) return;
-        KeyPressHandler handler = VCCapabilities.getCapability(plr, KeyPressHandler.class);
-        if(handler == null) return;
-        handler.setDown(getCode(),isPressed());
-        VCNetwork.getInstance().reply(ctx,new CPacketButtonPressReceived(getCode(),isPressed()));
+        try {
+            NetworkEvent.Context ctx = context.get();
+            ctx.setPacketHandled(true);
+            ServerPlayer plr = ctx.getSender();
+            if (plr == null) return;
+            KeyPressHandler handler = VCCapabilities.getCapability(plr, KeyPressHandler.class);
+            if (handler == null) return;
+            handler.setDown(getCode(), isPressed());
+            VCNetwork.getInstance().reply(ctx, new CPacketButtonPressReceived(getCode(), isPressed()));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public int getCode(){

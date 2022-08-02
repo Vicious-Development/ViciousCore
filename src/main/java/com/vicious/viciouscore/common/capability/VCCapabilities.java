@@ -67,19 +67,27 @@ public class VCCapabilities {
         //Can't be simplified see the rant I went on above.
         event.register(KeyPressHandler.class);
         KEYPRESS = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(KeyPressHandler.class,KEYPRESS);
         event.register(SyncableTickState.class);
         TICKABLE = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncableTickState.class,TICKABLE);
         event.register(SyncableInventory.class);
         FASTITEMSTACKHANDLER = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncableInventory.class,FASTITEMSTACKHANDLER);
         event.register(SyncableRecipeState.class);
         RECIPEPROCESSOR = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncableRecipeState.class,RECIPEPROCESSOR);
         event.register(SyncablePrimitive.class);
         PRIMITIVE = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncablePrimitive.class,PRIMITIVE);
         event.register(SyncableINBT.class);
         INBT = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncableINBT.class,INBT);
         event.register(SyncableCompound.class);
         COMPOUND = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncableCompound.class,COMPOUND);
         event.register(SyncableIVCNBT.class);
         IVCNBT = CapabilityManager.get(new CapabilityToken<>(){});
+        capabilityTokens.put(SyncableIVCNBT.class,IVCNBT);
     }
 }

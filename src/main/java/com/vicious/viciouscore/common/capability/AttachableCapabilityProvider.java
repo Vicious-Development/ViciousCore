@@ -15,7 +15,7 @@ implements ICapabilityProvider {
 
     @SuppressWarnings("unchecked")
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap.equals(token)) return (LazyOptional<T>) provider;
+        if (token.equals(cap)) return (LazyOptional<T>) provider;
         return LazyOptional.empty();
     }
 

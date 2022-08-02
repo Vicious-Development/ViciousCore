@@ -42,6 +42,7 @@ public class ViciousCore
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonKeyBindings::register);
         SidedExecutor.clientOnly(()->{
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         });
@@ -65,7 +66,6 @@ public class ViciousCore
         VCBlockEntities.init();
     }
     public void clientSetup(FMLClientSetupEvent event){
-        MinecraftForge.EVENT_BUS.register(CommonKeyBindings.class);
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);
     }
 

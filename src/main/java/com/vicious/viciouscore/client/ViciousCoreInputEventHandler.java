@@ -15,19 +15,16 @@ public class ViciousCoreInputEventHandler {
         CPacketButtonPressReceived.Handler handler = CPacketButtonPressReceived.Handler.getInstance();
         CommonKeyBindings.keyBindingList.forEach((i, k)->{
             KeyMapping binding = k.clientKey;
-            if(binding != null) {
-                System.out.println("SETUP COMPLETE");
-                if (binding.isDown()) {
-                    if (!k.isDown) {
-                        handler.startSending(new SPacketButtonUpdate(k.ID, true));
-                    }
-                    k.isDown = true;
-                } else {
-                    if (k.isDown) {
-                        handler.startSending(new SPacketButtonUpdate(k.ID, false));
-                    }
-                    k.isDown = false;
+            if (binding.isDown()) {
+                if (!k.isDown) {
+                    handler.startSending(new SPacketButtonUpdate(k.ID, true));
                 }
+                k.isDown = true;
+            } else {
+                if (k.isDown) {
+                    handler.startSending(new SPacketButtonUpdate(k.ID, false));
+                }
+                k.isDown = false;
             }
         });
         handler.tick();
