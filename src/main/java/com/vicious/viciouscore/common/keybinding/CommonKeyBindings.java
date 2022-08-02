@@ -1,12 +1,9 @@
 package com.vicious.viciouscore.common.keybinding;
 
 import com.vicious.viciouscore.common.util.SidedExecutor;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +16,7 @@ public class CommonKeyBindings {
     public static CommonKeyBinding VCSHOOT = add(new CommonKeyBinding("key.vc.shoot", -99, "key.viciouscore.category"));
     public static CommonKeyBinding VCAIM = add(new CommonKeyBinding("key.vc.aim", -100, "key.viciouscore.category"));
     public static void setup(){}
+    @SubscribeEvent
     public static void register(RegisterKeyMappingsEvent event){
         for (CommonKeyBinding key : keyBindingList.values()) {
             SidedExecutor.clientOnly(()-> event.register(key.toClientKeyBinding(KeyConflictContext.IN_GAME,null)));

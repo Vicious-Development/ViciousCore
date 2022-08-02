@@ -14,17 +14,19 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class VCNetwork {
     public static VCNetwork instance;
     public static VCNetwork getInstance(){
-        if(instance == null) instance = new VCNetwork();
+        if(instance == null){
+            instance = new VCNetwork();
+            VCPacket.register(CPacketButtonPressReceived.class, CPacketButtonPressReceived::new);
+            VCPacket.register(SPacketButtonUpdate.class, SPacketButtonUpdate::new);
+            VCPacket.register(CPacketSyncData.Window.class, CPacketSyncData.Window::new);
+            VCPacket.register(SPacketSyncData.Window.class, SPacketSyncData.Window::new);
+        }
         return instance;
     }
     private static final String VERSION = "1";
     protected final SimpleChannel channel = NetworkRegistry.newSimpleChannel(VCResources.NETWORK,VCNetwork::getProtocolVersion,VERSION::equals,VERSION::equals);
 
     public VCNetwork(){
-        VCPacket.register(CPacketButtonPressReceived.class, CPacketButtonPressReceived::new);
-        VCPacket.register(SPacketButtonUpdate.class, SPacketButtonUpdate::new);
-        VCPacket.register(CPacketSyncData.Window.class, CPacketSyncData.Window::new);
-        VCPacket.register(SPacketSyncData.Window.class, SPacketSyncData.Window::new);
     }
 
     public static String getProtocolVersion(){

@@ -33,7 +33,6 @@ public class CommonKeyBinding {
     public KeyMapping toClientKeyBinding(IKeyConflictContext context, KeyModifier modifier) {
         if(context == null) clientKey = new KeyMapping(name, defaultKeyCode, category);
         else {
-
             clientKey = modifier != null ? new KeyMapping(name, context, modifier,InputConstants.Type.KEYSYM, defaultKeyCode, category) : new KeyMapping(name, context,InputConstants.Type.KEYSYM, defaultKeyCode, category);
         }
         return clientKey;

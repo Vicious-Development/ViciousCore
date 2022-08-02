@@ -32,8 +32,8 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.6.1'
-String vlibver = '2.0.9'
+String projectver = '1.6.2'
+String vlibver = '2.1.0'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
 
@@ -153,6 +153,16 @@ jar {
             "Implementation-Vendor" :"${organization}",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
+    }
+}
+
+// Fix the classpath the right way and once and for all
+afterEvaluate {
+    // Collect deps in runtimeClasspath but NOT in minecraft
+    def deps = (configurations.embed - configurations.minecraft).join(';')
+    // Add deps to classpath
+    minecraft.runs.each { run ->
+        run.token 'minecraft_classpath', deps
     }
 }
 
