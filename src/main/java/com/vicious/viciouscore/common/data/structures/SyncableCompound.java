@@ -104,6 +104,10 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
     public <V extends SyncableValue<?>> V add(V val){
         for (Capability<?> token : val.getCapabilityTokens()) {
             List vals = get(token);
+            if(vals == null){
+                vals = new ArrayList();
+                put(token,vals);
+            }
             val.parent = this;
             vals.add(val);
         }

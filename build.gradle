@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.6.4'
+String projectver = '1.6.6'
 String vlibver = '2.1.0'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
@@ -165,27 +165,23 @@ afterEvaluate {
 
 
 shadowJar{
-    classifier = 'shadow'
     configurations = [project.configurations.embed]
+    classifier = 'deobf'
+}
+task reobf(type: Jar){
+    from shadowJar
+    classifier = 'reobf'
     finalizedBy 'reobfShadowJar'
 }
+
 
 reobf {
     shadowJar {}
 }
+jar {
+    shadowJar{}
+}
 def manif = {
-}
-
-
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
-    manifest manif
-}
-
-artifacts{
-    archives deobfJar
 }
 
 publishing {
@@ -204,7 +200,6 @@ publishing {
             groupId = "com.${organization}"
             artifactId = "${archivesBaseName}"
             from components.java
-            artifact deobfJar
         }
     }
 }
