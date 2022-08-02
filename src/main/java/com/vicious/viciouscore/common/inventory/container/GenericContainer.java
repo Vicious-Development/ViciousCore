@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class GenericContainer<T extends ISyncableCompoundHolder> extends AbstractContainerMenu implements ISyncableCompoundHolder{
     protected static final int HOTBAR_SLOT_COUNT = 9;
@@ -102,7 +101,7 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
         // Add the rest of the players inventory to the gui
         for (int y = 0; y < PLAYER_INVENTORY_ROW_COUNT; y++) {
             for (int x = 0; x < PLAYER_INVENTORY_COLUMN_COUNT; x++) {
-                int slotNumber = HOTBAR_SLOT_COUNT + y * PLAYER_INVENTORY_COLUMN_COUNT + x;
+                int slotNumber = y * PLAYER_INVENTORY_COLUMN_COUNT + x;
                 int xpos = hotbarx + x * slotxspacing;
                 int ypos = hotbary - 2 - (y+1) * slotyspacing;
                 addSlot(new SlotPlayerInv36(invPlayer, slotNumber,  xpos, ypos, PLAYER_MAIN_INVENTORY));
