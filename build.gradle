@@ -32,7 +32,7 @@ apply plugin: 'maven-publish'
 String mcver = "1.19"
 String forgever = "41.0.106"
 String archivesBaseName = 'viciouscore'
-String projectver = '1.6.2'
+String projectver = '1.6.4'
 String vlibver = '2.1.0'
 String organization = 'vicious'
 String gitlink = "github.com/Vicious-MCModding/ViciousCore"
@@ -111,9 +111,6 @@ configurations {
     embed
     implementation.extendsFrom(embed)
 }
-configurations.runtimeOnly{
-    exclude group: "org.slf4j", module: "slf4j-api"
-}
 
 repositories {
     maven {
@@ -140,7 +137,6 @@ shadowJar{
     configurations = [project.configurations.embed]
 }
 
-
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
@@ -166,22 +162,30 @@ afterEvaluate {
     }
 }
 
-//jar.finalizedBy('reobfJar')
 
-publish.dependsOn('deobfJar')
+
+shadowJar{
+    classifier = 'shadow'
+    configurations = [project.configurations.embed]
+    finalizedBy 'reobfShadowJar'
+}
+
+reobf {
+    shadowJar {}
+}
 def manif = {
 }
+
+
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
     manifest manif
 }
-task reobfShadowJar(type: Jar){
-    from shadowJar
-    finalizedBy('reobfJar')
-    classifier = 'reobf'
-    manifest manif
+
+artifacts{
+    archives deobfJar
 }
 
 publishing {
@@ -199,8 +203,8 @@ publishing {
         gpr(MavenPublication) {
             groupId = "com.${organization}"
             artifactId = "${archivesBaseName}"
-            version = "${mcver}-${projectver}"
             from components.java
+            artifact deobfJar
         }
     }
 }
