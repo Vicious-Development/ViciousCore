@@ -1,26 +1,23 @@
 package com.vicious.viciouscore.client.gui.widgets;
 
-
-import com.vicious.viciouscore.common.inventory.container.GenericContainer;
-import com.vicious.viciouscore.common.inventory.slots.VCSlot;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.vicious.viciouscore.common.inventory.container.InventoryWrapper;
+import com.vicious.viciouscore.common.network.VCNetwork;
+import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
 import net.minecraft.resources.ResourceLocation;
 
-public class WidgetSlot extends WidgetNoInteraction {
-    private VCSlot linkedSlot;
-    private final GenericContainer<?> container;
-    public WidgetSlot(RootWidget root, int x, int y, int w, int h, ResourceLocation source, VCSlot slot, GenericContainer<?> inv) {
-        super(root,x,y,w,h,source);
-        linkedSlot = slot;
-        container = inv;
+public class WidgetSlot extends WidgetImage{
+    protected InventoryWrapper wrapper;
+    protected int slot;
+    public WidgetSlot(RootWidget root, int x, int y, int w, int h, ResourceLocation widgetResource, InventoryWrapper wrapper, int slot) {
+        super(root, x, y, w, h, widgetResource);
+        this.wrapper=wrapper;
+        this.slot=slot;
+
     }
 
     @Override
-    public void calculateVectors() {
-        super.calculateVectors();
-        VCSlot newSlot = linkedSlot.moveSlot(actualPosition.x,actualPosition.y);
-        container.overwriteSlot(linkedSlot, newSlot);
-        linkedSlot = newSlot;
-        int index = linkedSlot.getSlotIndex() + linkedSlot.getRange().firstIndex;
-        if(index != -1) container.machineSlots.set(index, newSlot);
+    public void onClick(int button) {
+        VCNetwork.getInstance().sendToServer(new SPacketSlotClicked(slot, (byte) wrapper.index, button,InputConstants.isKeyDown(getWindowID(),InputConstants.KEY_LSHIFT) || InputConstants.isKeyDown(getWindowID(),InputConstants.KEY_RSHIFT)));
     }
 }

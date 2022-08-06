@@ -26,6 +26,7 @@ public class FastItemHandlerContainer implements Container, StackedContentsCompa
     private List<ContainerListener> listeners;
 
     public FastItemHandlerContainer(FastItemStackHandler handler) {
+        this.handler=handler;
         this.size = handler.getItems().size();
         this.items = handler.getItems();
     }

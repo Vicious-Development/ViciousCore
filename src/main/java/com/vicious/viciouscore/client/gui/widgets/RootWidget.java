@@ -11,7 +11,6 @@ public class RootWidget extends VCWidget{
     public int mouseDX = 0;
     public int mouseDY = 0;
     public VCWidget draggedWidget = null;
-    public int guiConnectionID;
 
     public RootWidget() {
         super(null,0, 0, 0, 0);
@@ -27,6 +26,7 @@ public class RootWidget extends VCWidget{
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         mouseUpdate(mouseX,mouseY);
+        if(draggedWidget != null) draggedWidget.drag();
         super.render(stack, mouseX, mouseY, partialTicks);
     }
 }

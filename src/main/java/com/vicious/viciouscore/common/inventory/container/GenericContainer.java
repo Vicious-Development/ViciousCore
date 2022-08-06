@@ -1,12 +1,19 @@
 package com.vicious.viciouscore.common.inventory.container;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.SyncTarget;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
+import com.vicious.viciouscore.common.data.implementations.SyncableInventory;
 import com.vicious.viciouscore.common.data.structures.SyncableCompound;
+import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
 import com.vicious.viciouscore.common.inventory.slots.SlotPlayerInv36;
 import com.vicious.viciouscore.common.inventory.slots.VCSlot;
+import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
+import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotInteraction;
+import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotKeyPressed;
 import com.vicious.viciouscore.common.util.RangedInteger;
+import com.vicious.viciouscore.common.util.item.ItemHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,52 +22,36 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GenericContainer<T extends ISyncableCompoundHolder> extends AbstractContainerMenu implements ISyncableCompoundHolder{
-    protected static final int HOTBAR_SLOT_COUNT = 9;
-    protected static final int PLAYER_INVENTORY_ROW_COUNT = 3;
-    protected static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-    // slot index is the unique index for all slots in this container i.e. 0 - 35 for invPlayer. This may be subject to change in the future.
-    protected static final int VANILLA_FIRST_SLOT_INDEX = 0;
-    protected static final int HOTBAR_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX;
-    protected static final int PLAYER_INVENTORY_FIRST_SLOT_INDEX = HOTBAR_FIRST_SLOT_INDEX + HOTBAR_SLOT_COUNT;
-    protected static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-    protected static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     protected boolean isClient = false;
-    public static final RangedInteger PLAYER_MAIN_INVENTORY = new RangedInteger(PLAYER_INVENTORY_FIRST_SLOT_INDEX, PLAYER_INVENTORY_SLOT_COUNT);
-    public static final RangedInteger PLAYER_HOTBAR = new RangedInteger(HOTBAR_FIRST_SLOT_INDEX, HOTBAR_SLOT_COUNT);
+    public static final RangedInteger PLAYER_MAIN_INVENTORY = new RangedInteger(0, 36);
     protected ServerPlayer listener;
-
-
+    protected List<InventoryWrapper> inventories;
+    protected UserInteractionState interaction;
     public final T target;
+
     /**
-     * Does not include the player slots.
+     * Server End
      */
-    public final ArrayList<VCSlot> machineSlots = new ArrayList<>();
-    public final ArrayList<VCSlot> playerSlots = new ArrayList<>();
-
-    public static final int PLAYER_INVENTORY_XPOS = 8;
-    public static final int PLAYER_INVENTORY_YPOS = 125;
-
-    public GenericContainer(@Nullable MenuType<?> type, int windowId, T target) {
+    public GenericContainer(@Nullable MenuType<?> type, int windowId, Inventory playerInv, T target) {
         super(type, windowId);
+        newSlotList(playerInv);
         this.target = target;
         getData().listenChanged(this::onDataChange);
     }
 
     /**
      * Client End
-     * @param type
-     * @param windowId
-     * @param inventory - an inventory (idk what inventory though and I don't use it anyways).
-     * @param target - the target of this container.
      */
-    public GenericContainer(@Nullable MenuType<?> type, int windowId, Inventory inventory, Object target){
+    public GenericContainer(@Nullable MenuType<?> type, int windowId, Inventory playerInv, Object target){
         super(type,windowId);
+        newSlotList(playerInv);
         isClient=true;
         T tgt = null;
         try {
@@ -74,46 +65,36 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
         getData().listenChanged(this::onDataChange);
     }
 
-    public VCSlot overwriteSlot(VCSlot slotOld, VCSlot slotNew){
-        if(slotOld instanceof SlotPlayerInv36){
-            playerSlots.set(slotOld.index,slotNew);
-        }
-        else machineSlots.set(slotOld.index,slotNew);
-        int index = slots.indexOf(slotOld);
-        if(index != -1) slots.set(index, slotNew);
-        return slotNew;
-    }
-
     public boolean transferStackOutOfContainer(Player player, ItemStack stack){
-        boolean successfulTransfer = mergeInto(PLAYER_HOTBAR, stack, true);
-        if (!successfulTransfer) {
-            successfulTransfer = mergeInto(PLAYER_MAIN_INVENTORY, stack, true);
-        }
-        return successfulTransfer;
+        return mergeInto(PLAYER_MAIN_INVENTORY, stack, false);
     }
     protected boolean mergeInto(RangedInteger destinationZone, ItemStack sourceItemStack, boolean fillFromEnd) {
         return moveItemStackTo(sourceItemStack, destinationZone.firstIndex, destinationZone.firstIndex+destinationZone.size, fillFromEnd);
     }
     protected void addHoloInventory(Inventory invPlayer, int hotbarx, int hotbary, int slotxspacing, int slotyspacing){
-        for (int x = 0; x < HOTBAR_SLOT_COUNT; x++) {
-            addSlot(new SlotPlayerInv36(invPlayer, x, hotbarx + slotxspacing * x, hotbary, PLAYER_HOTBAR));
+        InventoryWrapper list = newSlotList();
+        for (int x = 0; x < 9; x++) {
+            list.add(new SlotPlayerInv36(invPlayer, x, hotbarx + slotxspacing * x, hotbary, PLAYER_MAIN_INVENTORY));
         }
         // Add the rest of the players inventory to the gui
-        for (int y = 0; y < PLAYER_INVENTORY_ROW_COUNT; y++) {
-            for (int x = 0; x < PLAYER_INVENTORY_COLUMN_COUNT; x++) {
-                int slotNumber = y * PLAYER_INVENTORY_COLUMN_COUNT + x;
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
+                int slotNumber = 9 + y * 9 + x;
                 int xpos = hotbarx + x * slotxspacing;
                 int ypos = hotbary - 2 - (y+1) * slotyspacing;
-                addSlot(new SlotPlayerInv36(invPlayer, slotNumber,  xpos, ypos, PLAYER_MAIN_INVENTORY));
+                list.add(new SlotPlayerInv36(invPlayer, slotNumber,  xpos, ypos, PLAYER_MAIN_INVENTORY));
             }
         }
     }
-    protected <T extends VCSlot> T addSlot(T slotIn) {
-        if(slotIn instanceof SlotPlayerInv36)
-            playerSlots.add(slotIn);
-        else
-            machineSlots.add(slotIn);
-        return (T) super.addSlot(slotIn);
+
+    protected InventoryWrapper newSlotList(FastItemStackHandler handler){
+        InventoryWrapper list = new InventoryWrapper(handler);
+        list.index=slots.size();
+        inventories.add(list);
+        return list;
+    }
+    protected InventoryWrapper newSlotList(Inventory playerInv){
+        return newSlotList(new FastItemStackHandler(playerInv.items));
     }
 
     @Override
@@ -127,10 +108,9 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
     @Override
     public void removeSlotListener(ContainerListener list) {
         super.removeSlotListener(list);
-        if(list instanceof ServerPlayer plr){
+        if(list instanceof ServerPlayer){
             listener = null;
         }
-
     }
 
     public SyncableCompound getData() {
@@ -151,4 +131,85 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
             getData().syncRemote(new SyncTarget.Window(new DataAccessor.Remote(listener),containerId));
         }
     }
+
+    public void handleSlotPacket(SPacketSlotInteraction packet, ServerPlayer player) {
+        if (packet instanceof SPacketSlotClicked sc) onSlotClicked(sc);
+        else if(packet instanceof SPacketSlotKeyPressed skp) onSlotKeyPressed(skp);
+    }
+    public void onSlotKeyPressed(SPacketSlotKeyPressed packet){
+        //TODO impl drop.
+    }
+    public void onSlotClicked(SPacketSlotClicked packet) {
+        InventoryWrapper inventory = inventories.get(packet.getInventory());
+        int slot = packet.getSlot();
+        ItemStack stack = inventory.getItem(slot);
+        //Shift held: switch item between inventories.
+        if(packet.shiftHeld()){
+            switchInventories(inventory,slot);
+        }
+        //Not holding anything.
+        else if(interaction.held.isEmpty()){
+            //Take entire item from slot
+            if(packet.isLeftClick()){
+                interaction.held = stack;
+                inventory.setItem(slot,ItemStack.EMPTY);
+            }
+            //Right click: take half
+            else{
+                ItemStack half = stack.copy();
+                half.setCount((int)Math.ceil(half.getCount()/2.0));
+                stack.shrink(half.getCount());
+                interaction.held=half;
+            }
+        }
+        //Holding something
+        else{
+            //Left click swap item.
+            if(packet.isLeftClick() || !interaction.isHolding(stack) || stack.getCount() == stack.getMaxStackSize()){
+                if(inventory.mayPlace(slot,interaction.held)) {
+                    ItemStack pre = interaction.held;
+                    interaction.held = stack;
+                    inventory.setItem(slot, pre);
+                }
+            }
+            //Right click put one.
+            else {
+                stack.grow(1);
+                interaction.held.shrink(1);
+            }
+        }
+    }
+
+    public void switchInventories(InventoryWrapper list, int slot){
+        ItemStack stack = list.getItem(slot);
+        ItemStack toTransfer = stack.copy();
+        for (InventoryWrapper inventory : inventories) {
+            if(toTransfer.isEmpty()){
+                break;
+            }
+            if(inventory.equals(list)) continue;
+            toTransfer = inventory.insert(toTransfer);
+        }
+        list.getItem(slot).shrink(stack.getCount()-toTransfer.getCount());
+    }
+
+    /**
+     * Shift left/right: switch inventory
+     *
+     * Held Empty:
+     * 	-Left: take whole stack.
+     * 	-Right: split stack, transfer stack gets more or equal.
+     *
+     * Held Not Empty:
+     * 	-Same type
+     * 		-Right: Place maximum
+     * 		-Left: Place one
+     * 	-Different type:
+     * 		-Right/left: Swap stacks
+     * Quickbinds
+     * 	-Double click stack: maximize stack. (shift clicking conflicts)
+     * 	-Drop Key - drop, hold ctrl: drop all.
+     * 	-Click stack outside GUI: drop
+     *
+     */
 }

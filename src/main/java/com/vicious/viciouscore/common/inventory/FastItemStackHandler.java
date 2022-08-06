@@ -10,12 +10,16 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class FastItemStackHandler extends ItemStackHandler implements IFastItemHandler {
     protected ItemStackMap map = new ItemStackMap();
     protected ItemSlotMap slotMemory = new ItemSlotMap();
+    protected Map<Integer,Predicate<ItemStack>> validators = new HashMap<>();
     protected List<Consumer<IFastItemHandler>> changeListeners = new ArrayList<>();
     public FastItemStackHandler()
     {
@@ -32,19 +36,31 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         super(stacks);
     }
 
+    public boolean mayPlace(int slot, ItemStack stack){
+        if(validators.containsKey(slot)){
+            return validators.get(slot).test(stack);
+        }
+        return true;
+    }
+
+    /**
+     * Force places the item in the slot.
+     */
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         ItemStack before = getStackInSlot(slot);
-        this.stacks.set(slot,stack);
-        slotMemory.add(stack,slot);
+        this.stacks.set(slot, stack);
+        slotMemory.add(stack, slot);
         map.reduceBy(before);
         map.add(stack);
         onContentsChanged(slot);
         onUpdate();
+
     }
 
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        if(mayPlace(slot, stack)) return stack.copy();
         ItemStack remaining = super.insertItem(slot, stack, simulate);
         if(!simulate) {
             if (remaining.getCount() < stack.getCount()) {
@@ -158,10 +174,10 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         push.setCount(remaining);
         for (int i = 0; i < stacks.size(); i++) {
             remaining = push.getCount();
-            if(push.getCount() == 0) return ItemStack.EMPTY;
-            push = insertItem(i,push,simulate);
-            if(push.getCount() < remaining){
-                slotMemory.add(pushClone,i);
+            if (push.getCount() == 0) return ItemStack.EMPTY;
+            push = insertItem(i, push, simulate);
+            if (push.getCount() < remaining) {
+                slotMemory.add(pushClone, i);
             }
         }
         if(pushClone.getCount() != push.getCount()){

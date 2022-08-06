@@ -15,8 +15,9 @@ public class SlotPlayerInv36 extends VCSlot {
         return true;
     }
     public SlotPlayerInv36 moveSlot(int x, int y){
-        return new SlotPlayerInv36(container, getSlotIndex(), x, y, zone);
+        return new SlotPlayerInv36(container, getActualIndex(), x, y, zone);
     }
+
     public String toString(){
         return "inv:" + getSlotIndex() + ":" + zone.firstIndex;
     }

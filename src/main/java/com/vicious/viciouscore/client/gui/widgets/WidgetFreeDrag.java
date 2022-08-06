@@ -14,4 +14,9 @@ public class WidgetFreeDrag extends WidgetImage{
     public boolean canBeDragged() {
         return true;
     }
+
+    @Override
+    public boolean canBeHovered(){
+        return false;
+    }
 }

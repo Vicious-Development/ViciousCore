@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 public class VCWidget implements Widget {
     protected ArrayList<VCWidget> children = new ArrayList<>();
     protected Vector2i startPos;
-    protected Vector2i offsetVector;
+    protected Vector2i offsetVector = new Vector2i(0,0);
     protected Vector2i scale = new Vector2i(1,1);
     protected Vector2i actualPosition;
     protected Vector2i actualWH;
@@ -58,6 +58,7 @@ public class VCWidget implements Widget {
     public <T extends VCWidget> T addChild(T child){
         children.add(child);
         child.setParent(this);
+        child.calculateVectors();
         return child;
     }
 
@@ -71,9 +72,11 @@ public class VCWidget implements Widget {
     public VCWidget widgetMouseOver(){
         for (VCWidget child : children) {
             if(child.getExtents().isWithin(getMouseX(),getMouseY())){
+                hovered = false;
                 return child.widgetMouseOver();
             }
         }
+        onHover();
         return this;
     }
 
@@ -81,8 +84,12 @@ public class VCWidget implements Widget {
         hovered = true;
     }
 
+    public boolean canBeHovered(){
+        return false;
+    }
+
     public void onClick(int button){
-        if(hasBeenClicked && canBeDragged() && leftClick(button)){
+        if(canBeDragged() && leftClick(button)){
             isDraggedWidget();
         }
         hasBeenClicked=true;
@@ -91,8 +98,10 @@ public class VCWidget implements Widget {
         return button == 0;
     }
     public void onRelease(int button){
-        hasBeenClicked = false;
-        root.draggedWidget=null;
+        if(leftClick(button)) {
+            hasBeenClicked = false;
+            root.draggedWidget = null;
+        }
     }
     public void playClickSound(){
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -128,7 +137,6 @@ public class VCWidget implements Widget {
     public void translate(int x, int y){
         this.offsetVector = offsetVector.add(x,y);
         calculateVectors();
-        forEachChild((c)-> c.translate(x,y));
     }
     public void setScale(int x, int y){
         this.scale = new Vector2i(x,y);
@@ -139,12 +147,13 @@ public class VCWidget implements Widget {
         calcActualPosition();
         calcActualWidthHeight();
         calcExtents();
+        forEachChild(VCWidget::calculateVectors);
     }
     public int getMouseDX(){
-        return root.getMouseX();
+        return root.mouseDX;
     }
     public int getMouseDY(){
-        return root.getMouseY();
+        return root.mouseDY;
     }
     public void drag(){
         if(!canBeDragged()) onParent(VCWidget::drag);
@@ -168,5 +177,13 @@ public class VCWidget implements Widget {
     }
     public int getHeight(){
         return height;
+    }
+
+    public void resize(int resizeX, int resizeY) {
+        translate(resizeX,resizeY);
+    }
+
+    public long getWindowID(){
+        return Minecraft.getInstance().getWindow().getWindow();
     }
 }
