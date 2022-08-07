@@ -1,15 +1,16 @@
 package com.vicious.viciouscore.common.inventory.container;
 
-import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
+import com.vicious.viciouscore.common.data.state.IFastItemHandler;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.Objects;
 
-public class InventoryWrapper {
+public class InventoryWrapper<T extends IFastItemHandler & IItemHandlerModifiable> {
     public int index = -1;
-    public FastItemStackHandler inventory;
-    public InventoryWrapper(FastItemStackHandler inventory){
+    public T inventory;
+    public InventoryWrapper(T inventory){
         this.inventory=inventory;
     }
     public void dropItemInSlot(Player player, int slot, boolean dropAll){
@@ -23,6 +24,10 @@ public class InventoryWrapper {
 
     public ItemStack getItem(int slot) {
         return inventory.getStackInSlot(slot);
+    }
+
+    public int getSize(){
+        return inventory.getSlots();
     }
 
     @Override

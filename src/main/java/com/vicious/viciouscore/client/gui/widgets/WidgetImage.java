@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.client.gui.widgets;
 
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.util.WindowGetter;
@@ -22,8 +21,8 @@ public class WidgetImage extends VCWidget {
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(WindowGetter.window == null || !visible) return;
-        Window window = WindowGetter.window;
         RenderSystem.setShaderTexture(0,source);
+        RenderSystem.enableBlend();
         boolean doRender = true;
         boolean DRL = true;
         boolean DRR = true;
@@ -120,6 +119,7 @@ public class WidgetImage extends VCWidget {
             //Right Bottom
             if(DRD && DRR) Screen.blit(matrixStack, newX + halfWidthLeft, newY + halfHeightTop, width - halfWidthLeft, uvy - halfHeightBottom, halfWidthRight, halfHeightBottom, width, height);
         }
+        RenderSystem.disableBlend();
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
     protected int getYImage(boolean isHovered) {

@@ -26,6 +26,7 @@ public class RootWidget extends VCWidget{
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         mouseUpdate(mouseX,mouseY);
+        widgetMouseOver();
         if(draggedWidget != null) draggedWidget.drag();
         super.render(stack, mouseX, mouseY, partialTicks);
     }

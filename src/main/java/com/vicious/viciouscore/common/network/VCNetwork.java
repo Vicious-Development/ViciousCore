@@ -4,6 +4,8 @@ import com.vicious.viciouscore.common.network.packets.datasync.CPacketSyncData;
 import com.vicious.viciouscore.common.network.packets.datasync.SPacketSyncData;
 import com.vicious.viciouscore.common.network.packets.keybindpress.CPacketButtonPressReceived;
 import com.vicious.viciouscore.common.network.packets.keybindpress.SPacketButtonUpdate;
+import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
+import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotKeyPressed;
 import com.vicious.viciouscore.common.resource.VCResources;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -20,6 +22,8 @@ public class VCNetwork {
             VCPacket.register(SPacketButtonUpdate.class, SPacketButtonUpdate::new);
             VCPacket.register(CPacketSyncData.Window.class, CPacketSyncData.Window::new);
             VCPacket.register(SPacketSyncData.Window.class, SPacketSyncData.Window::new);
+            VCPacket.register(SPacketSlotClicked.class, SPacketSlotClicked::new);
+            VCPacket.register(SPacketSlotKeyPressed.class, SPacketSlotKeyPressed::new);
         }
         return instance;
     }

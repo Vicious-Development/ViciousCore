@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class DataAccessor {
     public static DataAccessor REMOTE = new Remote(null);
     public static DataAccessor LOCAL = new Local();
+    public static DataAccessor WORLD = new Local();
     /**
      * Acts as a local accessor, intended only for permitting authorized users access to data.
      */

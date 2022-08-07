@@ -42,6 +42,16 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         }
         return true;
     }
+    public FastItemStackHandler addSlotValidator(int slot, Predicate<ItemStack> pred){
+        this.validators.put(slot,pred);
+        return this;
+    }
+    public FastItemStackHandler addValidatorToAllSlots(Predicate<ItemStack> pred){
+        for (int i = 0; i < getSlots(); i++) {
+            this.validators.put(i,pred);
+        }
+        return this;
+    }
 
     /**
      * Force places the item in the slot.
@@ -54,13 +64,16 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         map.reduceBy(before);
         map.add(stack);
         onContentsChanged(slot);
-        onUpdate();
 
     }
 
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        if(mayPlace(slot, stack)) return stack.copy();
+        if(!mayPlace(slot, stack)) return stack.copy();
+        return forceInsertItem(slot,stack,simulate);
+    }
+    @Override
+    public @NotNull ItemStack forceInsertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         ItemStack remaining = super.insertItem(slot, stack, simulate);
         if(!simulate) {
             if (remaining.getCount() < stack.getCount()) {
@@ -68,7 +81,6 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                 addStack.setCount(stack.getCount() - remaining.getCount());
                 map.add(addStack);
                 slotMemory.add(stack,slot);
-                onUpdate();
             }
         }
         return remaining;
@@ -83,7 +95,6 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                 if(stacks.get(slot).isEmpty()){
                     slotMemory.remove(extracted,slot);
                 }
-                onUpdate();
             }
         }
         return extracted;
@@ -109,68 +120,48 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         requested = requested.copy();
         List<Integer> possibleSlots = slotMemory.get(requested);
         int toRemove = requested.getCount();
-        for (int i = 0; i < possibleSlots.size(); i++) {
-            if(toRemove == 0) break;
-            int index = possibleSlots.get(i);
-            ItemStack stack = stacks.get(index);
-            if(stack.isEmpty()){
-                possibleSlots.remove(i);
-                i--;
-            }
-            else{
-                int remaining = Math.max(stack.getCount()-toRemove,0);
-                if(!simulate){
-                    if(remaining != 0){
-                        stack.setCount(remaining);
+        if(possibleSlots != null) {
+            for (int i = 0; i < possibleSlots.size(); i++) {
+                if (toRemove == 0) break;
+                int index = possibleSlots.get(i);
+                ItemStack stack = stacks.get(index);
+                if (stack.isEmpty()) {
+                    possibleSlots.remove(i);
+                    i--;
+                } else {
+                    int remaining = Math.max(stack.getCount() - toRemove, 0);
+                    if (!simulate) {
+                        if (remaining != 0) {
+                            stack.setCount(remaining);
+                        } else {
+                            possibleSlots.remove(i);
+                            i--;
+                            stacks.set(index, ItemStack.EMPTY);
+                        }
+                        onContentsChanged(index);
                     }
-                    else{
-                        possibleSlots.remove(i);
-                        i--;
-                        stacks.set(index,ItemStack.EMPTY);
-                    }
-                    onContentsChanged(index);
+                    toRemove -= toRemove - remaining;
                 }
-                toRemove-=toRemove-remaining;
             }
         }
         requested.setCount(requested.getCount()-toRemove);
         if(requested.getCount() > 0){
-            onUpdate();
             return requested;
         }
         else return ItemStack.EMPTY;
     }
+
     /**
      * Looks in known slots for the requested item. If the item is not there, then finds the next slot containing it or an empty slot.
      *
      * @param push the ItemStack to push.
      * @param simulate whether to actually push the stack.
-     * @return the extracted stack with count less than or equal to requested.
+     * @return the inserted stack with count less than or equal to requested.
      */
     public ItemStack insertItem(ItemStack push, boolean simulate){
-        push = push.copy();
         ItemStack pushClone = push.copy();
-        List<Integer> prioritySlots = slotMemory.get(push);
+        push = insertPriority(push,simulate);
         int remaining = push.getCount();
-        for (int i = 0; i < prioritySlots.size(); i++) {
-            if(remaining == 0) break;
-            int index = prioritySlots.get(i);
-            ItemStack stack = stacks.get(index);
-            if(stack.isEmpty()){
-                prioritySlots.remove(i);
-                i--;
-            }
-            else{
-                if(stack.getMaxStackSize() < stack.getCount()){
-                    int toInsert = Math.min(stack.getMaxStackSize()-stack.getCount(),remaining);
-                    remaining-=toInsert;
-                    if(!simulate){
-                        stack.setCount(toInsert+stack.getCount());
-                        onContentsChanged(index);
-                    }
-                }
-            }
-        }
         push.setCount(remaining);
         for (int i = 0; i < stacks.size(); i++) {
             remaining = push.getCount();
@@ -180,8 +171,46 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                 slotMemory.add(pushClone, i);
             }
         }
-        if(pushClone.getCount() != push.getCount()){
-            onUpdate();
+        return push;
+    }
+    protected ItemStack insertPriority(ItemStack push, boolean simulate){
+        push = push.copy();
+        List<Integer> prioritySlots = slotMemory.get(push);
+        int remaining = push.getCount();
+        if(prioritySlots != null) {
+            for (int i = 0; i < prioritySlots.size(); i++) {
+                if (remaining == 0) break;
+                int index = prioritySlots.get(i);
+                ItemStack stack = stacks.get(index);
+                if (stack.isEmpty()) {
+                    prioritySlots.remove(i);
+                    i--;
+                } else {
+                    if (stack.getMaxStackSize() < stack.getCount()) {
+                        int toInsert = Math.min(stack.getMaxStackSize() - stack.getCount(), remaining);
+                        remaining -= toInsert;
+                        if (!simulate) {
+                            stack.setCount(toInsert + stack.getCount());
+                            onContentsChanged(index);
+                        }
+                    }
+                }
+            }
+        }
+        return push;
+    }
+    public ItemStack forceInsertItem(ItemStack push, boolean simulate){
+        ItemStack pushClone = push.copy();
+        push = insertPriority(push,simulate);
+        int remaining = push.getCount();
+        push.setCount(remaining);
+        for (int i = 0; i < stacks.size(); i++) {
+            remaining = push.getCount();
+            if (push.getCount() == 0) return ItemStack.EMPTY;
+            push = forceInsertItem(i, push, simulate);
+            if (push.getCount() < remaining) {
+                slotMemory.add(pushClone, i);
+            }
         }
         return push;
     }
@@ -211,6 +240,12 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         for (int i = 0; i < getSlots(); i++) {
             cons.accept(i);
         }
+    }
+
+    @Override
+    protected void onContentsChanged(int slot) {
+        super.onContentsChanged(slot);
+        onUpdate();
     }
 
     public Container asContainer(){

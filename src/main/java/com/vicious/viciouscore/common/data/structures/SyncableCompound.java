@@ -36,7 +36,10 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
         CompoundTag inner = new CompoundTag();
         for (Capability<?> capability : keySet()) {
             for (SyncableValue<?> syncableValue : get(capability)) {
-                if(syncableValue.changed() && syncableValue.shouldSend(destination)){
+                if(destination == DataAccessor.WORLD){
+                    syncableValue.serializeNBT(inner,destination);
+                }
+                else if(syncableValue.changed() && syncableValue.shouldSend(destination)){
                     syncableValue.isDirty(false);
                     syncableValue.serializeNBT(inner,destination);
                 }
@@ -192,16 +195,10 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<Capability<?>,
             if(target instanceof SyncTarget.Window twindow) {
                 target.editor.sendPacket(new CPacketSyncData.Window(twindow,write));
             }
-            if(target instanceof SyncTarget.Tile ttile) {
-                target.editor.sendPacket(new CPacketSyncData.Tile(ttile, write));
-            }
         }
         else{
             if(target instanceof SyncTarget.Window twindow) {
                 target.editor.sendPacket(new SPacketSyncData.Window(twindow,write));
-            }
-            if(target instanceof SyncTarget.Tile ttile){
-                target.editor.sendPacket(new SPacketSyncData.Tile(ttile,write));
             }
         }
     }

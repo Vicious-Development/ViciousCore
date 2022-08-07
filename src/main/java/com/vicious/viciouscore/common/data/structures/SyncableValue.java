@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSerializable {
     /**
@@ -48,7 +49,7 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     }
     public <V extends SyncableValue<T>> V isDirty(boolean isDirty){
         this.isDirty=isDirty;
-        if(isDirty) parent.isDirty(isDirty);
+        onParent((p)->p.isDirty(isDirty));
         return (V) this;
     }
     public <V extends SyncableValue<T>> V shouldSave(boolean shouldSave){
@@ -99,6 +100,13 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     public void setValue(T newVal){
         this.value=newVal;
         isDirty(true);
+    }
+
+    public boolean hasParent(){
+        return parent != null;
+    }
+    public void onParent(Consumer<SyncableValue<?>> cons){
+        if(hasParent()) cons.accept(parent);
     }
 
 }

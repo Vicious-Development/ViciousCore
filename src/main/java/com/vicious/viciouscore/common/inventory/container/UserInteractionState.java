@@ -9,6 +9,10 @@ public class UserInteractionState {
     public boolean isHolding(ItemStack slotStack) {
         return ItemHelper.doItemsMatch(held,slotStack);
     }
+
+    public ItemStack getHeld() {
+        return held;
+    }
     /**
      * Shift left/right: switch inventory
      *

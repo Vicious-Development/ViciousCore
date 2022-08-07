@@ -98,21 +98,20 @@ public abstract class VCTE extends BlockEntity implements ISyncableCompoundHolde
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
-        getData().deserializeNBT(nbt, DataAccessor.LOCAL);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        getData().serializeNBT(tag, DataAccessor.WORLD);
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag supe = super.serializeNBT();
-        getData().serializeNBT(supe, DataAccessor.LOCAL);
-        return supe;
+    public void load(CompoundTag nbt) {
+        getData().deserializeNBT(nbt, DataAccessor.WORLD);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        getData().deserializeNBT(tag, DataAccessor.LOCAL);
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        getData().listenChanged(this::setChanged);
     }
 
     public boolean isWithinAccessRange(Player player) {

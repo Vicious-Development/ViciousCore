@@ -2,8 +2,10 @@ package com.vicious.viciouscore.common.network.packets.slot;
 
 import com.vicious.viciouscore.common.inventory.container.GenericContainer;
 import com.vicious.viciouscore.common.network.VCPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -42,5 +44,12 @@ public class SPacketSlotInteraction extends VCPacket {
     }
     public int getInventory(){
         return inventory;
+    }
+
+    public void handleSelf() {
+        Player plr = Minecraft.getInstance().player;
+        if(plr.containerMenu instanceof GenericContainer<?> cont){
+            cont.handleSlotPacket(this,plr);
+        }
     }
 }

@@ -8,16 +8,25 @@ import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IItemHandler, IFastItemHandler {
+public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IItemHandlerModifiable, IFastItemHandler {
     public SyncableInventory(String key, int size) {
         super(key, new FastItemStackHandler(size));
         value.listenChanged(this::listenInv);
+    }
+
+    @Override
+    public boolean mayPlace(int slot, ItemStack stack){
+        return value.mayPlace(slot,stack);
+    }
+    public FastItemStackHandler addSlotValidator(int slot, Predicate<ItemStack> pred){
+        return value.addSlotValidator(slot,pred);
     }
 
     @Override
@@ -80,6 +89,16 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     }
 
     @Override
+    public ItemStack forceInsertItem(ItemStack push, boolean simulate) {
+        return value.forceInsertItem(push,simulate);
+    }
+
+    @Override
+    public @NotNull ItemStack forceInsertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        return value.forceInsertItem(slot, stack, simulate);
+    }
+
+    @Override
     public void listenChanged(Consumer<IFastItemHandler> cons) {
         value.listenChanged(cons);
     }
@@ -92,5 +111,10 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     @Override
     public void onUpdate() {
         value.onUpdate();
+    }
+
+    @Override
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        value.setStackInSlot(slot,stack);
     }
 }

@@ -37,7 +37,6 @@ public class SPacketButtonUpdate extends VCPacket {
     public void handle(Supplier<NetworkEvent.Context> context) {
         try {
             NetworkEvent.Context ctx = context.get();
-            ctx.setPacketHandled(true);
             ServerPlayer plr = ctx.getSender();
             if (plr == null) return;
             KeyPressHandler handler = VCCapabilities.getCapability(plr, KeyPressHandler.class);

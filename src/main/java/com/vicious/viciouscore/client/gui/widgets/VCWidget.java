@@ -71,13 +71,17 @@ public class VCWidget implements Widget {
      */
     public VCWidget widgetMouseOver(){
         for (VCWidget child : children) {
-            if(child.getExtents().isWithin(getMouseX(),getMouseY())){
+            if(child.respondToInputs() && child.getExtents().isWithin(getMouseX(),getMouseY())){
                 hovered = false;
                 return child.widgetMouseOver();
             }
         }
-        onHover();
+        if(canBeHovered()) onHover();
         return this;
+    }
+
+    public boolean respondToInputs(){
+        return true;
     }
 
     public void onHover(){
@@ -167,6 +171,7 @@ public class VCWidget implements Widget {
         forEachChild((c)->{
             c.render(stack,mouseX,mouseY,partialTicks);
         });
+        hovered=false;
     }
     public void setVisible(boolean visible){
         this.visible = visible;
@@ -182,8 +187,12 @@ public class VCWidget implements Widget {
     public void resize(int resizeX, int resizeY) {
         translate(resizeX,resizeY);
     }
-
     public long getWindowID(){
         return Minecraft.getInstance().getWindow().getWindow();
+    }
+
+    public void setStartPosition(Vector2i vec) {
+        this.startPos=vec;
+        calculateVectors();
     }
 }

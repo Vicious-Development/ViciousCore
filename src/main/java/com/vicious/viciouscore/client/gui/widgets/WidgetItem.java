@@ -27,6 +27,11 @@ public class WidgetItem extends VCWidget {
     protected void renderItem() {
         int x = this.actualPosition.x;
         int y = this.actualPosition.y;
-        renderer.renderGuiItem(supplier.get(),x,y);
+        ItemStack stack = supplier.get();
+        if(!stack.isEmpty()){
+            renderer.renderGuiItem(stack,x,y);
+            renderer.renderGuiItemDecorations(Minecraft.getInstance().font,stack,x,y);
+        }
     }
+
 }

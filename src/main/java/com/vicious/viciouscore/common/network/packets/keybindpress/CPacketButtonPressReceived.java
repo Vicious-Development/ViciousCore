@@ -56,7 +56,6 @@ public class CPacketButtonPressReceived extends VCPacket {
                     hasGottenResponse = true;
                 }
             }
-            ctx.get().setPacketHandled(true);
         }
         public void startSending(SPacketButtonUpdate buttonPacket){
             //Reflection.invokeMethod(toSend,CommonKeyBindings.grow, new Object[]{buttonPacket.getCode() + 1});
