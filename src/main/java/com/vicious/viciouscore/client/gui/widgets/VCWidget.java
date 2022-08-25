@@ -2,6 +2,7 @@ package com.vicious.viciouscore.client.gui.widgets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.util.Extents;
+import com.vicious.viciouscore.client.util.Vector2f;
 import com.vicious.viciouscore.client.util.Vector2i;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
@@ -9,13 +10,14 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class VCWidget implements Widget {
     protected ArrayList<VCWidget> children = new ArrayList<>();
     protected Vector2i startPos;
     protected Vector2i offsetVector = new Vector2i(0,0);
-    protected Vector2i scale = new Vector2i(1,1);
+    protected Vector2f scale = new Vector2f(1,1);
     protected Vector2i actualPosition;
     protected Vector2i actualWH;
     protected Extents extents;
@@ -26,6 +28,11 @@ public class VCWidget implements Widget {
     protected boolean hasBeenClicked;
     protected boolean visible = true;
     protected boolean hovered = false;
+    protected boolean alertUpdates = true;
+    public void shouldUpdate(boolean doUpdates){
+        this.alertUpdates =doUpdates;
+    }
+
 
     public VCWidget(RootWidget root, int x, int y, int w, int h){
         startPos = new Vector2i(x,y);
@@ -43,11 +50,11 @@ public class VCWidget implements Widget {
         return other;
     }
     public void calcActualPosition(){
-        actualPosition = startPos.add(offsetVector.multiply(scale));
+        actualPosition = startPos.add(offsetVector);
         onParent((p)-> actualPosition = actualPosition.add(parent.actualPosition));
     }
     public void calcActualWidthHeight(){
-        actualWH = new Vector2i(width,height).multiply(scale);
+        actualWH = new Vector2i(width,height);
     }
     public void calcExtents(){
         this.extents = new Extents(actualPosition,actualPosition.add(actualWH));
@@ -142,16 +149,22 @@ public class VCWidget implements Widget {
         this.offsetVector = offsetVector.add(x,y);
         calculateVectors();
     }
-    public void setScale(int x, int y){
-        this.scale = new Vector2i(x,y);
-        calculateVectors();
-        forEachChild((c)-> c.setScale(x,y));
+    public void setScale(float x, float y){
+        this.scale = new Vector2f(x,y);
     }
     public void calculateVectors(){
+        Extents pre = extents;
         calcActualPosition();
         calcActualWidthHeight();
         calcExtents();
         forEachChild(VCWidget::calculateVectors);
+        if(alertUpdates) {
+            if (!getExtents().equals(pre)) {
+                for (Consumer<VCWidget> listener : listeners) {
+                    listener.accept(this);
+                }
+            }
+        }
     }
     public int getMouseDX(){
         return root.mouseDX;
@@ -166,16 +179,47 @@ public class VCWidget implements Widget {
         }
     }
 
+    /**
+     * Called before the children render.
+     */
+    protected void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks){
+
+    }
+
+    /**
+     * Called before this widget and its children start rendering.
+     */
+    protected void doGLTransformations(PoseStack stack){
+        stack.pushPose();
+        if(scale.x != 1 || scale.y != 1){
+            stack.scale(scale.x,scale.y,1.0F);
+        }
+    }
+
+    /**
+     * Called after this widget and its children finish rendering.
+     */
+    protected void undoGLTransformations(PoseStack stack){
+        stack.popPose();
+    }
+
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+        doGLTransformations(stack);
+        if(isVisible()) renderWidget(stack,mouseX,mouseY,partialTicks);
         forEachChild((c)->{
             c.render(stack,mouseX,mouseY,partialTicks);
         });
         hovered=false;
+        undoGLTransformations(stack);
+    }
+
+    public boolean isVisible(){
+        return visible;
     }
     public void setVisible(boolean visible){
         this.visible = visible;
-        forEachChild((c)->c.setVisible(true));
+        forEachChild((c)->c.setVisible(visible));
     }
     public int getWidth(){
         return width;
@@ -194,5 +238,39 @@ public class VCWidget implements Widget {
     public void setStartPosition(Vector2i vec) {
         this.startPos=vec;
         calculateVectors();
+    }
+
+    public void setWidth(int width){
+        this.width=width;
+        calculateVectors();
+    }
+    public void setHeight(int height){
+        this.height=height;
+        calculateVectors();
+    }
+
+    /**
+     * @return The combined extents of the descendents and this widget's extents.
+     */
+    public Extents getCompleteExtents(){
+        return Extents.combined(getDescendantExtents(),extents);
+    }
+    public Extents getDescendantExtents(){
+        Extents newExtents = null;
+        for (VCWidget child : children) {
+            newExtents = Extents.combined(newExtents,child.getCompleteExtents());
+        }
+        return newExtents;
+    }
+
+    protected List<Consumer<VCWidget>> listeners = new ArrayList<>();
+    public void listen(Consumer<VCWidget> listener){
+        listeners.add(listener);
+    }
+    public void stopListening(Consumer<VCWidget> listener){
+        listeners.remove(listener);
+    }
+    public Vector2i getStartPos(){
+        return startPos;
     }
 }

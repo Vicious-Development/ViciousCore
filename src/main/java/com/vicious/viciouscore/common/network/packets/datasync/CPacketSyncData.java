@@ -20,6 +20,11 @@ public abstract class CPacketSyncData<T extends SyncTarget> extends PacketSyncDa
         super(target, tag);
     }
 
+    @Override
+    public boolean handleOnClient() {
+        return true;
+    }
+
     public static class Window extends CPacketSyncData<SyncTarget.Window>{
         public Window(SyncTarget.Window target, CompoundTag tag) {
             super(target, tag);

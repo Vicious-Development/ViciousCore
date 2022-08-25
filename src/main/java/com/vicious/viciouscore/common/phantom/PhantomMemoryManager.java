@@ -37,6 +37,9 @@ public class PhantomMemoryManager {
         if(target == null) target = add(constructor.apply(associations));
         return (T) target;
     }
+    public PhantomMemory getMemory(Object o){
+        return memories.get(o);
+    }
     public <T extends PhantomMemory> T add(T memory){
         memory.ID = nextID();
         for (Object association : memory.keySet) {

@@ -1,21 +1,16 @@
 package com.vicious.viciouscore.common.data.implementations;
 
-import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.data.state.IFastItemHandler;
 import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IItemHandlerModifiable, IFastItemHandler {
+public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IFastItemHandler {
     public SyncableInventory(String key, int size) {
         super(key, new FastItemStackHandler(size));
         value.listenChanged(this::listenInv);
@@ -31,17 +26,14 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
 
     @Override
     public <V extends SyncableValue<FastItemStackHandler>> V readRemote(boolean readRemote) {
-        readRemote=false;
+        this.readRemote=false;
         return (V) this;
     }
 
     protected void listenInv(IFastItemHandler cons){
         isDirty(true);
     }
-    @Override
-    protected List<Capability<?>> getCapabilityTokens() {
-        return List.of(VCCapabilities.FASTITEMSTACKHANDLER, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-    }
+
 
     @Override
     public int getSlots() {
@@ -111,6 +103,11 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     @Override
     public void onUpdate() {
         value.onUpdate();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return value.isEmpty();
     }
 
     @Override

@@ -1,14 +1,11 @@
 package com.vicious.viciouscore.common.data.implementations;
 
-import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.IVCNBTSerializable;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouscore.common.util.ArrayHashSet;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class SyncableArrayHashSet<T extends IVCNBTSerializable> extends SyncableValue<ArrayHashSet<T>> {
@@ -36,10 +33,4 @@ public class SyncableArrayHashSet<T extends IVCNBTSerializable> extends Syncable
             value.get(i).serializeNBT(vtag,destination);
             inner.put(""+i,vtag);
         }
-    }
-
-    @Override
-    protected List<Capability<?>> getCapabilityTokens() {
-        return List.of(VCCapabilities.INBT);
-    }
-}
+    }}

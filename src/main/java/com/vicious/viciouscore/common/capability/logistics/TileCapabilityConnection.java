@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.capability.logistics;
 
 import com.vicious.viciouscore.common.data.implementations.SyncableSidedWorldPos;
-import com.vicious.viciouscore.common.util.ServerHelper;
+import com.vicious.viciouscore.common.util.server.ServerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;

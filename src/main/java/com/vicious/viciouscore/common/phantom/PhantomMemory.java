@@ -20,10 +20,10 @@ public class PhantomMemory implements ISyncableCompoundHolder {
         this.keySet.addAll(Arrays.asList(associations));
     }
 
-    public void associate(WorldPosition position){
+    public void associate(WorldPos position){
         keySet.add(position);
     }
-    public void disassociate(WorldPosition position){
+    public void disassociate(WorldPos position){
         keySet.remove(position);
     }
 

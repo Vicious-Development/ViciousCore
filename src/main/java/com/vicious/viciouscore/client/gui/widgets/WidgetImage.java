@@ -19,7 +19,7 @@ public class WidgetImage extends VCWidget {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(WindowGetter.window == null || !visible) return;
         RenderSystem.setShaderTexture(0,source);
         RenderSystem.enableBlend();
@@ -120,7 +120,7 @@ public class WidgetImage extends VCWidget {
             if(DRD && DRR) Screen.blit(matrixStack, newX + halfWidthLeft, newY + halfHeightTop, width - halfWidthLeft, uvy - halfHeightBottom, halfWidthRight, halfHeightBottom, width, height);
         }
         RenderSystem.disableBlend();
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
     }
     protected int getYImage(boolean isHovered) {
         if(canBeHovered()) {

@@ -19,6 +19,10 @@ public abstract class SPacketSyncData<T extends SyncTarget> extends PacketSyncDa
         super(target,buf);
     }
 
+    @Override
+    public boolean handleOnServer() {
+        return true;
+    }
 
     public static class Window extends SPacketSyncData<SyncTarget.Window>{
         public Window(SyncTarget.Window target, CompoundTag tag) {

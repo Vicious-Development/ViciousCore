@@ -1,17 +1,14 @@
 package com.vicious.viciouscore.common.capability.logistics;
 
-import com.vicious.viciouscore.common.phantom.WorldPosition;
-import com.vicious.viciouscore.common.util.ServerHelper;
+import com.vicious.viciouscore.common.phantom.WorldPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.Objects;
 
-public class SidedWorldPos extends WorldPosition implements INBTSerializable<CompoundTag> {
+public class SidedWorldPos extends WorldPos {
     public Direction side;
     public SidedWorldPos(Level level, BlockPos position, Direction side) {
         super(level, position);
@@ -39,19 +36,14 @@ public class SidedWorldPos extends WorldPosition implements INBTSerializable<Com
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        CompoundTag tag = super.serializeNBT();
         tag.putInt("s",side.ordinal());
-        tag.putInt("x",position.getX());
-        tag.putInt("y",position.getY());
-        tag.putInt("z",position.getZ());
-        tag.putString("w", ServerHelper.getLevelName((ServerLevel) level));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        super.deserializeNBT(nbt);
         side = Direction.values()[nbt.getInt("s")];
-        position = new BlockPos(nbt.getInt("x"),nbt.getInt("y"),nbt.getInt("z"));
-        level = ServerHelper.getLevelByName(nbt.getString("w"));
     }
 }

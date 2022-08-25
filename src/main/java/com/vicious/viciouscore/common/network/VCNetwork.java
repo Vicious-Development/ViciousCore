@@ -28,7 +28,11 @@ public class VCNetwork {
         return instance;
     }
     private static final String VERSION = "1";
-    protected final SimpleChannel channel = NetworkRegistry.newSimpleChannel(VCResources.NETWORK,VCNetwork::getProtocolVersion,VERSION::equals,VERSION::equals);
+    protected SimpleChannel channel = getChannel();
+    public SimpleChannel getChannel(){
+        if(channel == null) channel =NetworkRegistry.newSimpleChannel(VCResources.NETWORK,VCNetwork::getProtocolVersion,VERSION::equals,VERSION::equals);
+        return channel;
+    }
 
     public VCNetwork(){
     }

@@ -25,6 +25,11 @@ public class CPacketButtonPressReceived extends VCPacket {
     }
 
     @Override
+    public boolean handleOnClient() {
+        return true;
+    }
+
+    @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(toSend);
         buf.writeBoolean(pressed);

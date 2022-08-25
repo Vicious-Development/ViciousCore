@@ -1,13 +1,19 @@
-package com.vicious.viciouscore.common.util;
+package com.vicious.viciouscore.common.util.server;
 
+import com.vicious.viciouscore.common.phantom.WorldPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class ServerHelper {
     public static MinecraftServer server;
@@ -24,6 +30,7 @@ public class ServerHelper {
         return levels.get(name);
     }
     public static String getLevelName(ServerLevel level){
+        if(level == null) return "---null---";
         ServerLevelData dat = (ServerLevelData) level.getLevelData();
         return dat.getLevelName();
     }
@@ -34,9 +41,27 @@ public class ServerHelper {
         }
         return null;
     }
+    public static List<ServerPlayer> getPlayers(){
+        return server.getPlayerList().getPlayers();
+    }
+
+    public static void forAllPlayersExcept(Player except, Consumer<ServerPlayer> cons){
+        for (ServerPlayer onlinePlayer : server.getPlayerList().getPlayers()) {
+            if(!onlinePlayer.equals(except)) cons.accept(onlinePlayer);
+        }
+    }
+    public static void forAllPlayers(Consumer<ServerPlayer> cons){
+        server.getPlayerList().getPlayers().forEach(cons);
+    }
+
+    public static WorldPos getDefaultRespawnPos(){
+        Level l = getMainLevel();
+        return new WorldPos(l,l.getSharedSpawnPos());
+    }
 
     @SubscribeEvent
-    public void onServerStarted(ServerAboutToStartEvent event){
+    public static void onServerStarted(ServerAboutToStartEvent event){
         server = event.getServer();
     }
+
 }

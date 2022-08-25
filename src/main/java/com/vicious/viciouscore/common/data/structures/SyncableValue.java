@@ -3,14 +3,11 @@ package com.vicious.viciouscore.common.data.structures;
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.IVCNBTSerializable;
-import net.minecraft.core.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import com.vicious.viciouscore.common.util.mixinsupport.InjectionInterface;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSerializable {
+public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSerializable, InjectionInterface {
     /**
      * Only used by the server. Determines if the client will be synced.
      */
@@ -21,9 +18,6 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     protected boolean readRemote = false;
     protected boolean isDirty = true;
     protected boolean shouldSave = true;
-    protected boolean[] sideAccessibility;
-    protected boolean valid;
-    protected LazyOptional<SyncableValue<T>> lop;
 
     public final String KEY;
 
@@ -33,7 +27,6 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     public SyncableValue(String key, T defVal) {
         KEY = key;
         this.value=defVal;
-        lop = LazyOptional.of(()->this);
     }
 
     public boolean canEdit(DataAccessor editor){
@@ -56,46 +49,16 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
         this.shouldSave=shouldSave;
         return (V) this;
     }
-    public <V extends SyncableValue<T>> V accessibleFromSides(Direction... dirs){
-        if(this.sideAccessibility == null){
-            sideAccessibility = new boolean[dirs.length];
-        }
-        for (Direction dir : dirs) {
-            sideAccessibility[dir.ordinal()] = true;
-        }
-        return (V) this;
-    }
-    public <V extends SyncableValue<T>> V inaccessibleFromSides(Direction... dirs){
-        if(this.sideAccessibility == null){
-            sideAccessibility = new boolean[dirs.length];
-        }
-        for (Direction dir : dirs) {
-            sideAccessibility[dir.ordinal()] = false;
-        }
-        return (V) this;
-    }
-    public <V extends SyncableValue<T>> V valid(boolean valid){
-        this.valid=valid;
-        if(!this.valid) lop.invalidate();
-        return (V) this;
-    }
-    public boolean sideAccessible(Direction dir){
-        if(sideAccessibility == null) return true;
-        else{
-            return sideAccessibility[dir.ordinal()];
-        }
-    }
 
     protected boolean changed() {
         return isDirty;
     }
-    protected abstract List<Capability<?>> getCapabilityTokens();
 
     protected boolean shouldSend(DataAccessor destination) {
         return !(destination.isRemoteEditor()) || sendRemote;
     }
-    public boolean isDirty(){
-        return isDirty;
+    public T getValue(){
+        return value;
     }
     public void setValue(T newVal){
         this.value=newVal;
@@ -108,5 +71,7 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     public void onParent(Consumer<SyncableValue<?>> cons){
         if(hasParent()) cons.accept(parent);
     }
+
+
 
 }

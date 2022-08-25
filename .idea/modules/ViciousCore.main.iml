@@ -13,9 +13,9 @@
   </component>
   <component name="McpModuleSettings">
     <option name="mappingFile" value="C:\Users\jacks\IdeaProjects\ViciousCore\build\createMcpToSrg\output.tsrg" />
-    <option name="mcpVersion" value="official_1.19" />
-    <option name="minecraftVersion" value="1.19" />
-    <option name="platformVersion" value="41.0.106" />
+    <option name="mcpVersion" value="official_1.19.2" />
+    <option name="minecraftVersion" value="1.19.2" />
+    <option name="platformVersion" value="43.1.1" />
     <option name="srgType" value="TSRG" />
   </component>
 </module>

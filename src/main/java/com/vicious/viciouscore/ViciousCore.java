@@ -4,11 +4,12 @@ import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
+import com.vicious.viciouscore.common.events.Ticker;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.phantom.PhantomMemoryManager;
 import com.vicious.viciouscore.common.tile.VCBlockEntities;
-import com.vicious.viciouscore.common.util.ServerHelper;
+import com.vicious.viciouscore.common.util.server.ServerHelper;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,6 +64,7 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(PhantomMemoryManager.class);
         MinecraftForge.EVENT_BUS.register(ServerHelper.class);
         MinecraftForge.EVENT_BUS.register(getClass());
+        MinecraftForge.EVENT_BUS.register(Ticker.class);
         VCBlockEntities.init();
     }
     public void clientSetup(FMLClientSetupEvent event){

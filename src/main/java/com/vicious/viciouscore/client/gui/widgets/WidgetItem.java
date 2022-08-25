@@ -20,9 +20,9 @@ public class WidgetItem extends VCWidget {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         renderItem();
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.renderWidget(stack, mouseX, mouseY, partialTicks);
     }
     protected void renderItem() {
         int x = this.actualPosition.x;

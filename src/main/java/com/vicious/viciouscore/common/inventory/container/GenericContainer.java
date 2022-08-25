@@ -67,13 +67,13 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
     }
 
 
-    protected <T extends IFastItemHandler & IItemHandlerModifiable> InventoryWrapper<T> newSlotList(T handler){
+    public <T extends IFastItemHandler & IItemHandlerModifiable> InventoryWrapper<T> newSlotList(T handler){
         InventoryWrapper<T> list = new InventoryWrapper<>(handler);
         list.index=inventories.size();
         inventories.add(list);
         return list;
     }
-    protected InventoryWrapper<FastItemStackHandler> newSlotList(Inventory playerInv){
+    public InventoryWrapper<FastItemStackHandler> newSlotList(Inventory playerInv){
         return newSlotList(new FastItemStackHandler(playerInv.items));
     }
 

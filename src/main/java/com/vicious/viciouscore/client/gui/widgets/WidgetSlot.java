@@ -30,7 +30,7 @@ public class WidgetSlot extends WidgetImage{
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         ResourceLocation post = null;
         if(hovered && selectedImage != null) {
             post = source;

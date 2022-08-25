@@ -46,6 +46,11 @@ public class SPacketSlotInteraction extends VCPacket {
         return inventory;
     }
 
+    @Override
+    public boolean handleOnServer() {
+        return true;
+    }
+
     public void handleSelf() {
         Player plr = Minecraft.getInstance().player;
         if(plr.containerMenu instanceof GenericContainer<?> cont){

@@ -39,6 +39,21 @@ public abstract class VCRecipe {
         return true;
     }
 
+    public boolean consumes(Object... objs){
+        IngredientStackMap map = new IngredientStackMap();
+        for (Object obj : objs) {
+            map.add(obj);
+        }
+        return inputs.hasAll(map);
+    }
+    public boolean produces(Object... objs){
+        IngredientStackMap map = new IngredientStackMap();
+        for (Object obj : objs) {
+            map.add(obj);
+        }
+        return outputs.hasAll(map);
+    }
+
     public VCRecipe(List<Object> inputs, List<Object> outputs) {
         this.inputs = new IngredientStackMap().addAll(inputs);
         this.outputs = new IngredientStackMap().addAll(outputs);

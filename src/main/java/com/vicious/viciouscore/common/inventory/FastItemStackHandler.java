@@ -42,6 +42,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         }
         return true;
     }
+
     public FastItemStackHandler addSlotValidator(int slot, Predicate<ItemStack> pred){
         this.validators.put(slot,pred);
         return this;

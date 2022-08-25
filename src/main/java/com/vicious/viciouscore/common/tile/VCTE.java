@@ -18,9 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,16 +62,6 @@ public abstract class VCTE extends BlockEntity implements ISyncableCompoundHolde
             BlockPos p = worldPosition.offset(dir.getStepX(), dir.getStepY(), dir.getStepZ());
             consumer.accept(level.getBlockState(p), level.getBlockEntity(p), p,dir);
         }
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        return getData().getCapability(cap);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return getData().getCapability(cap, side);
     }
 
     @Override
