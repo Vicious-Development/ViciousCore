@@ -7,6 +7,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -51,6 +53,7 @@ public class SPacketSlotInteraction extends VCPacket {
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void handleSelf() {
         Player plr = Minecraft.getInstance().player;
         if(plr.containerMenu instanceof GenericContainer<?> cont){

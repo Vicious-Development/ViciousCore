@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.data.implementations.attachable;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.capability.interfaces.ICapabilityDeathPersistant;
 import com.vicious.viciouscore.common.data.DataAccessor;
-import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -22,11 +21,12 @@ public class SyncablePlayerData extends SyncableAttachableCompound<Player> imple
     }
 
     @Override
-    public void copyTo(ICapabilityDeathPersistant copy) {
-        if(copy instanceof SyncableCompound comp){
+    public void copyTo(ICapabilityProvider copy) {
+        copy = FuckLazyOptionals.getOrNull(copy.getCapability(VCCapabilities.PLAYERDATA));
+        if(copy instanceof SyncablePlayerData comp){
             CompoundTag tag = new CompoundTag();
-            comp.serializeNBT(tag,DataAccessor.WORLD);
-            deserializeNBT(tag,DataAccessor.WORLD);
+            serializeNBT(tag,DataAccessor.WORLD);
+            comp.deserializeNBT(tag,DataAccessor.WORLD);
         }
     }
 

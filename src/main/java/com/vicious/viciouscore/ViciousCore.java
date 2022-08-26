@@ -4,17 +4,19 @@ import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
+import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGlobalData;
 import com.vicious.viciouscore.common.events.Ticker;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.phantom.PhantomMemoryManager;
 import com.vicious.viciouscore.common.tile.VCBlockEntities;
-import com.vicious.viciouscore.common.util.server.ServerHelper;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
+import com.vicious.viciouscore.common.util.server.ServerHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,8 +45,8 @@ public class ViciousCore
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonKeyBindings::register);
         SidedExecutor.clientOnly(()->{
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonKeyBindings::register);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         });
     }
@@ -63,7 +65,6 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(CapabilityEventHandler.class);
         MinecraftForge.EVENT_BUS.register(PhantomMemoryManager.class);
         MinecraftForge.EVENT_BUS.register(ServerHelper.class);
-        MinecraftForge.EVENT_BUS.register(getClass());
         MinecraftForge.EVENT_BUS.register(Ticker.class);
         VCBlockEntities.init();
     }
@@ -84,8 +85,14 @@ public class ViciousCore
         //event.getServer().com(new CommandConfig());
         //event.registerServerCommand(new CommandStructure());
     }
+
     @SubscribeEvent
-    public void onStop(GameShuttingDownEvent event){
+    public void onStop(ServerStoppingEvent event){
+        SyncableGlobalData.purgeInstance();
+        CFG.save();
+    }
+    @SubscribeEvent
+    public void onStopGame(GameShuttingDownEvent event){
         CFG.save();
     }
 }

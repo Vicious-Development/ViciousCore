@@ -39,25 +39,23 @@ public class TileMultiBlockComponent extends PhysicalTE implements INotifier<Obj
 
     @SuppressWarnings({"rawtypes","unchecked"})
     public void notifyNeighbors(){
-        SidedExecutor.serverOnly(()->{
-            long worldTick = level != null ? level.getGameTime() : -1;
-            forNeighborBlockTiles((bs,te,bpos)->{
-                Block b = bs.getBlock();
-                TileMultiBlockComponent tmbc = null;
-                if(te instanceof TileMultiBlockComponent){
-                    tmbc = (TileMultiBlockComponent) te;
-                }
-                if (tmbc != null) {
-                    if(tmbc.lastTick != worldTick) {
-                        tmbc.lastTick = worldTick;
-                        List<INotifiable<Object>> parentList = tmbc.getParents();
-                        for (INotifiable<Object> parent : parentList) {
-                            if (!parents.contains(parent)) parents.add(parent);
-                        }
-                        tmbc.setParents(parents);
+        long worldTick = level != null ? level.getGameTime() : -1;
+        forNeighborBlockTiles((bs,te,bpos)->{
+            Block b = bs.getBlock();
+            TileMultiBlockComponent tmbc = null;
+            if(te instanceof TileMultiBlockComponent){
+                tmbc = (TileMultiBlockComponent) te;
+            }
+            if (tmbc != null) {
+                if(tmbc.lastTick != worldTick) {
+                    tmbc.lastTick = worldTick;
+                    List<INotifiable<Object>> parentList = tmbc.getParents();
+                    for (INotifiable<Object> parent : parentList) {
+                        if (!parents.contains(parent)) parents.add(parent);
                     }
+                    tmbc.setParents(parents);
                 }
-            });
+            }
         });
     }
 

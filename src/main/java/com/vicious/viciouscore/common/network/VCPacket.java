@@ -13,6 +13,7 @@ public abstract class VCPacket {
         id++;
         return id;
     }
+
     public boolean handleOnServer(){
         return false;
     }
@@ -21,8 +22,10 @@ public abstract class VCPacket {
     }
 
     public abstract void toBytes(FriendlyByteBuf buf);
+
     public abstract void handle(Supplier<NetworkEvent.Context> context);
     public static <T extends VCPacket> void register(Class<T> type, Function<FriendlyByteBuf,T> decoderConstructor){
+
         VCNetwork.getInstance().channel.registerMessage(nextId(),type, (pk,buf)->{
             try{
                 pk.toBytes(buf);
@@ -36,7 +39,7 @@ public abstract class VCPacket {
                     SidedExecutor.clientOnly(()->pk.handle(ctx));
                 }
                 else if(pk.handleOnServer()){
-                    SidedExecutor.serverOnly(()->pk.handle(ctx));
+                    pk.handle(ctx);
                 }
                 ctx.get().setPacketHandled(true);
             }

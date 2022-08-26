@@ -13,8 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
-    private static final SyncableGlobalData instance = new SyncableGlobalData(ServerHelper.getMainLevel());
+    private static SyncableGlobalData instance;
     public static @NotNull SyncableGlobalData getInstance(){
+        if(instance == null) instance = new SyncableGlobalData(ServerHelper.getMainLevel());
         return instance;
     }
     public SyncableGlobalData(Level holder) {
@@ -23,6 +24,11 @@ public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
 
     //Only load this data once.
     private boolean load = true;
+
+    public static void purgeInstance() {
+        instance = null;
+    }
+
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         if(load) {
