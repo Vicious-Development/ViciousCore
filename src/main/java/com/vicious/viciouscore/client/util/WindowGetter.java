@@ -11,7 +11,7 @@ public class WindowGetter {
     public static Window window;
     public static int initialHeight = -1;
     public static int initialWidth = -1;
-    private static boolean initialized = false;
+    public static boolean initialized = false;
 
     @SubscribeEvent
     public static void renderGameOverlay(RenderGuiOverlayEvent.Post e) {

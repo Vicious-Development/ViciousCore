@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -48,9 +49,9 @@ public class BetterChatMessage {
                                 val.append(str.charAt(j));
                             }
                         }
-                        Object[] comps = gatherComponentsForTranslation(objects,i+1, Integer.parseInt(val.toString()));
-                        unstyled = Component.translatable(str.substring(1+val.toString().length(),str.length()-1), comps);
-                        i+=comps.length;
+                        Tuple<Object[],Integer> ret = gatherComponentsForTranslation(objects,i+1, Integer.parseInt(val.toString()));
+                        unstyled = Component.translatable(str.substring(1+val.toString().length(),str.length()-1), ret.getA());
+                        i = (int) ret.getB();
                     }
                     else unstyled = Component.translatable(str.substring(1, str.length() - 1));
                 }
@@ -93,10 +94,10 @@ public class BetterChatMessage {
             ent.sendSystemMessage(component);
         }
     }
-    public void sendExcept(Entity except, List<? extends Entity> ents){
+    public void sendExcept(Entity except, Collection<? extends Entity> ents){
         for (Entity ent : ents) {
             if(ent != except){
-                except.sendSystemMessage(component);
+                ent.sendSystemMessage(component);
             }
         }
     }
@@ -107,8 +108,8 @@ public class BetterChatMessage {
     public static BetterChatMessage from(Object... objects){
         return new BetterChatMessage(objects);
     }
-    private static Object[] gatherComponentsForTranslation(Object[] objs, int start, int expected){
-        Component[] out = new Component[expected];
+    protected Tuple<Object[],Integer> gatherComponentsForTranslation(Object[] objs, int start, int expected){
+        Component[] compsOut = new Component[expected];
         int j = start;
         List<Object> comps = new ArrayList<>();
         for (int i = 0; i < expected; i++) {
@@ -118,13 +119,13 @@ public class BetterChatMessage {
                 comps.add(o);
                 //TODO: Allow nested translation keys.
                 if (!(o instanceof ChatFormatting)) {
-                    out[i] = new BetterChatMessage(comps).component;
+                    compsOut[i] = new BetterChatMessage(comps).component;
                     comps.clear();
                     break;
                 }
             }
         }
-        return out;
+        return new Tuple<>(compsOut,j);
     }
 
     public void send(CommandContext<CommandSourceStack> ctx) {
