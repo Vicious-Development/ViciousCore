@@ -8,7 +8,6 @@ import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGl
 import com.vicious.viciouscore.common.events.Ticker;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
-import com.vicious.viciouscore.common.phantom.PhantomMemoryManager;
 import com.vicious.viciouscore.common.tile.VCBlockEntities;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
