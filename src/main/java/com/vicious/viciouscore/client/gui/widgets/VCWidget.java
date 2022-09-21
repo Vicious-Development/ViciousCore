@@ -29,6 +29,7 @@ public class VCWidget implements Widget {
     protected boolean visible = true;
     protected boolean hovered = false;
     protected boolean alertUpdates = true;
+
     public void shouldUpdate(boolean doUpdates){
         this.alertUpdates =doUpdates;
     }

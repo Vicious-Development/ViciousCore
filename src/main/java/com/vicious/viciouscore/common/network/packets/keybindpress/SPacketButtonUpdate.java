@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.network.packets.keybindpress;
 
 import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.capability.keypresshandler.KeyPressHandler;
+import com.vicious.viciouscore.common.capability.types.keypresshandler.KeyPressHandler;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.VCPacket;
 import net.minecraft.network.FriendlyByteBuf;

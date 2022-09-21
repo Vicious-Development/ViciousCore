@@ -3,6 +3,7 @@ package com.vicious.viciouscore.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.gui.widgets.*;
+import com.vicious.viciouscore.client.gui.widgets.nointeraction.WidgetItemNoInteraction;
 import com.vicious.viciouscore.client.textures.VCTextures;
 import com.vicious.viciouscore.client.util.Vector2i;
 import com.vicious.viciouscore.client.util.WindowGetter;

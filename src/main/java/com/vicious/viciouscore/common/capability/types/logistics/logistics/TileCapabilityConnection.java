@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.capability.logistics;
+package com.vicious.viciouscore.common.capability.types.logistics.logistics;
 
 import com.vicious.viciouscore.common.data.implementations.SyncableSidedWorldPos;
 import com.vicious.viciouscore.common.util.server.ServerHelper;

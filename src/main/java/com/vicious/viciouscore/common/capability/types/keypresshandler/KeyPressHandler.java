@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.capability.keypresshandler;
+package com.vicious.viciouscore.common.capability.types.keypresshandler;
 
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBinding;

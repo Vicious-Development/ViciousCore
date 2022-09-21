@@ -2,7 +2,7 @@ package com.vicious.viciouscore.common.capability;
 
 import com.vicious.viciouscore.common.capability.interfaces.ICapabilityDeathPersistant;
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
-import com.vicious.viciouscore.common.capability.keypresshandler.KeyPressHandler;
+import com.vicious.viciouscore.common.capability.types.keypresshandler.KeyPressHandler;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGlobalData;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncableLevelData;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncablePlayerData;

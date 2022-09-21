@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.common.capability;
 
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
-import com.vicious.viciouscore.common.capability.keypresshandler.KeyPressHandler;
+import com.vicious.viciouscore.common.capability.types.keypresshandler.KeyPressHandler;
 import com.vicious.viciouscore.common.data.implementations.SyncableInventory;
 import com.vicious.viciouscore.common.data.implementations.SyncableRecipeState;
 import com.vicious.viciouscore.common.data.implementations.SyncableTickState;

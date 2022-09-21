@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.capability.logistics;
+package com.vicious.viciouscore.common.capability.types.logistics.logistics;
 
 import com.vicious.viciouscore.common.phantom.WorldPos;
 import net.minecraft.core.BlockPos;

@@ -62,7 +62,6 @@ public class ViciousCore
         VCNetwork.getInstance();
         MinecraftForge.EVENT_BUS.register(ViciousCore.class);
         MinecraftForge.EVENT_BUS.register(CapabilityEventHandler.class);
-        MinecraftForge.EVENT_BUS.register(PhantomMemoryManager.class);
         MinecraftForge.EVENT_BUS.register(ServerHelper.class);
         MinecraftForge.EVENT_BUS.register(Ticker.class);
         VCBlockEntities.init();

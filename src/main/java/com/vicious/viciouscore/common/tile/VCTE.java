@@ -1,5 +1,7 @@
 package com.vicious.viciouscore.common.tile;
 
+import com.vicious.viciouscore.common.capability.VCCapabilityProvider;
+import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityProviderHolder;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.implementations.SyncableInventory;
@@ -18,12 +20,33 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class VCTE extends BlockEntity implements ISyncableCompoundHolder {
+public abstract class VCTE extends BlockEntity implements ISyncableCompoundHolder, IVCCapabilityProviderHolder {
+    protected final VCCapabilityProvider capabilities = new VCCapabilityProvider();
+
+    //CAPABILITY HANDLING START
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        return capabilities.getCapability(cap);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return capabilities.getCapability(cap, side);
+    }
+    @Override
+    public VCCapabilityProvider getProvider(){
+        return capabilities;
+    }
+
+    //CAPABILITY HANDLING END
 
     public VCTE(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);

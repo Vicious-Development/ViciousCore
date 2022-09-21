@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.data.implementations;
 
-import com.vicious.viciouscore.common.capability.logistics.SidedWorldPos;
+import com.vicious.viciouscore.common.capability.types.logistics.logistics.SidedWorldPos;
 import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
 import com.vicious.viciouscore.common.phantom.WorldPos;
 
