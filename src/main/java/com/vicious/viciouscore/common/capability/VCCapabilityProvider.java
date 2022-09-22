@@ -9,8 +9,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class VCCapabilityProvider implements ICapabilityProvider {
     public static final AllExposers ALL_EXPOSERS_KEY = new AllExposers();
@@ -35,6 +37,12 @@ public class VCCapabilityProvider implements ICapabilityProvider {
     public ICapabilityExposer getExposer(){
         return exposers.get(ALL_EXPOSERS_KEY);
     }
+    public void allowExposure(Object key){
+        exposers.put(key,new CapabilityExposer());
+    }
+    public void forbidExposure(Object key){
+        exposers.remove(key);
+    }
 
     /**
      * If a null key is provided, returns the universal exposer.
@@ -43,6 +51,13 @@ public class VCCapabilityProvider implements ICapabilityProvider {
     public ICapabilityExposer getExposer(Object key){
         if(key == null) return getExposer();
         else return exposers.getOrDefault(key, ICapabilityExposer.EMPTY);
+    }
+
+    public Collection<ICapabilityExposer> getExposers() {
+        return exposers.values();
+    }
+    public Set<Map.Entry<Object, ICapabilityExposer>> getKeysAndExposers(){
+        return exposers.entrySet();
     }
 
     private static class AllExposers{

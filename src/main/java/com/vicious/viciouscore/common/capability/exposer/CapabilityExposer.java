@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unchecked")
 public class CapabilityExposer implements ICapabilityExposer {
-
-
     protected CapabilityMap<ICombinedCapabilityProvider<?>> map;
     public <T> void expose(T prov){
         Capability<T> token = (Capability<T>) CapabilityHelper.getTokenFor(prov);
