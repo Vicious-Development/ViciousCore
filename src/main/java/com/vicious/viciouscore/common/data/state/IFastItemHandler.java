@@ -4,7 +4,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public interface IFastItemHandler extends IItemHandlerModifiable {
     boolean contains(ItemStack stack);
@@ -45,5 +49,18 @@ public interface IFastItemHandler extends IItemHandlerModifiable {
         for (int i = 0; i < getSlots(); i++) {
             cons.accept(i);
         }
+    }
+    default Collection<ItemStack> matchAll(Predicate<ItemStack> tester){
+        List<ItemStack> ret = new ArrayList<>();
+        forEachSlot((i)->{
+            ItemStack investigate = getStackInSlot(i);
+            if(tester.test(investigate)){
+                ret.add(investigate);
+            }
+        });
+        return ret;
+    }
+    default boolean containsAtLeastOneOf(Predicate<ItemStack> tester){
+        return matchAll(tester).size() > 0;
     }
 }
