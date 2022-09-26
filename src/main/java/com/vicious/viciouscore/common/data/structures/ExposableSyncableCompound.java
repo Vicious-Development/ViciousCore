@@ -5,6 +5,7 @@ import com.vicious.viciouscore.common.capability.VCCapabilityProvider;
 import com.vicious.viciouscore.common.capability.exposer.ICapabilityExposer;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.IVCNBTSerializable;
+import com.vicious.viciouscore.common.data.autogen.annotation.ReadOnly;
 import com.vicious.viciouscore.common.data.implementations.SyncableArrayHashSet;
 import net.minecraft.nbt.CompoundTag;
 
@@ -19,7 +20,8 @@ import java.util.function.Function;
  * The exposed locations are saved this way.
  */
 public class ExposableSyncableCompound extends SyncableCompound{
-    private final SyncableArrayHashSet<ExpositionRef> exposedTo = add(new SyncableArrayHashSet<>("exposedTo",ExpositionRef::new));
+    @ReadOnly
+    private final SyncableArrayHashSet<ExpositionRef> exposedTo = new SyncableArrayHashSet<>("exposedTo",ExpositionRef::new);
     private final VCCapabilityProvider capabilityProvider;
     private boolean hasInitialized = false;
     public ExposableSyncableCompound(String key, VCCapabilityProvider provider) {

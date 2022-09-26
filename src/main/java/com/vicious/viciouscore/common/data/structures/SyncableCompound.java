@@ -2,6 +2,8 @@ package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.SyncTarget;
+import com.vicious.viciouscore.common.data.autogen.SyncAutomator;
+import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.network.packets.datasync.CPacketSyncData;
 import com.vicious.viciouscore.common.network.packets.datasync.SPacketSyncData;
 import net.minecraft.nbt.CompoundTag;
@@ -11,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class SyncableCompound extends SyncableValue<LinkedHashMap<String, SyncableValue<?>>> implements Map<String, SyncableValue<?>> {
+public class SyncableCompound extends SyncableValue<LinkedHashMap<String, SyncableValue<?>>> implements Map<String, SyncableValue<?>>, ISyncableCompoundHolder {
     public SyncableCompound(String key) {
         super(key, new LinkedHashMap<>());
     }
@@ -158,4 +160,8 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<String, Syncab
         }
     }
 
+    @Override
+    public SyncableCompound getData() {
+        return this;
+    }
 }
