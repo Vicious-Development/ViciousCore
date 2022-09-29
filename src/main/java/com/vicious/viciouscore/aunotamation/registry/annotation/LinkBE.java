@@ -1,4 +1,6 @@
-package com.vicious.viciouscore.common.data.autogen.annotation;
+package com.vicious.viciouscore.aunotamation.registry.annotation;
+
+import com.vicious.viciouslib.aunotamation.all.annotation.Extends;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +9,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Editable {
+
+@Extends(RegistryAnnotation.class)
+public @interface LinkBE {
+    Class<?> value();
 }

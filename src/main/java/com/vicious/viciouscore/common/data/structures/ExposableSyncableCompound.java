@@ -5,7 +5,7 @@ import com.vicious.viciouscore.common.capability.VCCapabilityProvider;
 import com.vicious.viciouscore.common.capability.exposer.ICapabilityExposer;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.IVCNBTSerializable;
-import com.vicious.viciouscore.common.data.autogen.annotation.ReadOnly;
+import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation.ReadOnly;
 import com.vicious.viciouscore.common.data.implementations.SyncableArrayHashSet;
 import net.minecraft.nbt.CompoundTag;
 
@@ -22,39 +22,48 @@ import java.util.function.Function;
 public class ExposableSyncableCompound extends SyncableCompound{
     @ReadOnly
     private final SyncableArrayHashSet<ExpositionRef> exposedTo = new SyncableArrayHashSet<>("exposedTo",ExpositionRef::new);
-    private final VCCapabilityProvider capabilityProvider;
-    private boolean hasInitialized = false;
-    public ExposableSyncableCompound(String key, VCCapabilityProvider provider) {
+    private VCCapabilityProvider capabilityProvider;
+    public ExposableSyncableCompound(String key) {
         super(key);
+    }
+    public ExposableSyncableCompound setCapabilityProvider(VCCapabilityProvider provider){
         this.capabilityProvider=provider;
+        for (ExpositionRef expositionRef : exposedTo.value) {
+            exposeToProvider(expositionRef.ref);
+        }
+        return this;
+    }
+    private void exposeToProvider(Object o){
+        if(capabilityProvider != null){
+            capabilityProvider.allowExposure(o);
+            ICapabilityExposer exposer = capabilityProvider.getExposer(o);
+            for (SyncableValue<?> syncableValue : values()) {
+                exposer.expose(syncableValue);
+            }
+        }
+    }
+    private void conceilFromProvider(Object o){
+        if(capabilityProvider != null) {
+            ICapabilityExposer exposer = capabilityProvider.getExposer(o);
+            for (SyncableValue<?> syncableValue : values()) {
+                exposer.conceal(syncableValue);
+            }
+        }
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag, DataAccessor sender) {
         super.deserializeNBT(tag, sender);
-        if(!hasInitialized){
-            hasInitialized=true;
-            for (ExpositionRef expositionRef : exposedTo.value) {
-                expose(expositionRef.ref);
-            }
-        }
     }
 
     public void expose(Object o){
         exposedTo.value.add(new ExpositionRef(o));
         //Ensure the exposer exists.
-        capabilityProvider.allowExposure(o);
-        ICapabilityExposer exposer = capabilityProvider.getExposer(o);
-        for (SyncableValue<?> syncableValue : values()) {
-            exposer.expose(syncableValue);
-        }
+        exposeToProvider(o);
     }
     public void conceil(Object o){
         exposedTo.value.remove(new ExpositionRef(o));
-        ICapabilityExposer exposer = capabilityProvider.getExposer(o);
-        for (SyncableValue<?> syncableValue : values()) {
-            exposer.conceal(syncableValue);
-        }
+        conceilFromProvider(o);
     }
 
     /**

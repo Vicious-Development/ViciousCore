@@ -1,5 +1,7 @@
 package com.vicious.viciouscore;
 
+import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.SyncAutomator;
+import com.vicious.viciouscore.aunotamation.registry.annotation.RegistryAutomator;
 import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
@@ -8,7 +10,6 @@ import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGl
 import com.vicious.viciouscore.common.events.Ticker;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
-import com.vicious.viciouscore.common.tile.VCBlockEntities;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.common.util.server.ServerHelper;
@@ -28,6 +29,12 @@ import org.apache.logging.log4j.Logger;
 @Mod("viciouscore")
 public class ViciousCore
 {
+    static {
+        ViciousDirectories.initializeConfigDependents();
+        CFG = VCoreConfig.getInstance();
+        SyncAutomator.init();
+        RegistryAutomator.init();
+    }
     public boolean isFirstLoad(){
         return !CFG.firstLoad.getBoolean();
     }
@@ -36,10 +43,7 @@ public class ViciousCore
     public static final String VERSION = "1.1.5";
     public static VCoreConfig CFG;
     public static ViciousCore instance;
-    static {
-        ViciousDirectories.initializeConfigDependents();
-        CFG = VCoreConfig.getInstance();
-    }
+
     public ViciousCore(){
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
@@ -75,6 +79,7 @@ public class ViciousCore
     {
         if(isFirstLoad()) {
             CFG.firstLoad.set(true);
+            CFG.save();
         }
     }
     @SubscribeEvent

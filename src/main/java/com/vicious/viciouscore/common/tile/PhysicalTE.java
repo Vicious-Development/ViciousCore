@@ -1,8 +1,7 @@
 package com.vicious.viciouscore.common.tile;
 
 
-import com.vicious.viciouscore.common.data.autogen.SyncAutomator;
-import com.vicious.viciouscore.common.data.autogen.annotation.Editable;
+import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation.Editable;
 import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -17,7 +16,6 @@ public class PhysicalTE extends VCTE{
     protected final SyncableCompound data = new SyncableCompound("vcdat");
     public PhysicalTE(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        SyncAutomator.automateInitialization(this);
     }
     @Override
     public SyncableCompound getData() {

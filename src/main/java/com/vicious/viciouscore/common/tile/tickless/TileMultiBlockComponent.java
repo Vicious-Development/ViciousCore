@@ -1,7 +1,6 @@
 package com.vicious.viciouscore.common.tile.tickless;
 
 import com.vicious.viciouscore.common.tile.PhysicalTE;
-import com.vicious.viciouscore.common.tile.VCBlockEntities;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouslib.util.interfaces.INotifiable;
 import com.vicious.viciouslib.util.interfaces.INotifier;
@@ -10,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +22,8 @@ public class TileMultiBlockComponent extends PhysicalTE implements INotifier<Obj
     public long lastTick = -1;
     private boolean hasBeenValidatedAlready = false;
 
-    public TileMultiBlockComponent(BlockPos pos, BlockState blockState) {
-        super(VCBlockEntities.MULTIBLOCKCOMPONENT.get(), pos, blockState);
+    public TileMultiBlockComponent(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+        super(type, pos, blockState);
         //Prevents infinite looping on chunk gen.
     }
 

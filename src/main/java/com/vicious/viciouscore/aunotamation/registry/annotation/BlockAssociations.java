@@ -1,4 +1,4 @@
-package com.vicious.viciouscore.common.data.autogen.annotation;
+package com.vicious.viciouscore.aunotamation.registry.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface Obscured {
-
+@Target(ElementType.TYPE)
+public @interface BlockAssociations {
+    String[] value();
+    String namespace() default "";
 }
