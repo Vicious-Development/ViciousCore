@@ -68,7 +68,6 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(CapabilityEventHandler.class);
         MinecraftForge.EVENT_BUS.register(ServerHelper.class);
         MinecraftForge.EVENT_BUS.register(Ticker.class);
-        VCBlockEntities.init();
     }
     public void clientSetup(FMLClientSetupEvent event){
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);

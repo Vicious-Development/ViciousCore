@@ -2,10 +2,10 @@ package com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation;
 
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
-import com.vicious.viciouslib.aunotamation.all.annotation.AllowedIn;
-import com.vicious.viciouslib.aunotamation.all.annotation.ModifiedWith;
-import com.vicious.viciouslib.aunotamation.all.annotation.NotModifiedWith;
-import com.vicious.viciouslib.aunotamation.all.annotation.RequiredType;
+import com.vicious.viciouslib.aunotamation.annotation.AllowedIn;
+import com.vicious.viciouslib.aunotamation.annotation.ModifiedWith;
+import com.vicious.viciouslib.aunotamation.annotation.NotModifiedWith;
+import com.vicious.viciouslib.aunotamation.annotation.RequiredType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

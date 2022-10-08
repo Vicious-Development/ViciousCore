@@ -17,17 +17,6 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<String, Syncab
         super(key, new LinkedHashMap<>());
     }
 
-    private final List<Runnable> onChange = new ArrayList<>();
-
-    @Override
-    public <V extends SyncableValue<LinkedHashMap<String, SyncableValue<?>>>> V isDirty(boolean isDirty) {
-        V ret = super.isDirty(isDirty);
-        if(isDirty) for (Runnable runnable : this.onChange) {
-            runnable.run();
-        }
-        return ret;
-    }
-
     @Override
     public void serializeNBT(CompoundTag tag, DataAccessor destination) {
         CompoundTag inner = new CompoundTag();
@@ -135,13 +124,6 @@ public class SyncableCompound extends SyncableValue<LinkedHashMap<String, Syncab
     @Override
     public Set<Entry<String, SyncableValue<?>>> entrySet() {
         return value.entrySet();
-    }
-
-    public void listenChanged(Runnable run){
-        onChange.add(run);
-    }
-    public void stopListenChanged(Runnable run){
-        onChange.add(run);
     }
 
     public void syncRemote(SyncTarget target){

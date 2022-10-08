@@ -3,6 +3,7 @@ package com.vicious.viciouscore.aunotamation.isyncablecompoundholder;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouslib.aunotamation.AnnotationProcessor;
+import com.vicious.viciouslib.aunotamation.Aunotamation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -28,6 +29,7 @@ public abstract class SyncProcessor<A extends Annotation> extends AnnotationProc
     protected Object requireInitialized(Field f, Object src) throws IllegalAccessException {
         Object o = f.get(src);
         if (o == null) err(f,"must be initialized on declaration!");
+        Aunotamation.processObject(o);
         return o;
     }
     protected void requireInitialized(ISyncableCompoundHolder compound, AnnotatedElement anno, Consumer<SyncableValue<?>> cons) throws IllegalAccessException {

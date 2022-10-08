@@ -27,21 +27,11 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 //apply plugin: 'maven'
 apply plugin: 'maven-publish'
-
-//Constants
-String mcver = "1.19.2"
-String forgever = "43.1.1"
-String archivesBaseName = 'viciouscore'
-String projectver = '3.3.7'
-String vlibver = '17-2.2.0'
-String organization = 'vicious'
-String gitlink = "github.com/Vicious-MCModding/ViciousCore"
-
 version = "${mcver}-${projectver}"
-group = "com.${organization}.${archivesBaseName}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "com.${organization}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 java {
-    archivesBaseName = 'viciouscore'
+    archivesBaseName = mainpackage
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
@@ -54,7 +44,7 @@ minecraft {
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'viciouscore'
+            property 'forge.enabledGameTestNamespaces', mainpackage
             mods {
                 viciouscore {
                     source sourceSets.main
@@ -66,7 +56,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'viciouscore'
+            property 'forge.enabledGameTestNamespaces', mainpackage
             mods {
                 viciouscore {
                     source sourceSets.main
@@ -78,7 +68,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'viciouscore'
+            property 'forge.enabledGameTestNamespaces', mainpackage
             mods {
                 viciouscore {
                     source sourceSets.main
@@ -90,7 +80,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'viciouscore', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mainpackage, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
                 viciouscore {
                     source sourceSets.main
@@ -99,10 +89,9 @@ minecraft {
         }
     }
 }
-
 mixin {
-    add sourceSets.main, "viciouscore.refmap.json"
-    config "mixins.viciouscore.json"
+    add sourceSets.main, "${mainpackage}.refmap.json"
+    config "mixins.${mainpackage}.json"
 }
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
@@ -115,7 +104,7 @@ configurations {
 repositories {
     maven {
         name = "ViciousLib"
-        url = uri("https://maven.pkg.github.com/Vicious-MCModding/ViciousLib")
+        url = uri("https://maven.pkg.${viciousorglink}/ViciousLib")
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
             password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
@@ -127,8 +116,8 @@ repositories {
 
 dependencies {
     minecraft ("net.minecraftforge:forge:${mcver}-${forgever}")
-    embed("com.vicious:viciouslib:${vlibver}")
-    embed ('org.json:json:20220320')
+    embed("com.vicious:viciouslib:${vcver}")
+    embed('org.json:json:20220320')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
 }
@@ -141,12 +130,12 @@ shadowJar{
 jar {
     manifest {
         attributes([
-            "Specification-Title": "${archivesBaseName}",
-            "Specification-Vendor": "${organization}",
-            "Specification-Version": "${projectver}", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"${organization}",
+            "Specification-Title": mainpackage,
+            "Specification-Vendor": organization,
+            "Specification-Version": projectver, // We are version 1 of ourselves
+            "Implementation-Title": githubprojectname,
+            "Implementation-Version": version,
+            "Implementation-Vendor" : organization,
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -181,14 +170,17 @@ reobf {
 jar {
     shadowJar{}
 }
-def manif = {
-}
+
+
+/*
+PUBLISHING START
+ */
 
 publishing {
     repositories {
         maven {
-            name = "ViciousCore"
-            url = uri("https://maven.pkg.${gitlink}")
+            name = githubprojectname
+            url = uri("https://maven.pkg.${viciousorglink}/${githubprojectname}")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
                 password = project.findProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
@@ -198,9 +190,13 @@ publishing {
     publications {
         gpr(MavenPublication) {
             groupId = "com.${organization}"
-            artifactId = "${archivesBaseName}"
+            artifactId = "${mainpackage}"
             from components.java
         }
     }
 }
+
+/*
+PUBLISHING END
+ */
 

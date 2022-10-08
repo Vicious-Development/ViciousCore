@@ -8,6 +8,7 @@ import com.vicious.viciouscore.common.data.implementations.attachable.SyncableLe
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncablePlayerData;
 import com.vicious.viciouscore.common.resource.VCResources;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
+import com.vicious.viciouslib.aunotamation.Aunotamation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,14 +30,14 @@ public class CapabilityEventHandler {
         Entity e = event.getObject();
         if(e instanceof Player p){
             attach(event, VCResources.COMMONKEYCAPABILITY, VCCapabilities.KEYPRESS,KeyPressHandler::new,e);
-            event.addCapability(VCResources.PLAYERDATA,new SyncablePlayerData(p));
+            event.addCapability(VCResources.PLAYERDATA, Aunotamation.processObject(new SyncablePlayerData(p)));
         }
     }
     @SubscribeEvent
     public static void onAttachLevel(AttachCapabilitiesEvent<Level> event){
         Level l = event.getObject();
         if(l instanceof ServerLevel sl) {
-            event.addCapability(VCResources.LEVELDATA, new SyncableLevelData(l));
+            event.addCapability(VCResources.LEVELDATA, Aunotamation.processObject(new SyncableLevelData(l)));
             event.addCapability(VCResources.GLOBALDATA, SyncableGlobalData.getInstance());
         }
     }

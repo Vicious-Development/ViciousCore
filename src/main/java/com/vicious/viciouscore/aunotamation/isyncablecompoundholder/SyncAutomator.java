@@ -9,7 +9,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
 /**
- * This class handles fields Annotated with @Exposed.
+ * This class handles fields Annotated with @Persist, @Editable, @ReadOnly, @Obscured, and @Exposed.
  * SyncableValues labelled with such will automatically be added to a ExposableSyncableCompound object should they be initialized correctly.
  */
 public class SyncAutomator {
@@ -17,6 +17,16 @@ public class SyncAutomator {
     public static void init(){
         if(init) return;
         init=true;
+        //Processes internal components.
+        Aunotamation.registerObjectProcessor(ISyncableCompoundHolder.class,(o)->{
+            if(o instanceof ISyncableCompoundHolder sch){
+                sch.getData().forEachSyncable((sv)->{
+                    if(sv instanceof ISyncableCompoundHolder comp){
+                        Aunotamation.processObject(comp.getData());
+                    }
+                });
+            }
+        });
         Aunotamation.registerProcessor(new SyncProcessor<>(Persist.class,ISyncableCompoundHolder.class) {
             @Override
             public void process(ISyncableCompoundHolder compound, AnnotatedElement anno) {

@@ -3,6 +3,7 @@ package com.vicious.viciouscore.common.data.implementations.attachable;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
 import com.vicious.viciouscore.common.util.server.ServerHelper;
+import com.vicious.viciouslib.aunotamation.Aunotamation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
@@ -14,8 +15,9 @@ import java.util.function.Consumer;
 
 public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
     private static SyncableGlobalData instance;
+
     public static @NotNull SyncableGlobalData getInstance(){
-        if(instance == null) instance = new SyncableGlobalData(ServerHelper.getMainLevel());
+        if(instance == null) instance = Aunotamation.processObject(new SyncableGlobalData(ServerHelper.getMainLevel()));
         return instance;
     }
     public SyncableGlobalData(Level holder) {

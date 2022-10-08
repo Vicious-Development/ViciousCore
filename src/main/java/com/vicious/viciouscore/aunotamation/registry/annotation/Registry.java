@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.aunotamation.registry.annotation;
 
-import com.vicious.viciouslib.aunotamation.all.annotation.ModifiedWith;
-import com.vicious.viciouslib.aunotamation.all.annotation.RequiredType;
+import com.vicious.viciouslib.aunotamation.annotation.ModifiedWith;
+import com.vicious.viciouslib.aunotamation.annotation.RequiredType;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.lang.annotation.ElementType;

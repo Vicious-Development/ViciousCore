@@ -1,7 +1,7 @@
 package com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation;
 
 
-import com.vicious.viciouslib.aunotamation.all.annotation.Extends;
+import com.vicious.viciouslib.aunotamation.annotation.Extends;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
