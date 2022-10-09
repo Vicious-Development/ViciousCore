@@ -16,8 +16,9 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
         onChange.add(run);
     }
     public void stopListenChanged(Runnable run){
-        if(onChange == null) onChange = new ArrayList<>();
-        onChange.remove(run);
+        if(onChange != null) {
+            onChange.remove(run);
+        }
     }
 
     /**
@@ -55,8 +56,10 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
     public <V extends SyncableValue<T>> V isDirty(boolean isDirty){
         this.isDirty=isDirty;
         onParent((p)->p.isDirty(isDirty));
-        if(isDirty) for (Runnable runnable : this.onChange) {
-            runnable.run();
+        if(isDirty && onChange != null) {
+            for (Runnable runnable : this.onChange) {
+                runnable.run();
+            }
         }
         return (V) this;
     }

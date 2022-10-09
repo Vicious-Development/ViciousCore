@@ -189,8 +189,8 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
-            groupId = "com.${organization}"
-            artifactId = "${mainpackage}"
+            groupId = group
+            artifactId = mainpackage
             from components.java
         }
     }

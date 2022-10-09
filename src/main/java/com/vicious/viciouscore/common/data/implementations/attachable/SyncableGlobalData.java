@@ -18,6 +18,11 @@ public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
 
     public static @NotNull SyncableGlobalData getInstance(){
         if(instance == null) instance = Aunotamation.processObject(new SyncableGlobalData(ServerHelper.getMainLevel()));
+        else{
+            if(instance.attached != ServerHelper.getMainLevel()){
+                instance = Aunotamation.processObject(new SyncableGlobalData(ServerHelper.getMainLevel()));
+            }
+        }
         return instance;
     }
     public SyncableGlobalData(Level holder) {
@@ -26,10 +31,6 @@ public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
 
     //Only load this data once.
     private boolean load = true;
-
-    public static void purgeInstance() {
-        instance = null;
-    }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
@@ -41,7 +42,9 @@ public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        if(cap == VCCapabilities.GLOBALDATA) return (LazyOptional<T>) LazyOptional.of(()->this);
+        if(cap == VCCapabilities.GLOBALDATA) {
+            return (LazyOptional<T>) LazyOptional.of(SyncableGlobalData::getInstance);
+        }
         return LazyOptional.empty();
     }
 

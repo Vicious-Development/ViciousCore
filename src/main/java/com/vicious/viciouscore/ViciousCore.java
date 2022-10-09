@@ -6,7 +6,6 @@ import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGlobalData;
 import com.vicious.viciouscore.common.events.Ticker;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
@@ -15,7 +14,6 @@ import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.common.util.server.ServerHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.GameShuttingDownEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -81,16 +79,9 @@ public class ViciousCore
             CFG.save();
         }
     }
-    @SubscribeEvent
-    public void serverInit(ServerStartingEvent event) {
-        //TODO: commands
-        //event.getServer().com(new CommandConfig());
-        //event.registerServerCommand(new CommandStructure());
-    }
 
     @SubscribeEvent
     public void onStop(ServerStoppingEvent event){
-        SyncableGlobalData.purgeInstance();
         CFG.save();
     }
     @SubscribeEvent

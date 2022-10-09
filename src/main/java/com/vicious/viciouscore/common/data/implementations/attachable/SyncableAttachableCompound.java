@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SyncableAttachableCompound<T extends ICapabilityProvider> extends SyncableCompound implements ICapabilitySerializable<CompoundTag> {
-    private final T attached;
+    protected final T attached;
     public SyncableAttachableCompound(String key, T attached) {
         super(key);
         this.attached=attached;
