@@ -37,22 +37,9 @@ java {
 
 minecraft {
     mappings channel: 'official', version: mcver
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
     runs {
-        forgeClient {
-            workingDirectory project.file('run')
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', mainpackage
-            mods {
-                viciouscore {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        forgeServer {
+        client {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -64,7 +51,7 @@ minecraft {
             }
         }
 
-        forgeGameTestServer {
+        server {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -75,8 +62,18 @@ minecraft {
                 }
             }
         }
-
-        forgeData {
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mainpackage
+            mods {
+                viciouscore {
+                    source sourceSets.main
+                }
+            }
+        }
+        data {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'

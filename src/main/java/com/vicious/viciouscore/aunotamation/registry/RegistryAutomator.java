@@ -1,5 +1,8 @@
-package com.vicious.viciouscore.aunotamation.registry.annotation;
+package com.vicious.viciouscore.aunotamation.registry;
 
+import com.vicious.viciouscore.aunotamation.registry.annotation.BlockAssociations;
+import com.vicious.viciouscore.aunotamation.registry.annotation.LinkBE;
+import com.vicious.viciouscore.aunotamation.registry.annotation.Registry;
 import com.vicious.viciouslib.aunotamation.AnnotationProcessor;
 import com.vicious.viciouslib.aunotamation.Aunotamation;
 import com.vicious.viciouslib.util.ClassAnalyzer;

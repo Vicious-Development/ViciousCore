@@ -1,16 +1,15 @@
 package com.vicious.viciouscore.aunotamation.isyncablecompoundholder;
 
+import com.vicious.viciouscore.aunotamation.VCoreProcessor;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
-import com.vicious.viciouslib.aunotamation.AnnotationProcessor;
-import com.vicious.viciouslib.aunotamation.Aunotamation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
-public abstract class SyncProcessor<A extends Annotation> extends AnnotationProcessor<A, ISyncableCompoundHolder> {
+public abstract class SyncProcessor<A extends Annotation> extends VCoreProcessor<A, ISyncableCompoundHolder> {
     public SyncProcessor(Class<A> aClass, Class<ISyncableCompoundHolder> applyON) {
         super(aClass, applyON);
     }
@@ -25,12 +24,6 @@ public abstract class SyncProcessor<A extends Annotation> extends AnnotationProc
         catch (IllegalAccessException e) {
             err(f,"must be declared public!");
         }
-    }
-    protected Object requireInitialized(Field f, Object src) throws IllegalAccessException {
-        Object o = f.get(src);
-        if (o == null) err(f,"must be initialized on declaration!");
-        Aunotamation.processObject(o);
-        return o;
     }
     protected void requireInitialized(ISyncableCompoundHolder compound, AnnotatedElement anno, Consumer<SyncableValue<?>> cons) throws IllegalAccessException {
         if(anno instanceof Field f){

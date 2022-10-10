@@ -1,7 +1,6 @@
 package com.vicious.viciouscore;
 
-import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.SyncAutomator;
-import com.vicious.viciouscore.aunotamation.registry.annotation.RegistryAutomator;
+import com.vicious.viciouscore.aunotamation.Aunotamations;
 import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
@@ -30,8 +29,7 @@ public class ViciousCore
     static {
         ViciousDirectories.initializeConfigDependents();
         CFG = VCoreConfig.getInstance();
-        SyncAutomator.init();
-        RegistryAutomator.init();
+        Aunotamations.init();
     }
     public boolean isFirstLoad(){
         return !CFG.firstLoad.getBoolean();
@@ -59,7 +57,6 @@ public class ViciousCore
         if(isFirstLoad()) {
             logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
         }
-        CommonKeyBindings.setup();
         //Initialize the network.
         VCNetwork.getInstance();
         MinecraftForge.EVENT_BUS.register(ViciousCore.class);
