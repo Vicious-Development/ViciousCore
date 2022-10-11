@@ -1,6 +1,5 @@
 package com.vicious.viciouscore.aunotamation.commonkeybinding;
 
-import com.vicious.viciouscore.aunotamation.Aunotamations;
 import com.vicious.viciouscore.aunotamation.VCoreProcessor;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBinding;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;

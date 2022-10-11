@@ -4,7 +4,6 @@ import com.vicious.viciouscore.aunotamation.commonkeybinding.Mouse;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouslib.aunotamation.Aunotamation;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
@@ -25,7 +24,7 @@ public class CommonKeyBindings {
     @SubscribeEvent
     public static void register(RegisterKeyMappingsEvent event){
         for (CommonKeyBinding key : keyBindingList.values()) {
-            SidedExecutor.clientOnly(()-> event.register(key.toClientKeyBinding(KeyConflictContext.IN_GAME,null)));
+            SidedExecutor.clientOnly(()-> event.register(key.toClientKeyBinding()));
         }
     }
 

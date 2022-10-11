@@ -13,6 +13,10 @@ public class CommonKeyBinding {
     private static int nextId = -1;
     @OnlyIn(Dist.CLIENT)
     public KeyMapping clientKey;
+    @OnlyIn(Dist.CLIENT)
+    public IKeyConflictContext conflictContext = NoConflict.NOCONFLICT;
+    @OnlyIn(Dist.CLIENT)
+    public KeyModifier modifier = KeyModifier.NONE;
 
     public final String name;
     public final int defaultKeyCode;
@@ -37,16 +41,15 @@ public class CommonKeyBinding {
         this.ID=identifier;
     }
     @OnlyIn(Dist.CLIENT)
-    public KeyMapping toClientKeyBinding(IKeyConflictContext context, KeyModifier modifier) {
+    public KeyMapping toClientKeyBinding() {
         if(isMouse){
             clientKey = new KeyMapping(name, InputConstants.Type.MOUSE, defaultKeyCode, category);
         }
         else{
-            if(context == null) clientKey = new KeyMapping(name, defaultKeyCode, category);
-            else {
-                clientKey = modifier != null ? new KeyMapping(name, context, modifier,InputConstants.Type.KEYSYM, defaultKeyCode, category) : new KeyMapping(name, context,InputConstants.Type.KEYSYM, defaultKeyCode, category);
-            }
+            clientKey = new KeyMapping(name, InputConstants.Type.KEYSYM, defaultKeyCode, category);
         }
+        clientKey.setKeyConflictContext(conflictContext);
+        clientKey.setKeyModifierAndCode(modifier,clientKey.getDefaultKey());
         return clientKey;
     }
     public static int nextId(){
