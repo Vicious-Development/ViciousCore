@@ -2,7 +2,7 @@ package com.vicious.viciouscore.client.util;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -14,7 +14,7 @@ public class WindowGetter {
     public static boolean initialized = false;
 
     @SubscribeEvent
-    public static void renderGameOverlay(RenderGuiOverlayEvent.Post e) {
+    public static void renderGameOverlay(RenderGameOverlayEvent.Post e) {
         window = e.getWindow();
         if (!initialized) {
             initialHeight = window.getHeight();

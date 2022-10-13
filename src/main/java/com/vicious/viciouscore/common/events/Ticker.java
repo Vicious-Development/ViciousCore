@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.events;
 
+import com.vicious.viciouscore.common.util.server.ServerHelper;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -15,7 +16,7 @@ public class Ticker {
     public static void onTick(TickEvent.ServerTickEvent event){
         if(event.phase == TickEvent.Phase.END){
             for (VCTask task : tasks) {
-                if(task.shouldRun(event.getServer().getNextTickTime()-1)){
+                if(task.shouldRun(ServerHelper.server.getNextTickTime()-1)){
                     task.run();
                 }
                 if(task.isCancelled()) toRemove.add(task);

@@ -49,7 +49,7 @@ public class CapabilityEventHandler {
         Player original = event.getOriginal();
         original.reviveCaps();
         if(original instanceof ServerPlayer) {
-            Player copy = event.getEntity();
+            Player copy = (Player) event.getEntity();
             VCCapabilities.capabilityTokens.forEach((k,v)->{
                 IVCCapabilityHandler cap = FuckLazyOptionals.getOrNull(original.getCapability(v));
                 if(cap instanceof ICapabilityDeathPersistant pers){

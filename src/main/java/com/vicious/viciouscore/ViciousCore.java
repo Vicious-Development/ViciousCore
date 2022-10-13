@@ -12,7 +12,6 @@ import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.common.util.server.ServerHelper;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,12 +30,7 @@ public class ViciousCore
         CFG = VCoreConfig.getInstance();
         Aunotamations.init();
     }
-    public boolean isFirstLoad(){
-        return !CFG.firstLoad.getBoolean();
-    }
     public static final String MODID = "viciouscore";
-    public static final String NAME = "Vicious Core";
-    public static final String VERSION = "1.1.5";
     public static VCoreConfig CFG;
     public static ViciousCore instance;
 
@@ -45,7 +39,6 @@ public class ViciousCore
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);
         SidedExecutor.clientOnly(()->{
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonKeyBindings::register);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         });
     }
@@ -54,9 +47,6 @@ public class ViciousCore
     public void setup(FMLCommonSetupEvent event)
     {
         instance = this;
-        if(isFirstLoad()) {
-            logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
-        }
         //Initialize the network.
         VCNetwork.getInstance();
         MinecraftForge.EVENT_BUS.register(ViciousCore.class);
@@ -65,24 +55,18 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(Ticker.class);
     }
     public void clientSetup(FMLClientSetupEvent event){
+        CommonKeyBindings.register();
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);
     }
 
 
     public void postInit(FMLLoadCompleteEvent event)
     {
-        if(isFirstLoad()) {
-            CFG.firstLoad.set(true);
-            CFG.save();
-        }
+        CFG.save();
     }
 
     @SubscribeEvent
     public void onStop(ServerStoppingEvent event){
-        CFG.save();
-    }
-    @SubscribeEvent
-    public void onStopGame(GameShuttingDownEvent event){
         CFG.save();
     }
 }

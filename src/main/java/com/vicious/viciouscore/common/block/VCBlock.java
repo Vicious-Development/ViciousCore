@@ -43,6 +43,7 @@ public class VCBlock extends Block {
         onBlockUpdated(level,pos);
         return super.use(state, level, pos, player, handSide, hitResult);
     }
+
     /*@Override
     public void onBlockClicked(Level worldIn, BlockPos pos, EntityPlayer playerIn) {
         super.onBlockClicked(worldIn, pos, playerIn);

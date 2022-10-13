@@ -29,6 +29,5 @@ public class CommonKeyBindingAutomator {
                 }
             }
         });
-        CommonKeyBindings.setup();
     }
 }

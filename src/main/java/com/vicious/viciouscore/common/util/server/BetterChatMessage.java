@@ -2,9 +2,12 @@ package com.vicious.viciouscore.common.util.server;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 
@@ -31,7 +34,7 @@ public class BetterChatMessage {
         this(objects.toArray());
     }
     public BetterChatMessage(Object... objects){
-        component = Component.empty();
+        component = (MutableComponent) TextComponent.EMPTY;
         Component unstyled = null;
         List<ChatFormatting> formatting = new ArrayList<>();
         for (int i = 0; i < objects.length; i++) {
@@ -50,13 +53,13 @@ public class BetterChatMessage {
                             }
                         }
                         Tuple<Object[],Integer> ret = gatherComponentsForTranslation(objects,i+1, Integer.parseInt(val.toString()));
-                        unstyled = Component.translatable(str.substring(1+val.toString().length(),str.length()-1), ret.getA());
+                        unstyled = new TranslatableComponent(str.substring(1+val.toString().length(),str.length()-1), ret.getA());
                         i = (int) ret.getB();
                     }
-                    else unstyled = Component.translatable(str.substring(1, str.length() - 1));
+                    else unstyled = new TranslatableComponent(str.substring(1, str.length() - 1));
                 }
                 else{
-                    unstyled = Component.literal(str);
+                    unstyled = new TextComponent(str);
                 }
             }
             else if(object instanceof ChatFormatting cf){
@@ -71,7 +74,7 @@ public class BetterChatMessage {
                 unstyled = cp;
             }
             else{
-                unstyled = Component.literal(object.toString());
+                unstyled = new TextComponent(object.toString());
             }
             if(unstyled != null) {
                 if(unstyled instanceof MutableComponent stylable) {
@@ -86,23 +89,23 @@ public class BetterChatMessage {
     }
     public void send(Entity... e){
         for (Entity entity : e) {
-            entity.sendSystemMessage(component);
+            entity.sendMessage(component, Util.NIL_UUID);
         }
     }
     public void send(Collection<? extends Entity> ents){
         for (Entity ent : ents) {
-            ent.sendSystemMessage(component);
+            ent.sendMessage(component, Util.NIL_UUID);
         }
     }
     public void sendExcept(Entity except, Collection<? extends Entity> ents){
         for (Entity ent : ents) {
             if(ent != except){
-                ent.sendSystemMessage(component);
+                ent.sendMessage(component, Util.NIL_UUID);
             }
         }
     }
     public void send(CommandSourceStack sender){
-        sender.sendSystemMessage(component);
+        sender.sendSuccess(component, false);
     }
 
     public static BetterChatMessage from(Object... objects){

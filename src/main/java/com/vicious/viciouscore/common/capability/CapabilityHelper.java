@@ -8,10 +8,12 @@ import com.vicious.viciouscore.common.util.map.AntiConflictHashMap;
 import com.vicious.viciouscore.common.util.map.AntiConflictIdentityHashMap;
 import com.vicious.viciouslib.util.reflect.deep.DeepReflection;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,11 +23,11 @@ public class CapabilityHelper {
     private static final AntiConflictHashMap<Class<?>, ModIdentifiableSupplier<Capability<?>>> classTokenMap = new AntiConflictHashMap<>();
     private static final AntiConflictIdentityHashMap<Capability<?>, ModIdentifiableSupplier<ICombinedCapabilityProvider<?>>> combinedProviderSuppliers = new AntiConflictIdentityHashMap<>();
     static {
-        classConvertsTo(IItemHandler.class,ForgeCapabilities.ITEM_HANDLER,ViciousCore.MODID);
-        classConvertsTo(IEnergyStorage.class,ForgeCapabilities.ENERGY,ViciousCore.MODID);
-        classConvertsTo(IFluidHandler.class,ForgeCapabilities.FLUID_HANDLER,ViciousCore.MODID);
-        classConvertsTo(IFluidHandlerItem.class,ForgeCapabilities.FLUID_HANDLER_ITEM,ViciousCore.MODID);
-        registerCombinedCapabilityProvider(ForgeCapabilities.ITEM_HANDLER, CombinedItemHandler::new,ViciousCore.MODID);
+        classConvertsTo(IItemHandler.class, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,ViciousCore.MODID);
+        classConvertsTo(IEnergyStorage.class, CapabilityEnergy.ENERGY,ViciousCore.MODID);
+        classConvertsTo(IFluidHandler.class, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,ViciousCore.MODID);
+        classConvertsTo(IFluidHandlerItem.class,CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,ViciousCore.MODID);
+        registerCombinedCapabilityProvider(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, CombinedItemHandler::new,ViciousCore.MODID);
     }
 
     /**
