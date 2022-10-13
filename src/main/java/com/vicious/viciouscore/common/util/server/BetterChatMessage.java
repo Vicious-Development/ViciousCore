@@ -34,7 +34,7 @@ public class BetterChatMessage {
         this(objects.toArray());
     }
     public BetterChatMessage(Object... objects){
-        component = (MutableComponent) TextComponent.EMPTY;
+        component = new TextComponent("");
         Component unstyled = null;
         List<ChatFormatting> formatting = new ArrayList<>();
         for (int i = 0; i < objects.length; i++) {
@@ -54,7 +54,7 @@ public class BetterChatMessage {
                         }
                         Tuple<Object[],Integer> ret = gatherComponentsForTranslation(objects,i+1, Integer.parseInt(val.toString()));
                         unstyled = new TranslatableComponent(str.substring(1+val.toString().length(),str.length()-1), ret.getA());
-                        i = (int) ret.getB();
+                        i = ret.getB();
                     }
                     else unstyled = new TranslatableComponent(str.substring(1, str.length() - 1));
                 }
