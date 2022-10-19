@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class PhysicalTE extends VCTE{
     //Allow editing the compound so that its internal components are reachable.
     @Editable
-    protected final SyncableCompound data = new SyncableCompound("vcdat");
+    public SyncableCompound data = new SyncableCompound("vcdat");
     public PhysicalTE(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

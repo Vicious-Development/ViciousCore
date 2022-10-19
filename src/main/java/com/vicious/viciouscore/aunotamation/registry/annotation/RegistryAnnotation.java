@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-
 @ModifiedWith({Modifier.STATIC, Modifier.PUBLIC})
 @NotModifiedWith(Modifier.FINAL)
 @RequiredType(RegistryObject.class)

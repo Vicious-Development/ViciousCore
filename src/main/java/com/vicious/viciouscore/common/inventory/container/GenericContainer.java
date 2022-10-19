@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.inventory.container;
 
+import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.SyncTarget;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
@@ -9,7 +10,6 @@ import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
 import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
 import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotInteraction;
 import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotKeyPressed;
-import com.vicious.viciouscore.common.util.RangedInteger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GenericContainer<T extends ISyncableCompoundHolder> extends AbstractContainerMenu implements ISyncableCompoundHolder{
-    public static final RangedInteger PLAYER_MAIN_INVENTORY = new RangedInteger(0, 36);
     protected List<InventoryWrapper<?>> inventories = new ArrayList<>();
     public InventoryWrapper<?> playerInv;
     public Player plr;
@@ -76,6 +75,9 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
     public InventoryWrapper<FastItemStackHandler> newSlotList(Inventory playerInv){
         return newSlotList(new FastItemStackHandler(playerInv.items));
     }
+    public void purgeSlotList(InventoryWrapper<?> wrapper){
+        inventories.remove(wrapper);
+    }
 
 
     public SyncableCompound getData() {
@@ -92,6 +94,10 @@ public abstract class GenericContainer<T extends ISyncableCompoundHolder> extend
     }
 
     public void handleSlotPacket(SPacketSlotInteraction packet, Player player) {
+        if(inventories.get(packet.getInventory()) == null){
+            ViciousCore.logger.warn(player.getName() + " attempted to access an inventory that no longer exists.");
+            return;
+        }
         if (packet instanceof SPacketSlotClicked sc) onSlotClicked(sc);
         else if(packet instanceof SPacketSlotKeyPressed skp) onSlotKeyPressed(skp);
     }

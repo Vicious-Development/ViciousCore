@@ -17,8 +17,10 @@ public abstract class SyncProcessor<A extends Annotation> extends VCoreProcessor
     protected void ensureInCompound(ISyncableCompoundHolder compound, Field f){
         try {
             SyncableValue<?> o = (SyncableValue<?>) requireInitialized(f, compound);
-            if (!compound.getData().containsKey(o.KEY)) {
-                compound.getData().add((SyncableValue<?>) o);
+            if(o != compound.getData()) {
+                if (!compound.getData().containsKey(o.KEY)) {
+                    compound.getData().add((SyncableValue<?>) o);
+                }
             }
         }
         catch (IllegalAccessException e) {

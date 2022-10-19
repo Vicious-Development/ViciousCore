@@ -18,7 +18,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,23 +25,18 @@ import org.apache.logging.log4j.Logger;
 @Mod("viciouscore")
 public class ViciousCore
 {
-    static {
-        ViciousDirectories.initializeConfigDependents();
-        CFG = VCoreConfig.getInstance();
-        Aunotamations.init();
-    }
-    public boolean isFirstLoad(){
-        return !CFG.firstLoad.getBoolean();
-    }
     public static final String MODID = "viciouscore";
-    public static final String NAME = "Vicious Core";
-    public static final String VERSION = "1.1.5";
     public static VCoreConfig CFG;
     public static ViciousCore instance;
 
+
+
     public ViciousCore(){
+        logger.info("Initializing ViciousCore.");
+        Aunotamations.init();
+        ViciousDirectories.initializeConfigDependents();
+        CFG = VCoreConfig.getInstance();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);
         SidedExecutor.clientOnly(()->{
             FMLJavaModLoadingContext.get().getModEventBus().addListener(CommonKeyBindings::register);
@@ -53,10 +47,8 @@ public class ViciousCore
     public static final Logger logger = LogManager.getLogger();
     public void setup(FMLCommonSetupEvent event)
     {
+        logger.info("Setting up ViciousCore");
         instance = this;
-        if(isFirstLoad()) {
-            logger.info("ViciousCore detected first load setup. Time to do some cool stuff and things!");
-        }
         //Initialize the network.
         VCNetwork.getInstance();
         MinecraftForge.EVENT_BUS.register(ViciousCore.class);
@@ -65,16 +57,8 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(Ticker.class);
     }
     public void clientSetup(FMLClientSetupEvent event){
+        logger.info("Setting up ViciousCore Client Side");
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);
-    }
-
-
-    public void postInit(FMLLoadCompleteEvent event)
-    {
-        if(isFirstLoad()) {
-            CFG.firstLoad.set(true);
-            CFG.save();
-        }
     }
 
     @SubscribeEvent

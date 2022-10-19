@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Extends(SyncableAnnotation.class)
 public @interface Exposed {
+    String[] value() default {};
 }

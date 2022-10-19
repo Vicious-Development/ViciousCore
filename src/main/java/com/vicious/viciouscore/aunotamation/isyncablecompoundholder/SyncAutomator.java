@@ -1,8 +1,10 @@
 package com.vicious.viciouscore.aunotamation.isyncablecompoundholder;
 
+import com.vicious.viciouscore.aunotamation.ForcedExposure;
 import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation.*;
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.structures.ExposableSyncableCompound;
+import com.vicious.viciouscore.common.data.structures.SyncableCompound;
 import com.vicious.viciouslib.aunotamation.Aunotamation;
 
 import java.lang.reflect.AnnotatedElement;
@@ -22,7 +24,10 @@ public class SyncAutomator {
             if(o instanceof ISyncableCompoundHolder sch){
                 sch.getData().forEachSyncable((sv)->{
                     if(sv instanceof ISyncableCompoundHolder comp){
-                        Aunotamation.processObject(comp.getData());
+                        SyncableCompound c2 = comp.getData();
+                        if(c2 != comp) {
+                            Aunotamation.processObject(c2);
+                        }
                     }
                 });
             }
@@ -57,11 +62,15 @@ public class SyncAutomator {
             @Override
             public void process(ISyncableCompoundHolder compound, AnnotatedElement anno) {
                 if(anno instanceof Field f){
+                    Exposed exposed = anno.getAnnotation(Exposed.class);
                     //Remove if already added.
                     compound.getData().remove(f.getName());
                     ExposableSyncableCompound exposer = new ExposableSyncableCompound(f.getName());
                     ensureInCompound(exposer,f);
                     compound.getData().add(exposer);
+                    for (String s : exposed.value()) {
+                        exposer.expose(ForcedExposure.getExposureOfType(s));
+                    }
                 }
             }
         });
