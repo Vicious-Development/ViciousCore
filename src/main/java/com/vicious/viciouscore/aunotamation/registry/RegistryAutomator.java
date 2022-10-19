@@ -41,12 +41,10 @@ public class RegistryAutomator {
         @BlockAssociations("exampleblock",namespace = "examplemod")
         class ExampleBE extends BlockEntity{...}
          */
-        ViciousCore.logger.info("Registered Registry Automations.");
         Aunotamation.registerProcessor(new AnnotationProcessor<>(LinkBE.class, Class.class) {
             @Override
             @SuppressWarnings("unchecked")
             public void process(Class registryClass, AnnotatedElement annotatedElement) throws Exception {
-                ViciousCore.logger.info("ANALYZING CLASS: " + registryClass.getName());
                 if(annotatedElement instanceof Field f) {
                     //Get the DeferredRegister.
                     List<AnnotatedElement> possibilities = ClassAnalyzer.getManifest(registryClass).getMembersWithAnnotation(Registry.class);
@@ -93,7 +91,6 @@ public class RegistryAutomator {
                             }
                             return null;
                         });
-                        System.err.println("OBJ: " + obj);
                         f.set(registryClass,obj);
                     }
                     catch (NoSuchMethodException e){
