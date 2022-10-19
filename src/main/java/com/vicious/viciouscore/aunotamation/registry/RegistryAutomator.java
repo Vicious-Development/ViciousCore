@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.lang.reflect.AnnotatedElement;
@@ -54,7 +55,8 @@ public class RegistryAutomator {
                     if(possibilities.size() > 1){
                         err(annotatedElement,"there is more than one @Registry DeferredRegister");
                     }
-                    DeferredRegister<BlockEntityType<?>> deferredRegister = (DeferredRegister<BlockEntityType<?>>) ((Field)possibilities.get(0)).get(registryClass);
+                    IForgeRegistry<BlockEntityType<?>> registry = (IForgeRegistry<BlockEntityType<?>>) ((Field)possibilities.get(0)).get(registryClass);
+                    DeferredRegister<BlockEntityType<?>> deferredRegister = DeferredRegister.create(registry,possibilities.get(0).getAnnotation(Registry.class).value());
                     //Get the tile class.
                     Class<?> tile = annotatedElement.getAnnotation(LinkBE.class).value();
                     try {
