@@ -25,16 +25,14 @@ import org.apache.logging.log4j.Logger;
 @Mod("viciouscore")
 public class ViciousCore
 {
-    static {
-        ViciousDirectories.initializeConfigDependents();
-        CFG = VCoreConfig.getInstance();
-        Aunotamations.init();
-    }
     public static final String MODID = "viciouscore";
     public static VCoreConfig CFG;
     public static ViciousCore instance;
 
     public ViciousCore(){
+        Aunotamations.init();
+        ViciousDirectories.initializeConfigDependents();
+        CFG = VCoreConfig.getInstance();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);

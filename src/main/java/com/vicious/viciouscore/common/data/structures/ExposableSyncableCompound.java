@@ -1,11 +1,11 @@
 package com.vicious.viciouscore.common.data.structures;
 
 import com.vicious.viciouscore.ViciousCore;
+import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation.ReadOnly;
 import com.vicious.viciouscore.common.capability.VCCapabilityProvider;
 import com.vicious.viciouscore.common.capability.exposer.ICapabilityExposer;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.IVCNBTSerializable;
-import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation.ReadOnly;
 import com.vicious.viciouscore.common.data.implementations.SyncableArrayHashSet;
 import net.minecraft.nbt.CompoundTag;
 
@@ -21,7 +21,7 @@ import java.util.function.Function;
  */
 public class ExposableSyncableCompound extends SyncableCompound{
     @ReadOnly
-    private final SyncableArrayHashSet<ExpositionRef> exposedTo = new SyncableArrayHashSet<>("exposedTo",ExpositionRef::new);
+    public SyncableArrayHashSet<ExpositionRef> exposedTo = new SyncableArrayHashSet<>("exposedTo",ExpositionRef::new);
     private VCCapabilityProvider capabilityProvider;
     public ExposableSyncableCompound(String key) {
         super(key);
@@ -49,6 +49,10 @@ public class ExposableSyncableCompound extends SyncableCompound{
                 exposer.conceal(syncableValue);
             }
         }
+    }
+
+    public boolean isExposedTo(Object o){
+        return exposedTo.value.contains(new ExpositionRef(o));
     }
 
     @Override
@@ -99,7 +103,9 @@ public class ExposableSyncableCompound extends SyncableCompound{
                 tag.putInt(ref.getClass().getCanonicalName(), ((Enum<?>) ref).ordinal());
             }
             else{
-                serializers.get(ref.getClass()).accept(ref,tag);
+                if(serializers.containsKey(ref.getClass())) {
+                    serializers.get(ref.getClass()).accept(ref, tag);
+                }
             }
         }
 

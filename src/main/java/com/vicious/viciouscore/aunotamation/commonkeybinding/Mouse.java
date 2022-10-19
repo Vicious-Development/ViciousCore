@@ -13,7 +13,6 @@ import java.lang.reflect.Modifier;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-
 @RequiredType(CommonKeyBinding.class)
 @ModifiedWith({Modifier.PUBLIC})
 public @interface Mouse {

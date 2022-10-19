@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-
 @Extends(RegistryAnnotation.class)
 public @interface LinkBE {
     Class<?> value();

@@ -20,7 +20,6 @@ import java.lang.reflect.Modifier;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-
 @AllowedIn(ISyncableCompoundHolder.class)
 @RequiredType(SyncableValue.class)
 @ModifiedWith({Modifier.PUBLIC})
