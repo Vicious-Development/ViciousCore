@@ -3,10 +3,15 @@ package com.vicious.viciouscore.aunotamation.registry;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouslib.aunotamation.Aunotamation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Constructor;
@@ -22,7 +27,7 @@ public class RegistryAutomator {
         init = true;
         UNIVERSALREGISTRYPROCESSOR.addSupport(new RegistryProcessor<>(BlockEntity.class, ForgeRegistries.BLOCK_ENTITY_TYPES,ForgeRegistries.BLOCKS, BlockPos.class, BlockState.class) {
             @Override
-            public BlockEntityType<?> supply(Class<BlockEntity> targetClass, Constructor<BlockEntity> constructor, List<Block> associations, Field targetField) throws Exception {
+            public BlockEntityType<?> supply(Class<BlockEntity> targetClass, Constructor<BlockEntity> constructor, List<Block> associations, Field targetField) {
                 //Create the block entity type.
                 return BlockEntityType.Builder.of((pos, state) -> {
                     try {
@@ -35,6 +40,22 @@ public class RegistryAutomator {
                     }
                     return null;
                 }, associations.toArray(new Block[0])).build(null);
+            }
+        });
+        UNIVERSALREGISTRYPROCESSOR.addSupport(new RegistryProcessor<>(AbstractContainerMenu.class,ForgeRegistries.MENU_TYPES,null,int.class, Inventory.class, FriendlyByteBuf.class) {
+            @Override
+            public MenuType<?> supply(Class<AbstractContainerMenu> targetClass, Constructor<AbstractContainerMenu> constructor, List<Object> associations, Field targetField) {
+                return IForgeMenuType.create((num,plrinv,buf)->{
+                    try {
+                        AbstractContainerMenu menu = constructor.newInstance(num,plrinv,buf);
+                        Aunotamation.processObject(menu);
+                        return menu;
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        ViciousCore.logger.fatal("Failed to create a menu. Caused by internal exception: " + e.getCause());
+                        e.printStackTrace();
+                    }
+                    return null;
+                });
             }
         });
         Aunotamation.registerProcessor(UNIVERSALREGISTRYPROCESSOR);
