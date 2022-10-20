@@ -7,7 +7,7 @@ import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IFastItemHandler {
@@ -30,7 +30,7 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
         return (V) this;
     }
 
-    protected void listenInv(IFastItemHandler cons){
+    protected void listenInv(IFastItemHandler cons, int i){
         isDirty(true);
     }
 
@@ -91,18 +91,13 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     }
 
     @Override
-    public void listenChanged(Consumer<IFastItemHandler> cons) {
+    public void listenChanged(BiConsumer<IFastItemHandler, Integer> cons) {
         value.listenChanged(cons);
     }
 
     @Override
-    public void stopListening(Consumer<IFastItemHandler> cons) {
+    public void stopListening(BiConsumer<IFastItemHandler, Integer> cons) {
         value.listenChanged(cons);
-    }
-
-    @Override
-    public void onUpdate() {
-        value.onUpdate();
     }
 
     @Override
