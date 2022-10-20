@@ -1,8 +1,6 @@
 package com.vicious.viciouscore.aunotamation.registry.annotation;
 
 import com.vicious.viciouslib.aunotamation.annotation.ModifiedWith;
-import com.vicious.viciouslib.aunotamation.annotation.RequiredType;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,9 +13,8 @@ import java.lang.reflect.Modifier;
  * There can only be one!
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @ModifiedWith({Modifier.STATIC, Modifier.PUBLIC})
-@RequiredType(IForgeRegistry.class)
 public @interface Registry {
     String value();
 }

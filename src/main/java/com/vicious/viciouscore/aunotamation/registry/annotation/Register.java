@@ -8,9 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a Field that should be instantiated with a registered object of the associated class type.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Extends(RegistryAnnotation.class)
-public @interface LinkBE {
+public @interface Register {
     Class<?> value();
 }
