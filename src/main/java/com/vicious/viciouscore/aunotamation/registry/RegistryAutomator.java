@@ -20,7 +20,7 @@ public class RegistryAutomator {
     public static void init() {
         if (init) return;
         init = true;
-        UNIVERSALREGISTRYPROCESSOR.addSupport(new RegistryProcessor<>(BlockEntity.class, ForgeRegistries.BLOCK_ENTITY_TYPES,ForgeRegistries.BLOCKS, BlockPos.class, BlockState.class) {
+        UNIVERSALREGISTRYPROCESSOR.addSupport(new RegistryProcessor<>(BlockEntity.class, ForgeRegistries.BLOCK_ENTITIES,ForgeRegistries.BLOCKS, BlockPos.class, BlockState.class) {
             @Override
             public BlockEntityType<?> supply(Class<BlockEntity> targetClass, Constructor<BlockEntity> constructor, List<Block> associations, Field targetField) throws Exception {
                 //Create the block entity type.

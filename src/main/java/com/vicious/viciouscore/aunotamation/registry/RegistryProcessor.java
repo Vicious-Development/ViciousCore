@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public abstract class RegistryProcessor<T,O,A> {
+public abstract class RegistryProcessor<T,O extends IForgeRegistryEntry<O>,A extends IForgeRegistryEntry<A>> {
     private final Map<String, DeferredRegister<O>> regs = new HashMap<>();
     private final Class<?>[] cparams;
     private final Class<T> targetType;
