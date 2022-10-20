@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -20,7 +21,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
     protected ItemStackMap map = new ItemStackMap();
     protected ItemSlotMap slotMemory = new ItemSlotMap();
     protected Map<Integer,Predicate<ItemStack>> validators = new HashMap<>();
-    protected List<Consumer<IFastItemHandler>> changeListeners = new ArrayList<>();
+    protected List<BiConsumer<IFastItemHandler,Integer>> changeListeners = new ArrayList<>();
     public FastItemStackHandler()
     {
         this(1);
@@ -216,17 +217,11 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         return push;
     }
 
-    public void listenChanged(Consumer<IFastItemHandler> cons){
+    public void listenChanged(BiConsumer<IFastItemHandler,Integer> cons){
         changeListeners.add(cons);
     }
-    public void stopListening(Consumer<IFastItemHandler> cons){
+    public void stopListening(BiConsumer<IFastItemHandler,Integer> cons){
         changeListeners.remove(cons);
-    }
-
-    public void onUpdate() {
-        for (Consumer<IFastItemHandler> changeListener : changeListeners) {
-            changeListener.accept(this);
-        }
     }
 
     public NonNullList<ItemStack> getItems(){
@@ -246,7 +241,9 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
     @Override
     protected void onContentsChanged(int slot) {
         super.onContentsChanged(slot);
-        onUpdate();
+        for (BiConsumer<IFastItemHandler,Integer> changeListener : changeListeners) {
+            changeListener.accept(this,slot);
+        }
     }
 
     public Container asContainer(){

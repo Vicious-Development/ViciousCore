@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -17,9 +18,8 @@ public interface IFastItemHandler extends IItemHandlerModifiable {
     ItemStack forceInsertItem(ItemStack push, boolean simulate);
 
     @NotNull ItemStack forceInsertItem(int slot, @NotNull ItemStack stack, boolean simulate);
-    void listenChanged(Consumer<IFastItemHandler> cons);
-    void stopListening(Consumer<IFastItemHandler> cons);
-    void onUpdate();
+    void listenChanged(BiConsumer<IFastItemHandler,Integer> cons);
+    void stopListening(BiConsumer<IFastItemHandler,Integer> cons);
     boolean isEmpty();
     boolean mayPlace(int slot, ItemStack stack);
 

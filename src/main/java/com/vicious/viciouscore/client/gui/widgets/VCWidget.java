@@ -10,11 +10,13 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class VCWidget implements Widget {
-    protected ArrayList<VCWidget> children = new ArrayList<>();
+    protected Set<VCWidget> children = new HashSet<>();
     protected Vector2i startPos;
     protected Vector2i offsetVector = new Vector2i(0,0);
     protected Vector2f scale = new Vector2f(1,1);
@@ -273,5 +275,12 @@ public class VCWidget implements Widget {
     }
     public Vector2i getStartPos(){
         return startPos;
+    }
+    
+    public void removeChild(VCWidget widget){
+        children.remove(widget);
+    }
+    public boolean hasChild(VCWidget widget){
+        return children.contains(widget);
     }
 }
