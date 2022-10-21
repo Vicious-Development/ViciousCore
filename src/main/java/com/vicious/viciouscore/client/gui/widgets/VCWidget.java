@@ -245,15 +245,17 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
 
     }
 
-    protected Map<RenderStage,List<Consumer<PoseStack>>> glTransformers = new HashMap<>();
+    protected Map<RenderStage,List<Consumer<PoseStack>>> glTransformers = new EnumMap<>(RenderStage.class);
     public T addGL(RenderStage stage, Consumer<PoseStack> cons){
         List<Consumer<PoseStack>> lst = glTransformers.computeIfAbsent(stage,k->new ArrayList<>());
         lst.add(cons);
         return asT();
     }
     public void applyGL(RenderStage stage, PoseStack stack){
-        for (Consumer<PoseStack> c : glTransformers.get(stage)) {
-            c.accept(stack);
+        if(glTransformers.containsKey(stage)) {
+            for (Consumer<PoseStack> c : glTransformers.get(stage)) {
+                c.accept(stack);
+            }
         }
     }
 
