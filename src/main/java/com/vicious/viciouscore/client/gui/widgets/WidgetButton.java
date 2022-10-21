@@ -3,7 +3,7 @@ package com.vicious.viciouscore.client.gui.widgets;
 
 import net.minecraft.resources.ResourceLocation;
 
-public class WidgetButton extends WidgetImage {
+public class WidgetButton<T extends WidgetButton<T>> extends WidgetImage<T> {
     private boolean doClick = true;
 
     public WidgetButton(RootWidget root, int x, int y, int w, int h, ResourceLocation widgetResource) {
@@ -17,7 +17,6 @@ public class WidgetButton extends WidgetImage {
             return;
         }
         playClickSound();
-//        ZENetwork.simplechannel.sendToServer(new CClickContainerButton(TILEPOS,ID));
         doClick = false;
     }
 }

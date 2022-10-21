@@ -10,6 +10,11 @@ public class Vector2i {
         this.y = y;
     }
 
+    public Vector2i(Vector2i other) {
+        x=other.x;
+        y= other.y;
+    }
+
     public Vector2i add(Vector2i offsetVector) {
         return new Vector2i(x+offsetVector.x,y+ offsetVector.y);
     }
@@ -44,5 +49,12 @@ public class Vector2i {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    public Vector2i withX(int x) {
+        return new Vector2i(x,y);
+    }
+    public Vector2i withY(int y) {
+        return new Vector2i(x,y);
     }
 }
