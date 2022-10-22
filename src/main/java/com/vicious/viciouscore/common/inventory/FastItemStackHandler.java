@@ -166,7 +166,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return validators.get(slot).test(stack);
+        return validators.getOrDefault(slot,(i)->true).test(stack);
     }
 
     @Override
@@ -196,7 +196,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public boolean mayPlace(int slot, ItemStack stack) {
-        return validators.get(slot).test(stack);
+        return validators.getOrDefault(slot,(i)->true).test(stack);
     }
 
     @Override
