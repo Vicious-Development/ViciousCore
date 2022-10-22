@@ -21,6 +21,23 @@ public class SlotChangedEvent {
         return stack;
     }
 
+    public int getSlot() {
+        return slot;
+    }
+
+    public Phase getPhase() {
+        return phase;
+    }
+
+    public IFastItemHandler getInventory() {
+        return handler;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+
     public enum Phase{
         POST,
         PRE
