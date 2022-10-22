@@ -8,11 +8,13 @@ public class SlotChangedEvent {
     private final int slot;
     private Phase phase;
     private final IFastItemHandler handler;
-    public SlotChangedEvent(ItemStack stack, Phase phase, int slot, IFastItemHandler handler) {
+    private final Action action;
+    public SlotChangedEvent(ItemStack stack, Phase phase, Action action, int slot, IFastItemHandler handler) {
         this.stack = stack;
         this.slot = slot;
         this.handler = handler;
         this.phase=phase;
+        this.action=action;
     }
 
     public ItemStack getStack(){
@@ -22,5 +24,10 @@ public class SlotChangedEvent {
     public enum Phase{
         POST,
         PRE
+    }
+    public enum Action{
+        EXTRACT,
+        INSERT,
+        SET
     }
 }
