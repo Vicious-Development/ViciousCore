@@ -8,6 +8,7 @@ public class WidgetButton<T extends WidgetButton<T>> extends WidgetImage<T> {
 
     public WidgetButton(RootWidget root, int x, int y, int w, int h, ResourceLocation widgetResource) {
         super(root, x, y, w, h, widgetResource);
+        addFlags(ControlFlag.RESPONDTOCLICK);
     }
 
     @Override

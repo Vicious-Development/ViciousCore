@@ -4,10 +4,12 @@ import com.vicious.viciouscore.common.data.state.IFastItemHandler;
 import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
+import com.vicious.viciouscore.common.inventory.SlotChangedEvent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiConsumer;
+import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IFastItemHandler {
@@ -20,6 +22,12 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     public boolean mayPlace(int slot, ItemStack stack){
         return value.mayPlace(slot,stack);
     }
+
+    @Override
+    public Collection<Consumer<SlotChangedEvent>> getListeners() {
+        return value.getListeners();
+    }
+
     public FastItemStackHandler addSlotValidator(int slot, Predicate<ItemStack> pred){
         return value.addSlotValidator(slot,pred);
     }
@@ -30,7 +38,7 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
         return (V) this;
     }
 
-    protected void listenInv(IFastItemHandler cons, int i){
+    protected void listenInv(SlotChangedEvent ev){
         isDirty(true);
     }
 
@@ -91,12 +99,12 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     }
 
     @Override
-    public void listenChanged(BiConsumer<IFastItemHandler, Integer> cons) {
+    public void listenChanged(Consumer<SlotChangedEvent> cons) {
         value.listenChanged(cons);
     }
 
     @Override
-    public void stopListening(BiConsumer<IFastItemHandler, Integer> cons) {
+    public void stopListening(Consumer<SlotChangedEvent> cons) {
         value.listenChanged(cons);
     }
 

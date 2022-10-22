@@ -105,7 +105,7 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
     /**
      * A set of flags determining how the widget should act.
      */
-    protected Set<ControlFlag> controlFlags = EnumSet.of(ControlFlag.RESPONDTORAYTRACE);
+    protected Set<ControlFlag> controlFlags = EnumSet.of(ControlFlag.RESPONDTORAYTRACE,ControlFlag.VISIBLE);
     public T addFlags(ControlFlag... respondTos){
         for (ControlFlag respondTo : respondTos) {
             this.controlFlags.add(respondTo);
@@ -157,7 +157,7 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
      */
     public VCWidget<?> widgetMouseOver(){
         for (VCWidget<?> child : children) {
-            if(hasFlag(ControlFlag.RESPONDTORAYTRACE) && child.getExtents().isWithin(getMouseX(),getMouseY())){
+            if(child.hasFlag(ControlFlag.RESPONDTORAYTRACE) && child.getExtents().isWithin(getMouseX(),getMouseY())){
                 removeFlags(ControlFlag.HOVERED);
                 return child.widgetMouseOver();
             }
@@ -172,7 +172,7 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
         if(hasFlag(ControlFlag.RESPONDTODRAG) && leftClick(button)){
             isDraggedWidget();
         }
-        addFlags(ControlFlag.CLICKED);
+        if(hasFlag(ControlFlag.RESPONDTOCLICK)) addFlags(ControlFlag.CLICKED);
     }
     public boolean leftClick(int button){
         return button == 0;
