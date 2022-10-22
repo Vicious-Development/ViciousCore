@@ -30,11 +30,11 @@ public interface IFastItemHandler extends IItemHandlerModifiable {
             listener.accept(event);
         }
     }
-    default void sendEventPost(int slot){
-        sendEvent(new SlotChangedEvent(getStackInSlot(slot), SlotChangedEvent.Phase.POST,slot,this));
+    default void sendEventPost(int slot, SlotChangedEvent.Action action){
+        sendEvent(new SlotChangedEvent(getStackInSlot(slot), SlotChangedEvent.Phase.POST, action, slot,this));
     }
-    default void sendEventPre(int slot){
-        sendEvent(new SlotChangedEvent(getStackInSlot(slot), SlotChangedEvent.Phase.PRE,slot,this));
+    default void sendEventPre(int slot, SlotChangedEvent.Action action){
+        sendEvent(new SlotChangedEvent(getStackInSlot(slot), SlotChangedEvent.Phase.PRE, action, slot,this));
     }
 
     /**
