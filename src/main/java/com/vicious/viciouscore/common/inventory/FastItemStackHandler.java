@@ -8,6 +8,7 @@ import com.vicious.viciouscore.common.util.item.ItemSlotMap;
 import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -161,7 +162,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public int getSlotLimit(int slot) {
-        return stacks.size();
+        return stacks.get(slot).getMaxStackSize();
     }
 
     @Override
@@ -231,12 +232,16 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public void deserializeNBT(CompoundTag tag, DataAccessor sender) {
-        tag = tag.getCompound("inv");
-        stacks = NonNullList.withSize(tag.getInt("size"),ItemStack.EMPTY);
-        tag = tag.getCompound("items");
-        for (String key : tag.getAllKeys()) {
-            CompoundTag itemTag = tag.getCompound(key);
-            setStackInSlot(Integer.parseInt(key),ItemStack.of(itemTag));
+        if(tag.contains("inv")) {
+            tag = tag.getCompound("inv");
+            if (tag.contains("size", Tag.TAG_INT)) {
+                stacks = NonNullList.withSize(tag.getInt("size"), ItemStack.EMPTY);
+            }
+            tag = tag.getCompound("items");
+            for (String key : tag.getAllKeys()) {
+                CompoundTag itemTag = tag.getCompound(key);
+                setStackInSlot(Integer.parseInt(key), ItemStack.of(itemTag));
+            }
         }
     }
 }
