@@ -15,4 +15,8 @@ public class ItemHelper {
             return !s2.hasTag();
         }
     }
+
+    public static int getStackSpaceRemaining(ItemStack slotStack) {
+        return slotStack.getMaxStackSize()-slotStack.getCount();
+    }
 }

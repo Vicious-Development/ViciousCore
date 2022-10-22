@@ -1,9 +1,10 @@
 package com.vicious.viciouscore.common.data.state;
 
 import com.vicious.viciouscore.common.inventory.SlotChangedEvent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,13 +14,20 @@ import java.util.function.Predicate;
 
 public interface IFastItemHandler extends IItemHandlerModifiable {
     boolean contains(ItemStack stack);
+
+    ItemStack swap(int slot, ItemStack stack);
+
     ItemStack extractItem(ItemStack requested, boolean simulate);
     ItemStack insertItem(ItemStack push, boolean simulate);
-    ItemStack forceInsertItem(ItemStack push, boolean simulate);
 
-    @NotNull ItemStack forceInsertItem(int slot, @NotNull ItemStack stack, boolean simulate);
+    Collection<Integer> indexOf(ItemStack stack);
+
     void listenChanged(Consumer<SlotChangedEvent> cons);
     void stopListening(Consumer<SlotChangedEvent> cons);
+
+    NonNullList<ItemStack> getItems();
+    Container asContainer();
+
     boolean isEmpty();
     boolean mayPlace(int slot, ItemStack stack);
 
@@ -64,8 +72,8 @@ public interface IFastItemHandler extends IItemHandlerModifiable {
         if(isEmpty()) return true;
         forEachSlot((i)->{
             ItemStack toInsert = getStackInSlot(i);
-            if(other.forceInsertItem(toInsert,true).isEmpty()){
-                other.forceInsertItem(extractItem(toInsert,false),false);
+            if(other.insertItem(toInsert,true).isEmpty()){
+                other.insertItem(extractItem(toInsert,false),false);
             }
         });
         return isEmpty();
