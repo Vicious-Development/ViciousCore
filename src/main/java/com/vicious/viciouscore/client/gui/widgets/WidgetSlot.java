@@ -15,6 +15,8 @@ public class WidgetSlot<T extends WidgetSlot<T>> extends WidgetImage<T>{
         super(root, x, y, w, h, widgetResource);
         this.wrapper=wrapper;
         this.slot=slot;
+        addFlags(ControlFlag.RESPONDTOHOVER);
+        addFlags(ControlFlag.RESPONDTOCLICK);
     }
     public WidgetSlot<?> setSelectedImage(ResourceLocation rl){
         this.selectedImage=rl;

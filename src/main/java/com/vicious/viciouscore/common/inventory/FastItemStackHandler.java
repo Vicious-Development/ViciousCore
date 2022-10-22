@@ -12,11 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -24,7 +20,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
     protected ItemStackMap map = new ItemStackMap();
     protected ItemSlotMap slotMemory = new ItemSlotMap();
     protected Map<Integer,Predicate<ItemStack>> validators = new HashMap<>();
-    protected List<BiConsumer<IFastItemHandler,Integer>> changeListeners = new ArrayList<>();
+    protected List<Consumer<SlotChangedEvent>> changeListeners = new ArrayList<>();
     public FastItemStackHandler()
     {
         this(1);
@@ -47,6 +43,11 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         return true;
     }
 
+    @Override
+    public Collection<Consumer<SlotChangedEvent>> getListeners() {
+        return changeListeners;
+    }
+
     public FastItemStackHandler addSlotValidator(int slot, Predicate<ItemStack> pred){
         this.validators.put(slot,pred);
         return this;
@@ -64,10 +65,12 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         ItemStack before = getStackInSlot(slot);
+        sendEventPre(slot);
         this.stacks.set(slot, stack);
         slotMemory.add(stack, slot);
         map.reduceBy(before);
         map.add(stack);
+        sendEventPost(slot);
         onContentsChanged(slot);
 
     }
@@ -75,7 +78,12 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if(!mayPlace(slot, stack)) return stack.copy();
-        return forceInsertItem(slot,stack,simulate);
+        else {
+            sendEventPre(slot);
+            ItemStack ret =  forceInsertItem(slot, stack, simulate);
+            sendEventPost(slot);
+            return ret;
+        }
     }
     @Override
     public @NotNull ItemStack forceInsertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
@@ -93,6 +101,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
 
     @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        sendEventPre(slot);
         ItemStack extracted = super.extractItem(slot,amount,simulate);
         if(!simulate){
             if(!extracted.isEmpty()){
@@ -102,6 +111,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                 }
             }
         }
+        sendEventPost(slot);
         return extracted;
     }
 
@@ -136,6 +146,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                 } else {
                     int remaining = Math.max(stack.getCount() - toRemove, 0);
                     if (!simulate) {
+                        sendEventPre(index);
                         if (remaining != 0) {
                             stack.setCount(remaining);
                         } else {
@@ -143,6 +154,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                             i--;
                             stacks.set(index, ItemStack.EMPTY);
                         }
+                        sendEventPost(index);
                         onContentsChanged(index);
                     }
                     toRemove -= toRemove - remaining;
@@ -195,7 +207,9 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
                         int toInsert = Math.min(stack.getMaxStackSize() - stack.getCount(), remaining);
                         remaining -= toInsert;
                         if (!simulate) {
+                            sendEventPre(index);
                             stack.setCount(toInsert + stack.getCount());
+                            sendEventPost(index);
                             onContentsChanged(index);
                         }
                     }
@@ -220,10 +234,10 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
         return push;
     }
 
-    public void listenChanged(BiConsumer<IFastItemHandler,Integer> cons){
+    public void listenChanged(Consumer<SlotChangedEvent> cons){
         changeListeners.add(cons);
     }
-    public void stopListening(BiConsumer<IFastItemHandler,Integer> cons){
+    public void stopListening(Consumer<SlotChangedEvent> cons){
         changeListeners.remove(cons);
     }
 
@@ -238,14 +252,6 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
     public void forEachSlot(Consumer<Integer> cons){
         for (int i = 0; i < getSlots(); i++) {
             cons.accept(i);
-        }
-    }
-
-    @Override
-    protected void onContentsChanged(int slot) {
-        super.onContentsChanged(slot);
-        for (BiConsumer<IFastItemHandler,Integer> changeListener : changeListeners) {
-            changeListener.accept(this,slot);
         }
     }
 
@@ -269,6 +275,7 @@ public class FastItemStackHandler extends ItemStackHandler implements IFastItemH
             if (slot >= 0 && slot < stacks.size())
             {
                 stacks.set(slot, ItemStack.of(itemTags));
+                sendEventPost(slot);
                 onContentsChanged(slot);
             }
         }

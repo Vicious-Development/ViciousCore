@@ -1,5 +1,6 @@
 package com.vicious.viciouscore.common.block;
 
+import com.vicious.viciouscore.common.tile.VCTE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,6 +20,9 @@ public class VCBlock extends Block {
     }
 
     public void onBlockDestroyed(Level worldIn, BlockPos pos) {
+        if(worldIn.getBlockEntity(pos) instanceof VCTE vcte){
+            vcte.dropAllContents(worldIn,pos);
+        }
     }
     public void onBlockUpdated(Level worldIn, BlockPos pos){
 

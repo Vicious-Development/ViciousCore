@@ -16,7 +16,14 @@ import java.util.List;
  */
 public class ItemStackMap extends ItemTypeMap<ItemStack> {
     public ItemStackMap() {}
-    
+
+    @Override
+    public ItemStack get(Object key) {
+        ItemStack stack = super.get(key);
+        if(stack == null) stack = ItemStack.EMPTY;
+        return stack;
+    }
+
     /**
      * @param stack the stack to add.
      * @return if the Material was already present.

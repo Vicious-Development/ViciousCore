@@ -25,7 +25,7 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
 
     public GenericGUI(T menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        held = new WidgetItem<>(root,0,0,0,0,()->menu.getInteractionState().getHeld()).noFlags();
+        held = new WidgetItem<>(root,0,0,0,0,()->menu.getInteractionState().getHeld()).noFlags().addFlags(ControlFlag.VISIBLE);
         prevX = (int) (WindowGetter.window.getWidth()/2/WindowGetter.window.getGuiScale());
         prevY = (int) (WindowGetter.window.getHeight()/2/WindowGetter.window.getGuiScale());
     }
@@ -61,7 +61,7 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
     protected void createHoloInv() {
         //Holoinvbackscreen.
         //WidgetFreeDrag holo = add(new WidgetFreeDrag(root,menu.playerSlots.get(0).x - 7,menu.playerSlots.get(0).y - 66, VCTextures.HOLOINVMKI.width(), VCTextures.HOLOINVMKI.height(), VCTextures.HOLOINVMKI.name()));
-        WidgetFreeDrag holo = add(new WidgetFreeDrag(root,100,100, VCTextures.HOLOINVMKI.width(), VCTextures.HOLOINVMKI.height(), VCTextures.HOLOINVMKI.name()));
+        WidgetFreeDrag<?> holo = add(new WidgetFreeDrag<>(root,100,100, VCTextures.HOLOINVMKI.width(), VCTextures.HOLOINVMKI.height(), VCTextures.HOLOINVMKI.name()));
         final int slotxspacing = 17;
         final int slotyspacing = 17;
         final int hotbarx = 6;

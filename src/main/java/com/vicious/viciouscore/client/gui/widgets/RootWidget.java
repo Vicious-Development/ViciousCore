@@ -15,7 +15,8 @@ public class RootWidget extends VCWidget<RootWidget>{
     public RootWidget() {
         super(null,0, 0, 0, 0);
         root=this;
-        addFlags(ControlFlag.values());
+        noFlags();
+        addFlags(ControlFlag.RESPONDTORAYTRACE);
     }
     private void mouseUpdate(int mX, int mY){
         mouseDX = mX-mouseX;
