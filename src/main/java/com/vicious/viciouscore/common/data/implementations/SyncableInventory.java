@@ -1,10 +1,12 @@
 package com.vicious.viciouscore.common.data.implementations;
 
 import com.vicious.viciouscore.common.data.state.IFastItemHandler;
-import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
+import com.vicious.viciouscore.common.data.structures.SyncableIVCNBT;
 import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouscore.common.inventory.FastItemStackHandler;
 import com.vicious.viciouscore.common.inventory.SlotChangedEvent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +14,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler> implements IFastItemHandler {
+public class SyncableInventory extends SyncableIVCNBT<FastItemStackHandler> implements IFastItemHandler {
     public SyncableInventory(String key, int size) {
         super(key, new FastItemStackHandler(size));
         value.listenChanged(this::listenInv);
@@ -79,6 +81,11 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     }
 
     @Override
+    public ItemStack swap(int slot, ItemStack stack) {
+        return value.swap(slot,stack);
+    }
+
+    @Override
     public ItemStack extractItem(ItemStack requested, boolean simulate) {
         return value.extractItem(requested,simulate);
     }
@@ -89,13 +96,8 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     }
 
     @Override
-    public ItemStack forceInsertItem(ItemStack push, boolean simulate) {
-        return value.forceInsertItem(push,simulate);
-    }
-
-    @Override
-    public @NotNull ItemStack forceInsertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        return value.forceInsertItem(slot, stack, simulate);
+    public Collection<Integer> indexOf(ItemStack stack) {
+        return value.indexOf(stack);
     }
 
     @Override
@@ -106,6 +108,16 @@ public class SyncableInventory extends SyncableINBTCompound<FastItemStackHandler
     @Override
     public void stopListening(Consumer<SlotChangedEvent> cons) {
         value.listenChanged(cons);
+    }
+
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return value.getItems();
+    }
+
+    @Override
+    public Container asContainer() {
+        return value.asContainer();
     }
 
     @Override

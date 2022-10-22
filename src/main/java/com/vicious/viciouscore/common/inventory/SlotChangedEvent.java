@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 public class SlotChangedEvent {
     private final ItemStack stack;
     private final int slot;
-    private Phase phase;
+    private final Phase phase;
     private final IFastItemHandler handler;
     private final Action action;
     public SlotChangedEvent(ItemStack stack, Phase phase, Action action, int slot, IFastItemHandler handler) {
@@ -44,7 +44,6 @@ public class SlotChangedEvent {
     }
     public enum Action{
         EXTRACT,
-        INSERT,
         SET
     }
 }

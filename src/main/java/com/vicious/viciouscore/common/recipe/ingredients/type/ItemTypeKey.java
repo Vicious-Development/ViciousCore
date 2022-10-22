@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 
 public class ItemTypeKey extends TypeKey<Item> {
+    public static final ItemTypeKey EMPTY = new ItemTypeKey(null);
     protected CompoundTag tag;
     public ItemTypeKey(Item type) {
         super(type);
@@ -17,6 +18,7 @@ public class ItemTypeKey extends TypeKey<Item> {
         this.tag=tag;
     }
     public static ItemTypeKey of(ItemStack stack){
+        if(stack.isEmpty()) return EMPTY;
         if(stack.hasTag()) return new ItemTypeKey(stack.getItem(),stack.getTag());
         else return new ItemTypeKey(stack.getItem());
     }
