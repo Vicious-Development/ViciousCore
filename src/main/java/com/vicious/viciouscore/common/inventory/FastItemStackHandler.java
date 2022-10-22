@@ -208,7 +208,9 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         ItemStack og = getStackInSlot(slot);
         shrinkMaps(slot,og.getCount());
+        sendEventPre(slot, SlotChangedEvent.Action.SET);
         stacks.set(slot,stack);
+        sendEventPost(slot, SlotChangedEvent.Action.SET);
         growMaps(slot,stack.getCount());
     }
 
