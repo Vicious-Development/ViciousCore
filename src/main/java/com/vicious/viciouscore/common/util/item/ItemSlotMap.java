@@ -16,6 +16,7 @@ public class ItemSlotMap extends ItemTypeMap<Set<Integer>> {
         value.add(slot);
     }
     public void remove(ItemStack stack, int slot){
-        get(stack).remove((Integer) slot);
+        Set<Integer> ints = get(stack);
+        if(ints != null) ints.remove(slot);
     }
 }
