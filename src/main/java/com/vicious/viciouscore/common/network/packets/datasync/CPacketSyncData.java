@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -34,6 +36,7 @@ public abstract class CPacketSyncData<T extends SyncTarget> extends PacketSyncDa
             super(new SyncTarget.Window(DataAccessor.LOCAL),buf);
         }
 
+        @OnlyIn(Dist.CLIENT)
         @Override
         @SuppressWarnings("all")
         public void handle(Supplier<NetworkEvent.Context> context) {
