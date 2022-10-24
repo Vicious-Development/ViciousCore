@@ -9,189 +9,129 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
-public class VCWidget<T extends VCWidget<T>> implements Widget {
-    public T asT(){
-        return (T) this;
-    }
-
-    protected Set<VCWidget<?>> children = new HashSet<>();
-
+public class VCWidget implements Widget {
+    protected Set<VCWidget> children = new HashSet<>();
     protected Vector2i startPos;
-    public void setStartPosition(Vector2i vec) {
-        this.startPos=vec;
-        calculateVectors();
-    }
-    public Vector2i getStartPos(){
-        return startPos;
-    }
-
-
-
     protected Vector2i offsetVector = new Vector2i(0,0);
-    public void translate(int x, int y){
-        this.offsetVector = offsetVector.add(x,y);
-        calculateVectors();
-    }
-
-
-
     protected Vector2f scale = new Vector2f(1,1);
     protected Vector2i actualPosition;
-
     protected Vector2i actualWH;
-
-    /**
-     * EXTENTS: Used to determine the actual area a widget occupies.
-     */
     protected Extents extents;
-    public void calcExtents(){
-        this.extents = new Extents(actualPosition,actualPosition.add(actualWH));
-    }
-    public Extents getExtents(){
-        return extents;
-    }
-    /**
-     * @return The combined extents of the descendents and this widget's extents.
-     */
-    public Extents getCompleteExtents(){
-        return Extents.combined(getDescendantExtents(),extents);
-    }
-    public Extents getDescendantExtents(){
-        Extents newExtents = null;
-        for (VCWidget<?> child : children) {
-            newExtents = Extents.combined(newExtents,child.getCompleteExtents());
-        }
-        return newExtents;
-    }
-    /**
-     * DIMENSIONS: Used to determine width and height of a widget
-     */
-    protected Vector2i dimensions = new Vector2i(0,0);
-    public int getWidth(){
-        return dimensions.x;
-    }
-    public int getHeight(){
-        return dimensions.y;
-    }
-    public T dimensions(Vector2i dimensions){
-        this.dimensions=dimensions;
-        calculateVectors();
-        return asT();
-    }
-    public T setWidth(int width){
-        this.dimensions = dimensions.withX(width);
-        calculateVectors();
-        return asT();
-    }
-    public T setHeight(int height){
-        this.dimensions = dimensions.withY(height);
-        calculateVectors();
-        return asT();
-    }
-
-    /**
-     * PARENT: The widget which this widget has been added to.
-     */
-    protected VCWidget<?> parent;
-    protected void setParent(VCWidget<?> parent) {
-        this.parent=parent;
-    }
-    public VCWidget<?> getParent(){
-        return parent;
-    }
-    /**
-     * A set of flags determining how the widget should act.
-     */
-    protected Set<ControlFlag> controlFlags = EnumSet.of(ControlFlag.RESPONDTORAYTRACE);
-    public T addFlags(ControlFlag... respondTos){
-        for (ControlFlag respondTo : respondTos) {
-            this.controlFlags.add(respondTo);
-        }
-        return asT();
-    }
-    public T removeFlags(ControlFlag... respondTos){
-        for (ControlFlag respondTo : respondTos) {
-            this.controlFlags.remove(respondTo);
-        }
-        return asT();
-    }
-    public boolean hasFlag(ControlFlag respondTo){
-        return this.controlFlags.contains(respondTo);
-    }
-
+    protected int height;
+    protected int width;
+    protected VCWidget parent;
     protected RootWidget root;
-    protected List<Consumer<VCWidget<?>>> listeners = new ArrayList<>();
+    protected boolean hasBeenClicked;
+    protected boolean visible = true;
+    protected boolean hovered = false;
+    protected boolean alertUpdates = true;
+
+    public void shouldUpdate(boolean doUpdates){
+        this.alertUpdates =doUpdates;
+    }
+
 
     public VCWidget(RootWidget root, int x, int y, int w, int h){
         startPos = new Vector2i(x,y);
-        this.dimensions =new Vector2i(w,h);
+        this.height=h;
+        this.width=w;
         this.root=root;
         calculateVectors();
-        addGL(RenderStage.PRE,(stack)->{
-            if(scale.x != 1 || scale.y != 1){
-                stack.scale(scale.x,scale.y,1.0F);
-            }
-        });
+    }
+    public <T extends VCWidget> T copyVectors(T other){
+        other.startPos=startPos;
+        other.offsetVector=offsetVector;
+        other.scale=scale;
+        other.height=height;
+        other.width=width;
+        return other;
     }
     public void calcActualPosition(){
         actualPosition = startPos.add(offsetVector);
         onParent((p)-> actualPosition = actualPosition.add(parent.actualPosition));
     }
     public void calcActualWidthHeight(){
-        actualWH = new Vector2i(dimensions);
+        actualWH = new Vector2i(width,height);
     }
-
-    public <V extends VCWidget<?>> V addChild(V child){
+    public void calcExtents(){
+        this.extents = new Extents(actualPosition,actualPosition.add(actualWH));
+    }
+    public Extents getExtents(){
+        return extents;
+    }
+    public <T extends VCWidget> T addChild(T child){
         children.add(child);
         child.setParent(this);
         child.calculateVectors();
         return child;
     }
 
+    protected void setParent(VCWidget parent) {
+        this.parent=parent;
+    }
 
     /**
      * @return the widget the mouse is hovering over.
      */
-    public VCWidget<?> widgetMouseOver(){
-        for (VCWidget<?> child : children) {
-            if(hasFlag(ControlFlag.RESPONDTORAYTRACE) && child.getExtents().isWithin(getMouseX(),getMouseY())){
-                removeFlags(ControlFlag.HOVERED);
+    public VCWidget widgetMouseOver(){
+        for (VCWidget child : children) {
+            if(child.respondToInputs() && child.getExtents().isWithin(getMouseX(),getMouseY())){
+                hovered = false;
                 return child.widgetMouseOver();
             }
         }
-        if(hasFlag(ControlFlag.RESPONDTOHOVER)){
-            addFlags(ControlFlag.HOVERED);
-        }
+        if(canBeHovered()) onHover();
         return this;
     }
 
+    public boolean respondToInputs(){
+        return true;
+    }
+
+    public void onHover(){
+        hovered = true;
+    }
+
+    public boolean canBeHovered(){
+        return false;
+    }
+
     public void onClick(int button){
-        if(hasFlag(ControlFlag.RESPONDTODRAG) && leftClick(button)){
+        if(canBeDragged() && leftClick(button)){
             isDraggedWidget();
         }
-        addFlags(ControlFlag.CLICKED);
+        hasBeenClicked=true;
     }
     public boolean leftClick(int button){
         return button == 0;
     }
     public void onRelease(int button){
         if(leftClick(button)) {
-            removeFlags(ControlFlag.CLICKED);
+            hasBeenClicked = false;
             root.draggedWidget = null;
         }
     }
     public void playClickSound(){
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
-    public void onParent(Consumer<VCWidget<?>> cons){
+    public void onParent(Consumer<VCWidget> cons){
         if(parent != null){
             cons.accept(parent);
         }
     }
 
+    /**
+     * @return whether dragging this widget is allowed.
+     */
+    public boolean canBeDragged(){
+        return false;
+    }
     public int getMouseX(){
         return root.mouseX;
     }
@@ -205,8 +145,12 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
     public void stopDragging() {
         root.draggedWidget = null;
     }
-    public void forEachChild(Consumer<VCWidget<?>> cons){
+    public void forEachChild(Consumer<VCWidget> cons){
         children.forEach(cons);
+    }
+    public void translate(int x, int y){
+        this.offsetVector = offsetVector.add(x,y);
+        calculateVectors();
     }
     public void setScale(float x, float y){
         this.scale = new Vector2f(x,y);
@@ -217,9 +161,9 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
         calcActualWidthHeight();
         calcExtents();
         forEachChild(VCWidget::calculateVectors);
-        if(hasFlag(ControlFlag.SHOULDBROADCASTUPDATES)) {
+        if(alertUpdates) {
             if (!getExtents().equals(pre)) {
-                for (Consumer<VCWidget<?>> listener : listeners) {
+                for (Consumer<VCWidget> listener : listeners) {
                     listener.accept(this);
                 }
             }
@@ -232,7 +176,7 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
         return root.mouseDY;
     }
     public void drag(){
-        if(!hasFlag(ControlFlag.RESPONDTODRAG)) onParent(VCWidget::drag);
+        if(!canBeDragged()) onParent(VCWidget::drag);
         else{
             translate(getMouseDX(),getMouseDY());
         }
@@ -245,34 +189,46 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
 
     }
 
-    protected Map<RenderStage,List<Consumer<PoseStack>>> glTransformers = new HashMap<>();
-    public void addGL(RenderStage stage, Consumer<PoseStack> cons){
-        List<Consumer<PoseStack>> lst = glTransformers.computeIfAbsent(stage,k->new ArrayList<>());
-        lst.add(cons);
-    }
-    public void applyGL(RenderStage stage, PoseStack stack){
-        for (Consumer<PoseStack> c : glTransformers.get(stage)) {
-            c.accept(stack);
+    /**
+     * Called before this widget and its children start rendering.
+     */
+    protected void doGLTransformations(PoseStack stack){
+        stack.pushPose();
+        if(scale.x != 1 || scale.y != 1){
+            stack.scale(scale.x,scale.y,1.0F);
         }
+    }
+
+    /**
+     * Called after this widget and its children finish rendering.
+     */
+    protected void undoGLTransformations(PoseStack stack){
+        stack.popPose();
     }
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        stack.pushPose();
-        applyGL(RenderStage.PRE,stack);
-        if(hasFlag(ControlFlag.VISIBLE)){
-            stack.pushPose();
-            applyGL(RenderStage.SELFPRE,stack);
-            renderWidget(stack,mouseX,mouseY,partialTicks);
-            applyGL(RenderStage.SELFPOST,stack);
-            stack.popPose();
-        }
+        doGLTransformations(stack);
+        if(isVisible()) renderWidget(stack,mouseX,mouseY,partialTicks);
         forEachChild((c)->{
             c.render(stack,mouseX,mouseY,partialTicks);
         });
-        applyGL(RenderStage.POST,stack);
-        stack.popPose();
-        removeFlags(ControlFlag.HOVERED);
+        hovered=false;
+        undoGLTransformations(stack);
+    }
+
+    public boolean isVisible(){
+        return visible;
+    }
+    public void setVisible(boolean visible){
+        this.visible = visible;
+        forEachChild((c)->c.setVisible(visible));
+    }
+    public int getWidth(){
+        return width;
+    }
+    public int getHeight(){
+        return height;
     }
 
     public void resize(int resizeX, int resizeY) {
@@ -282,46 +238,49 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
         return Minecraft.getInstance().getWindow().getWindow();
     }
 
+    public void setStartPosition(Vector2i vec) {
+        this.startPos=vec;
+        calculateVectors();
+    }
 
-    public void listen(Consumer<VCWidget<?>> listener){
+    public void setWidth(int width){
+        this.width=width;
+        calculateVectors();
+    }
+    public void setHeight(int height){
+        this.height=height;
+        calculateVectors();
+    }
+
+    /**
+     * @return The combined extents of the descendents and this widget's extents.
+     */
+    public Extents getCompleteExtents(){
+        return Extents.combined(getDescendantExtents(),extents);
+    }
+    public Extents getDescendantExtents(){
+        Extents newExtents = null;
+        for (VCWidget child : children) {
+            newExtents = Extents.combined(newExtents,child.getCompleteExtents());
+        }
+        return newExtents;
+    }
+
+    protected List<Consumer<VCWidget>> listeners = new ArrayList<>();
+    public void listen(Consumer<VCWidget> listener){
         listeners.add(listener);
     }
-    public void stopListening(Consumer<VCWidget<?>> listener){
+    public void stopListening(Consumer<VCWidget> listener){
         listeners.remove(listener);
     }
-
-    public void removeChild(VCWidget<?> widget){
+    public Vector2i getStartPos(){
+        return startPos;
+    }
+    
+    public void removeChild(VCWidget widget){
         children.remove(widget);
     }
-    public boolean hasChild(VCWidget<?> widget){
+    public boolean hasChild(VCWidget widget){
         return children.contains(widget);
     }
-
-    public boolean isCoveredAt(int x, int y){
-        VCWidget<?> parent = getParent();
-        VCWidget<?> previous = this;
-        while(parent != null) {
-            for (VCWidget<?> child : parent.children) {
-                if (child != previous) {
-                    if (child.getExtents().isWithin(x, y)) {
-                        return true;
-                    } else {
-                        previous=parent;
-                        parent = parent.getParent();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean isExposedAt(int x, int y){
-        return !isCoveredAt(x,y);
-    }
-
-    public T noFlags() {
-        controlFlags.clear();
-        return asT();
-    }
 }
-
