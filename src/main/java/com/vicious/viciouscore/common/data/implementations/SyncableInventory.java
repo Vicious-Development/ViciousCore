@@ -19,7 +19,9 @@ public class SyncableInventory extends SyncableIVCNBT<FastItemStackHandler> impl
         value.listenChanged(this::listenInv);
     }
     protected void listenInv(SlotChangedEvent ev){
-        isDirty(true);
+        if(ev.getPhase() == SlotChangedEvent.Phase.POST) {
+            isDirty(true);
+        }
     }
 
     public FastItemStackHandler addSlotValidator(int slot, Predicate<ItemStack> pred){

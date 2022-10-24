@@ -1,22 +1,21 @@
 package com.vicious.viciouscore.common.keybinding;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.vicious.viciouscore.common.util.SidedExecutor;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 
-import java.util.Set;
-
 public class CommonKeyBinding {
     private static int nextId = -1;
     @OnlyIn(Dist.CLIENT)
     public KeyMapping clientKey;
     @OnlyIn(Dist.CLIENT)
-    public IKeyConflictContext conflictContext = NoConflict.NOCONFLICT;
+    public IKeyConflictContext conflictContext;
     @OnlyIn(Dist.CLIENT)
-    public KeyModifier modifier = KeyModifier.NONE;
+    public KeyModifier modifier;
 
     public final String name;
     public final int defaultKeyCode;
@@ -24,7 +23,6 @@ public class CommonKeyBinding {
     public boolean isDown = false;
     public final int ID;
 
-    private static Set<Integer> mouseInts = Set.of(InputConstants.MOUSE_BUTTON_LEFT,InputConstants.MOUSE_BUTTON_RIGHT,InputConstants.MOUSE_BUTTON_MIDDLE);
     private boolean isMouse = false;
 
     public CommonKeyBinding(String name, int defaultKeyCode, String category){
@@ -32,6 +30,10 @@ public class CommonKeyBinding {
         this.defaultKeyCode=defaultKeyCode;
         this.category=category;
         this.ID = nextId();
+        SidedExecutor.clientOnly(()->{
+            conflictContext = NoConflict.NOCONFLICT;
+            modifier = KeyModifier.NONE;
+        });
     }
 
     public CommonKeyBinding(String name, int defaultKeyCode, String category, int identifier){
@@ -39,6 +41,10 @@ public class CommonKeyBinding {
         this.defaultKeyCode=defaultKeyCode;
         this.category=category;
         this.ID=identifier;
+        SidedExecutor.clientOnly(()->{
+            conflictContext = NoConflict.NOCONFLICT;
+            modifier = KeyModifier.NONE;
+        });
     }
     @OnlyIn(Dist.CLIENT)
     public KeyMapping toClientKeyBinding() {
