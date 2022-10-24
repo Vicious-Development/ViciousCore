@@ -5,6 +5,7 @@ import com.vicious.viciouscore.aunotamation.isyncablecompoundholder.annotation.*
 import com.vicious.viciouscore.common.data.holder.ISyncableCompoundHolder;
 import com.vicious.viciouscore.common.data.structures.ExposableSyncableCompound;
 import com.vicious.viciouscore.common.data.structures.SyncableCompound;
+import com.vicious.viciouscore.common.data.structures.SyncableValue;
 import com.vicious.viciouslib.aunotamation.Aunotamation;
 
 import java.lang.reflect.AnnotatedElement;
@@ -66,7 +67,11 @@ public class SyncAutomator {
                     //Remove if already added.
                     compound.getData().remove(f.getName());
                     ExposableSyncableCompound exposer = new ExposableSyncableCompound(f.getName());
-                    ensureInCompound(exposer,f);
+                    try {
+                        exposer.add((SyncableValue<?>)f.get(compound));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                     compound.getData().add(exposer);
                     for (String s : exposed.value()) {
                         exposer.expose(ForcedExposure.getExposureOfType(s));

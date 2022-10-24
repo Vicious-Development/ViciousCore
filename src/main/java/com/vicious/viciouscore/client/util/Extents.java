@@ -2,6 +2,7 @@ package com.vicious.viciouscore.client.util;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class Extents {
     public final Vector2i TOPLEFT;
@@ -10,8 +11,37 @@ public class Extents {
         this.TOPLEFT=topleft;
         this.BOTTOMRIGHT=bottomright;
     }
+    public boolean intersects(Extents other){
+        return isWithin(other.BOTTOMRIGHT) || isWithin(other.TOPLEFT) || other.isWithin(BOTTOMRIGHT) || other.isWithin(TOPLEFT);
+    }
+    public Vector2i middle(){
+        return Vector2i.of((BOTTOMRIGHT.x-TOPLEFT.x)/2,(BOTTOMRIGHT.y-TOPLEFT.y)/2);
+    }
     public boolean isWithin(Vector2i point){
         return isWithin(point.x,point.y);
+    }
+    public boolean intersects(Function<Integer,Double> fX, Function<Integer,Double> fY){
+        if(fX != null) {
+            //Left Edge
+            if (isWithinY((int) (double) fX.apply(TOPLEFT.x))) {
+                return true;
+            }
+            //Right Edge
+            if (isWithinY((int) (double) fX.apply(BOTTOMRIGHT.x))) {
+                return true;
+            }
+        }
+        if(fY != null){
+            //Top Edge
+            if (isWithinX((int) (double) fY.apply(TOPLEFT.y))) {
+                return true;
+            }
+            //Bottom Edge
+            if (isWithinX((int) (double) fY.apply(BOTTOMRIGHT.y))) {
+                return true;
+            }
+        }
+        return false;
     }
     public boolean isWithin(int x, int y){
         return isWithinX(x) && isWithinY(y);

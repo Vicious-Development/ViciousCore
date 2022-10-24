@@ -68,14 +68,7 @@ public abstract class RegistryProcessor<T,O extends IForgeRegistryEntry<O>,A ext
         Class<T> target = getTargetClass(f);
         //Get the BlockEntity Constructor.
         Constructor<T> constructor = getConstructor(target,f);
-        List<A> associations;
-        if(associationsRegistry == null){
-            associations = new ArrayList<>();
-        }
-        else {
-            //Get the targetClass' associations.
-            associations = getAssociations(associationsRegistry, target);
-        }
+        List<A> associations = getAssociations(associationsRegistry, target);
         RegistryObject<?> obj = deferredRegister.register(f.getName().toLowerCase(Locale.ROOT),()->{
             try {
                 return supply(target,constructor,associations,f);
@@ -98,6 +91,7 @@ public abstract class RegistryProcessor<T,O extends IForgeRegistryEntry<O>,A ext
         return null;
     }
     public List<A> getAssociations(IForgeRegistry<A> reg, AnnotatedElement elem){
+        if(reg == null) return new ArrayList<>();
         Associations associations = elem.getAnnotation(Associations.class);
         if(associations == null) {
             processor.err(elem, "class is missing @Associations annotation with its respective associations");

@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
 
-public class WidgetItem extends VCWidget {
+public class WidgetItem<T extends WidgetItem<T>> extends VCWidget<T> {
     protected static final ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
     protected Supplier<ItemStack> supplier;
     public WidgetItem(RootWidget root, int x, int y, int w, int h, ItemStack stack) {
@@ -33,5 +33,4 @@ public class WidgetItem extends VCWidget {
             renderer.renderGuiItemDecorations(Minecraft.getInstance().font,stack,x,y);
         }
     }
-
 }

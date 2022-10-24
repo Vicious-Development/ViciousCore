@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 
-public class WidgetImage extends VCWidget {
+public class WidgetImage<T extends WidgetImage<T>> extends VCWidget<T> {
     private static Minecraft minecraft = Minecraft.getInstance();
 
     //Used to control what part of the image is shown.
@@ -20,7 +20,7 @@ public class WidgetImage extends VCWidget {
 
     @Override
     public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        if(WindowGetter.window == null || !visible) return;
+        if(WindowGetter.window == null) return;
         RenderSystem.setShaderTexture(0,source);
         RenderSystem.enableBlend();
         boolean doRender = true;
@@ -28,7 +28,7 @@ public class WidgetImage extends VCWidget {
         boolean DRR = true;
         boolean DRU = true;
         boolean DRD = true;
-        int uvy = -(this.getYImage(this.hovered)) + 1;
+        int uvy = -(this.getYImage(hasFlag(ControlFlag.HOVERED))) + 1;
         int uvx = 0;
         int newX = actualPosition.x;
         int newY = actualPosition.y;
@@ -123,7 +123,7 @@ public class WidgetImage extends VCWidget {
         super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
     }
     protected int getYImage(boolean isHovered) {
-        if(canBeHovered()) {
+        if(hasFlag(ControlFlag.RESPONDTOHOVER)) {
             if (isHovered) {
                 return 2;
             }

@@ -3,7 +3,6 @@ package com.vicious.viciouscore.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.gui.widgets.*;
-import com.vicious.viciouscore.client.gui.widgets.nointeraction.WidgetItemNoInteraction;
 import com.vicious.viciouscore.client.textures.VCTextures;
 import com.vicious.viciouscore.client.util.Vector2i;
 import com.vicious.viciouscore.client.util.WindowGetter;
@@ -19,14 +18,14 @@ import net.minecraft.world.inventory.Slot;
  */
 public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainerScreen<T> {
     protected RootWidget root = new RootWidget();
-    protected WidgetItem held;
+    protected WidgetItem<?> held;
     protected int resizeX;
     protected int resizeY;
     protected int prevX = 0, prevY = 0;
 
     public GenericGUI(T menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        held = new WidgetItemNoInteraction(root,0,0,0,0,()->menu.getInteractionState().getHeld());
+        held = new WidgetItem<>(root,0,0,0,0,()->menu.getInteractionState().getHeld()).noFlags();
         prevX = (int) (WindowGetter.window.getWidth()/2/WindowGetter.window.getGuiScale());
         prevY = (int) (WindowGetter.window.getHeight()/2/WindowGetter.window.getGuiScale());
     }

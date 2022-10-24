@@ -10,6 +10,10 @@ public class UserInteractionState {
         return ItemHelper.doItemsMatch(held,slotStack);
     }
 
+    public void setHeld(ItemStack held){
+        this.held=held;
+    }
+
     public ItemStack getHeld() {
         return held;
     }

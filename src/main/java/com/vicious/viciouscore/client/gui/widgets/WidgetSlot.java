@@ -7,7 +7,7 @@ import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
 import net.minecraft.resources.ResourceLocation;
 
-public class WidgetSlot extends WidgetImage{
+public class WidgetSlot<T extends WidgetSlot<T>> extends WidgetImage<T>{
     protected InventoryWrapper<?> wrapper;
     protected ResourceLocation selectedImage;
     protected int slot;
@@ -16,33 +16,24 @@ public class WidgetSlot extends WidgetImage{
         this.wrapper=wrapper;
         this.slot=slot;
     }
-    public WidgetSlot setSelectedImage(ResourceLocation rl){
+    public WidgetSlot<?> setSelectedImage(ResourceLocation rl){
         this.selectedImage=rl;
         return this;
     }
-    public boolean canBeHovered(){
-        return true;
-    }
 
-    public VCWidget widgetMouseOver(){
-        onHover();
+    public VCWidget<?> widgetMouseOver(){
         return this;
     }
 
     @Override
     public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         ResourceLocation post = null;
-        if(hovered && selectedImage != null) {
+        if(hasFlag(ControlFlag.HOVERED) && selectedImage != null) {
             post = source;
             source = selectedImage;
         }
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
         if(post != null) source=post;
-    }
-
-    @Override
-    public void onHover() {
-        super.onHover();
     }
 
     @Override
