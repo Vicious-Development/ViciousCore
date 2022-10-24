@@ -3,8 +3,9 @@ package com.vicious.viciouscore.common.network.packets.keybindpress;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.VCPacket;
-import com.vicious.viciouscore.common.util.SidedExecutor;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -35,9 +36,10 @@ public class CPacketButtonPressReceived extends VCPacket {
         buf.writeBoolean(pressed);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void handle(Supplier<NetworkEvent.Context> context) {
-        SidedExecutor.clientOnly(()->Handler.getInstance().onMessage(this,context));
+        Handler.getInstance().onMessage(this,context);
     }
 
     public int getCode(){
@@ -46,6 +48,8 @@ public class CPacketButtonPressReceived extends VCPacket {
     public boolean isPressed(){
         return pressed;
     }
+
+    @OnlyIn(Dist.CLIENT)
     public static class Handler{
         private static Handler instance;
         public static Handler getInstance(){
