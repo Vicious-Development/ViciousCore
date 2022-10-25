@@ -1,6 +1,8 @@
 package com.vicious.viciouscore.client.gui.widgets;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.vicious.viciouscore.client.RenderTools;
 import com.vicious.viciouscore.client.util.Extents;
 import com.vicious.viciouscore.client.util.Vector2f;
 import com.vicious.viciouscore.client.util.Vector2i;
@@ -9,15 +11,17 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class VCWidget<T extends VCWidget<T>> implements Widget {
+public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
     public T asT(){
         return (T) this;
     }
 
-    protected Set<VCWidget<?>> children = new HashSet<>();
+    protected Set<VCWidget<?>> children = new LinkedHashSet<>();
 
     protected Vector2i startPos;
     public void setStartPosition(Vector2i vec) {
@@ -245,9 +249,9 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
 
     }
 
-    protected Map<RenderStage,List<Consumer<PoseStack>>> glTransformers = new EnumMap<>(RenderStage.class);
+    protected Map<RenderStage,Set<Consumer<PoseStack>>> glTransformers = new EnumMap<>(RenderStage.class);
     public T addGL(RenderStage stage, Consumer<PoseStack> cons){
-        List<Consumer<PoseStack>> lst = glTransformers.computeIfAbsent(stage,k->new ArrayList<>());
+        Set<Consumer<PoseStack>> lst = glTransformers.computeIfAbsent(stage,k->new HashSet<>());
         lst.add(cons);
         return asT();
     }
@@ -325,6 +329,46 @@ public class VCWidget<T extends VCWidget<T>> implements Widget {
     public T noFlags() {
         controlFlags.clear();
         return asT();
+    }
+
+    public boolean isVisible(){
+        return hasFlag(ControlFlag.VISIBLE);
+    }
+    public void hide(){
+        removeFlags(ControlFlag.VISIBLE);
+    }
+    public void show(){
+        addFlags(ControlFlag.VISIBLE);
+    }
+
+    public void toggleVisible(){
+        if(isVisible()){
+            hide();
+        }
+        else{
+            show();
+        }
+    }
+    public T shadeSelf(Color color, float opacity){
+        addGL(RenderStage.SELFPRE,(s)->shade(color,opacity));
+        addGL(RenderStage.SELFPOST,(s)->stopShade());
+        return asT();
+    }
+
+    /**
+     * Applies a scissor effect based on the extents of this widget.
+     */
+    public void scissor(){
+        Extents e = getExtents();
+        RenderSystem.enableScissor(e.TOPLEFT.x,e.TOPLEFT.y,e.BOTTOMRIGHT.x,e.BOTTOMRIGHT.y);
+    }
+
+    /**
+     * Takes in the screen relative coordinates and converts them to widget relative coordinates.
+     */
+    public Vector2i widgetRelativePosition(int x, int y){
+        Extents e = getExtents();
+        return new Vector2i(x-e.TOPLEFT.x,y-e.TOPLEFT.y);
     }
 }
 
