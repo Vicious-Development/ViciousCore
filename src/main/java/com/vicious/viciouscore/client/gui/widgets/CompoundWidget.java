@@ -12,6 +12,8 @@ public class CompoundWidget<T extends CompoundWidget<T>> extends VCWidget<T>{
     @Override
     public <V extends VCWidget<?>> V addChild(V child) {
         child.listen(this::startRegeneration);
+        child.addFlags(ControlFlag.SHOULDBROADCASTUPDATES);
+        addFlags(ControlFlag.RESPONDTOCHILDUPDATES);
         return super.addChild(child);
     }
     private boolean isRegenerating = false;

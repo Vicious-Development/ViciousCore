@@ -267,16 +267,16 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         stack.pushPose();
         applyGL(RenderStage.PRE,stack);
-        if(hasFlag(ControlFlag.VISIBLE)){
+        if(isVisible()){
             stack.pushPose();
             applyGL(RenderStage.SELFPRE,stack);
             renderWidget(stack,mouseX,mouseY,partialTicks);
             applyGL(RenderStage.SELFPOST,stack);
             stack.popPose();
         }
-        forEachChild((c)->{
-            c.render(stack,mouseX,mouseY,partialTicks);
-        });
+        if(isVisible() || hasFlag(ControlFlag.VISIBLE)) {
+            forEachChild((c) -> c.render(stack, mouseX, mouseY, partialTicks));
+        }
         applyGL(RenderStage.POST,stack);
         stack.popPose();
         removeFlags(ControlFlag.HOVERED);

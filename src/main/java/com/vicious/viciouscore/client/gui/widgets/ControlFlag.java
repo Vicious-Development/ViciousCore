@@ -14,8 +14,12 @@ public enum ControlFlag {
     RESPONDTOCHILDUPDATES,
     SHOULDBROADCASTUPDATES,
 
+    //Determines if children should be rendered regardless if the widget is actually visible.
+    ALWAYSRENDERCHILDREN,
+
     //Determines whether the widget should render
     VISIBLE,
+
     //These are added and remove per tick. If the CLICKED flag is in the control set, the widget has been clicked.
     CLICKED,
     HOVERED
