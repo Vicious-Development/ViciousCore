@@ -274,7 +274,7 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
             applyGL(RenderStage.SELFPOST,stack);
             stack.popPose();
         }
-        if(isVisible() || hasFlag(ControlFlag.VISIBLE)) {
+        if(isVisible() || hasFlag(ControlFlag.ALWAYSRENDERCHILDREN)) {
             forEachChild((c) -> c.render(stack, mouseX, mouseY, partialTicks));
         }
         applyGL(RenderStage.POST,stack);
