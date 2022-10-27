@@ -1,7 +1,6 @@
 package com.vicious.viciouscore.client.gui.widgets.glrendered;
 
 import com.vicious.viciouscore.client.gui.widgets.CompoundWidget;
-import com.vicious.viciouscore.client.gui.widgets.ControlFlag;
 import com.vicious.viciouscore.client.gui.widgets.RootWidget;
 import com.vicious.viciouscore.client.gui.widgets.VCWidget;
 import com.vicious.viciouscore.client.util.Extents;
@@ -16,7 +15,7 @@ public class WidgetVerticalList<T extends WidgetVerticalList<T>> extends Compoun
     public void regenerate(VCWidget<?> widget){
         int pos = 0;
         for (VCWidget<?> child : children) {
-            if(child.hasFlag(ControlFlag.VISIBLE)) {
+            if(child.isVisible()) {
                 child.setStartPosition(new Vector2i(child.getStartPos().x, pos));
                 pos += child.getHeight();
             }
@@ -30,7 +29,7 @@ public class WidgetVerticalList<T extends WidgetVerticalList<T>> extends Compoun
     public Extents getCompleteExtents() {
         Extents newExtents = this.extents;
         for (VCWidget<?> child : children) {
-            if(child.hasFlag(ControlFlag.VISIBLE)) newExtents = Extents.combined(newExtents, child.getCompleteExtents());
+            if(child.isVisible()) newExtents = Extents.combined(newExtents, child.getCompleteExtents());
         }
         return newExtents;
     }

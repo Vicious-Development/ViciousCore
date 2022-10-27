@@ -8,12 +8,12 @@ import com.vicious.viciouscore.client.util.Extents;
 public class CompoundWidget<T extends CompoundWidget<T>> extends VCWidget<T>{
     public CompoundWidget(RootWidget root, int x, int y, int w, int h) {
         super(root, x, y, w, h);
+        addFlags(ControlFlag.RESPONDTOCHILDUPDATES);
     }
     @Override
     public <V extends VCWidget<?>> V addChild(V child) {
         child.listen(this::startRegeneration);
         child.addFlags(ControlFlag.SHOULDBROADCASTUPDATES);
-        addFlags(ControlFlag.RESPONDTOCHILDUPDATES);
         return super.addChild(child);
     }
     private boolean isRegenerating = false;
