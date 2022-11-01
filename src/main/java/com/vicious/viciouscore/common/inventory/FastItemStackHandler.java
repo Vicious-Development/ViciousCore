@@ -47,7 +47,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public boolean contains(ItemStack stack) {
-        return indexOf(stack).isEmpty();
+        return !indexOf(stack).isEmpty();
     }
 
     @Override
@@ -208,11 +208,11 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         ItemStack og = getStackInSlot(slot);
-        shrinkMaps(slot,og.getCount());
         sendEventPre(slot, SlotChangedEvent.Action.SET);
         stacks.set(slot,stack);
-        sendEventPost(slot, SlotChangedEvent.Action.SET);
+        shrinkMaps(slot,og.getCount());
         growMaps(slot,stack.getCount());
+        sendEventPost(slot, SlotChangedEvent.Action.SET);
     }
 
     @Override
