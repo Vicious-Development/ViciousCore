@@ -3,21 +3,11 @@ package com.vicious.viciouscore.overrides;
 
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.override.OverrideHandler;
-import com.vicious.viciouscore.common.override.block.BlockOverrideHandler;
 import com.vicious.viciouscore.common.override.tile.TileEntityOverrideHandler;
 import com.vicious.viciouscore.common.override.tile.TileEntityOverrider;
 import com.vicious.viciouscore.common.util.reflect.FieldRetrievalRoute;
-import com.vicious.viciouscore.overrides.nuclearcraft.OverrideTileActiveCooler;
-import com.vicious.viciouscore.overrides.nuclearcraft.OverrideTileBuffer;
-import com.vicious.viciouscore.overrides.nuclearcraft.OverrideTileFissionControllerNew;
-import com.vicious.viciouscore.overrides.nuclearcraft.TileFissionComponent;
 import com.vicious.viciouscore.overrides.techreborn.OverrideCentrifugeRecipeHandler;
 import com.vicious.viciouscore.overrides.techreborn.OverrideTileFusionControlComputer;
-import nc.Global;
-import nc.init.NCBlocks;
-import nc.tile.energyFluid.TileBuffer;
-import nc.tile.fluid.TileActiveCooler;
-import nc.tile.generator.TileFissionController;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -48,7 +38,7 @@ public class VCoreOverrides {
             MinecraftForge.EVENT_BUS.register(SpecialOverrideHandler.class);
         }
 
-        targetModid = "nuclearcraft";
+        /*targetModid = "nuclearcraft";
         if(Loader.isModLoaded(targetModid)){
             //Checks if we are dealing with NCOverhauled or NCPreOverhaul. We want the pre.
             if(Global.MOD_NAME.length() == "NuclearCraft".length()){ //Lies intellij, lies
@@ -75,7 +65,7 @@ public class VCoreOverrides {
                     BlockOverrideHandler.registerTileEntity(NCBlocks.ingot_block, TileFissionComponent::new);
                 }
             }
-        }
+        }*/
     }
     //RegistryNamespaced< ResourceLocation, Class <? extends TileEntity>> reg = (RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>>) Reflection.accessField(TileEntity.class,"REGISTRY");
 }
