@@ -67,8 +67,8 @@ public abstract class RegistryProcessor<T,O,A> {
         Class<T> target = getTargetClass(f);
         //Get the BlockEntity Constructor.
         Constructor<T> constructor = getConstructor(target,f);
-        List<A> associations = getAssociations(associationsRegistry, target);
         RegistryObject<?> obj = deferredRegister.register(f.getName().toLowerCase(Locale.ROOT),()->{
+            List<A> associations = getAssociations(associationsRegistry, target);
             try {
                 return supply(target,constructor,associations,f);
             }

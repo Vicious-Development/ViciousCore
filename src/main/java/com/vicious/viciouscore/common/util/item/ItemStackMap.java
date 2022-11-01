@@ -29,12 +29,15 @@ public class ItemStackMap extends ItemTypeMap<ItemStack> {
      * @return if the Material was already present.
      */
     public boolean add(ItemStack stack){
+        if(stack.isEmpty()) return true;
         ItemTypeKey mat = getItemType(stack);
-        if(putIfAbsent(mat,stack.copy()) != null){
-            ItemStack mappedStack = get(mat);
-            mappedStack.setCount(mappedStack.getCount()+stack.getCount());
-            replace(mat,mappedStack);
+        ItemStack storedStack = get(mat);
+        if(storedStack != null){
+            storedStack.grow(stack.getCount());
             return true;
+        }
+        else{
+            put(mat,stack.copy());
         }
         return false;
     }
@@ -45,6 +48,7 @@ public class ItemStackMap extends ItemTypeMap<ItemStack> {
      * @return
      */
     public boolean reduceBy(ItemStack stack){
+        if(stack.isEmpty()) return false;
         ItemTypeKey mat = getItemType(stack);
         ItemStack mappedStack = get(mat);
         if(mappedStack == null) return false;
