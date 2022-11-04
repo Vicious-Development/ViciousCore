@@ -3,9 +3,8 @@ package com.vicious.viciouscore.common.inventory;
 import com.vicious.viciouscore.common.data.DataAccessor;
 import com.vicious.viciouscore.common.data.IVCNBTSerializable;
 import com.vicious.viciouscore.common.data.state.IFastItemHandler;
+import com.vicious.viciouscore.common.util.item.InventoryIndexRoster;
 import com.vicious.viciouscore.common.util.item.ItemHelper;
-import com.vicious.viciouscore.common.util.item.ItemSlotMap;
-import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -18,8 +17,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializable {
-    protected final ItemStackMap map = new ItemStackMap();
-    protected final ItemSlotMap slotMemory = new ItemSlotMap();
+    protected final InventoryIndexRoster roster = new InventoryIndexRoster();
     protected final Map<Integer,Predicate<ItemStack>> validators = new HashMap<>();
     protected final List<Consumer<SlotChangedEvent>> changeListeners = new ArrayList<>();
     protected NonNullList<ItemStack> stacks;
@@ -37,17 +35,17 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
     }
 
     @Override
-    public Set<Integer> indexOf(ItemStack stack) {
-        Set<Integer> out = slotMemory.get(stack);
-        if(out == null) return Set.of();
+    public Set<Integer> indexesOf(ItemStack stack) {
+        Set<Integer> out = roster.getSlotsContaining(stack);
+        if(out == null) return new HashSet<>();
         else{
-            return new HashSet<>(out);
+            return out;
         }
     }
 
     @Override
     public boolean contains(ItemStack stack) {
-        return !indexOf(stack).isEmpty();
+        return !indexesOf(stack).isEmpty();
     }
 
     @Override
@@ -59,7 +57,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public ItemStack extractItem(ItemStack requested, boolean simulate) {
-        Set<Integer> locations = indexOf(requested);
+        Set<Integer> locations = indexesOf(requested);
         ItemStack out = requested.copy();
         int remainingToPull = requested.getCount();
         if(!locations.isEmpty()){
@@ -77,7 +75,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public ItemStack insertItem(ItemStack push, boolean simulate){
-        Set<Integer> locations = indexOf(push);
+        Set<Integer> locations = indexesOf(push);
         ItemStack out = push.copy();
         if(!locations.isEmpty()){
             for (Integer index : locations) {
@@ -140,17 +138,17 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
         ItemStack og = getStackInSlot(slot);
         ItemStack grow = og.copy();
         grow.setCount(toPush);
-        map.add(grow);
-        slotMemory.add(grow,slot);
+        roster.add(grow);
+        roster.add(grow,slot);
     }
 
     private void shrinkMaps(int slot, int toPull) {
         ItemStack og = getStackInSlot(slot);
         ItemStack shrink = og.copy();
         shrink.setCount(toPull);
-        map.reduceBy(shrink);
+        roster.remove(shrink);
         if(og.getCount()-shrink.getCount() <= 0){
-            slotMemory.remove(og,slot);
+            roster.remove(og,slot);
         }
     }
 
@@ -192,7 +190,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public boolean isEmpty() {
-        return map.isEmpty();
+        return roster.isEmpty();
     }
 
     @Override

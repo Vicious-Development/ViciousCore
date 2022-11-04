@@ -2,7 +2,6 @@ package com.vicious.viciouscore.common.recipe.state;
 
 import com.vicious.viciouscore.common.recipe.VCRecipe;
 import com.vicious.viciouscore.common.recipe.handlers.VCRecipeHandler;
-import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 

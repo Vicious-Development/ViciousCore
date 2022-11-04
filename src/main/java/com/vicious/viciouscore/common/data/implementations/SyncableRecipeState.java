@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.data.implementations;
 import com.vicious.viciouscore.common.data.structures.SyncableINBTCompound;
 import com.vicious.viciouscore.common.recipe.VCRecipe;
 import com.vicious.viciouscore.common.recipe.state.RecipeState;
-import com.vicious.viciouscore.common.util.item.ItemStackMap;
 
 import java.util.List;
 
