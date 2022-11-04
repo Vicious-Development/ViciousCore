@@ -331,6 +331,10 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
         return asT();
     }
 
+    public T onlyVisible(){
+        return noFlags().addFlags(ControlFlag.VISIBLE,ControlFlag.ALWAYSRENDERCHILDREN);
+    }
+
     public boolean isVisible(){
         return hasFlag(ControlFlag.VISIBLE);
     }
