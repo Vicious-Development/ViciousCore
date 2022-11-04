@@ -14,9 +14,6 @@ public class SyncableRecipeState<T extends VCRecipe> extends SyncableINBTCompoun
     public boolean verifyRecipe(List<Object> ingredients){
         return value.verifyRecipe(ingredients);
     }
-    public boolean verifyRecipe(ItemStackMap ingredients){
-        return value.verifyRecipe(ingredients);
-    }
 
     public T getCurrent(){
         return value.getCurrent();
