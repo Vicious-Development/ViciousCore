@@ -23,7 +23,7 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
 
     public GenericGUI(T menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        root.attachToMouse(new WidgetItem<>(root,0,0,0,0,()->menu.getInteractionState().getHeld()).onlyVisible());
+        root.attachToMouse(new WidgetItem<>(root,-8,-8,16,16,()->menu.getInteractionState().getHeld()).onlyVisible());
         prevX = (int) (WindowGetter.window.getWidth()/2/WindowGetter.window.getGuiScale());
         prevY = (int) (WindowGetter.window.getHeight()/2/WindowGetter.window.getGuiScale());
     }
