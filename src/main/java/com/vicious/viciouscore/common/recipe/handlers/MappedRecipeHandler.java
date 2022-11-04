@@ -53,18 +53,6 @@ public class MappedRecipeHandler<T extends VCRecipe> extends VCRecipeHandler<T> 
         return null;
     }
 
-    @Override
-    public T getRecipe(ItemStackMap ism) {
-        for (TypeKey<?> key : ism.keySet()) {
-            List<T> options = recipeMap.get(key);
-            for (T option : options) {
-                if(option.containsThis(ism)){
-                    return option;
-                }
-            }
-        }
-        return null;
-    }
     public List<T> getRecipesOfIngedrient(Object stack){
         List<T> lst = recipeMap.get(TypeKey.of(stack));
         return lst != null ? lst : new ArrayList<>();

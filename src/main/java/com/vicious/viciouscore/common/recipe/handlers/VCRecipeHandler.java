@@ -14,12 +14,6 @@ public class VCRecipeHandler<T extends VCRecipe> {
         }
         return null;
     }
-    public T getRecipe(ItemStackMap ism){
-        for (T recipe : recipes) {
-            if(recipe.containsThis(ism)) return recipe;
-        }
-        return null;
-    }
     public T getRecipe(int index){
         return recipes.get(index);
     }

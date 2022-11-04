@@ -4,9 +4,6 @@ package com.vicious.viciouscore.common.recipe;
 import com.vicious.viciouscore.common.recipe.ingredients.IRecipeOutputAcceptor;
 import com.vicious.viciouscore.common.recipe.ingredients.IngredientStackMap;
 import com.vicious.viciouscore.common.recipe.ingredients.stack.IngredientStack;
-import com.vicious.viciouscore.common.recipe.ingredients.type.ItemTypeKey;
-import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +19,6 @@ public abstract class VCRecipe {
     }
     public boolean containsThis(IngredientStackMap in){
         return in.hasAll(inputs);
-    }
-
-    /**
-     * Only for item recipes. This is here for convenience handling of item only recipes.
-     * Using this for any recipe with non-item ingredients will always return false.
-     */
-    public boolean containsThis(ItemStackMap in){
-        for (TypeKey<?> typeKey : inputs.keySet()) {
-            if(typeKey instanceof ItemTypeKey item){
-                ItemStack stack = in.get(item);
-                if(stack == null || stack.getCount() < inputs.get(item).getCount()) return false;
-            } else return false;
-        }
-        return true;
     }
 
     public boolean consumes(Object... objs){

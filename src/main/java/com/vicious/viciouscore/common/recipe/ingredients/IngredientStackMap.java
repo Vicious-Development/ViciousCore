@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.recipe.ingredients;
 import com.vicious.viciouscore.common.recipe.ingredients.stack.IngredientStack;
 import com.vicious.viciouscore.common.recipe.ingredients.stack.ItemIngredientStack;
 import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,13 +56,6 @@ public class IngredientStackMap extends HashMap<TypeKey<?>, IngredientStack<?>> 
             else stacks.add(value);
         }
         return stacks;
-    }
-
-    public IngredientStackMap combine(ItemStackMap stacks) {
-        for (ItemStack value : stacks.values()) {
-            add(value);
-        }
-        return this;
     }
 
     /**
