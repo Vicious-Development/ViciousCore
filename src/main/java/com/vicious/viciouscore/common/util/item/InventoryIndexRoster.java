@@ -5,6 +5,10 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
+/**
+ * A version of the ItemRoster that adds slot memory functionality.
+ * This can be used to speed up the locating of items within an inventory at the cost of memory.
+ */
 public class InventoryIndexRoster extends ItemRoster {
     private Map<Item,StackSlot> map = new HashMap<>();
 

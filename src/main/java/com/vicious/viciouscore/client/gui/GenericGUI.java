@@ -4,7 +4,6 @@ package com.vicious.viciouscore.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.gui.widgets.*;
 import com.vicious.viciouscore.client.textures.VCTextures;
-import com.vicious.viciouscore.client.util.Vector2i;
 import com.vicious.viciouscore.client.util.WindowGetter;
 import com.vicious.viciouscore.common.inventory.container.GenericContainer;
 import net.minecraft.client.Minecraft;
@@ -18,14 +17,13 @@ import net.minecraft.world.inventory.Slot;
  */
 public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainerScreen<T> {
     protected RootWidget root = new RootWidget();
-    protected WidgetItem<?> held;
     protected int resizeX;
     protected int resizeY;
     protected int prevX = 0, prevY = 0;
 
     public GenericGUI(T menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        held = new WidgetItem<>(root,0,0,0,0,()->menu.getInteractionState().getHeld()).noFlags().addFlags(ControlFlag.VISIBLE);
+        root.attachToMouse(new WidgetItem<>(root,0,0,0,0,()->menu.getInteractionState().getHeld()).onlyVisible());
         prevX = (int) (WindowGetter.window.getWidth()/2/WindowGetter.window.getGuiScale());
         prevY = (int) (WindowGetter.window.getHeight()/2/WindowGetter.window.getGuiScale());
     }
@@ -81,7 +79,7 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
             }
         }
     }
-    protected <W extends VCWidget> W add(W widget){
+    protected <W extends VCWidget<?>> W add(W widget){
         root.addChild(widget);
         return widget;
     }
@@ -92,8 +90,6 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
 
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        held.setStartPosition(new Vector2i(mouseX,mouseY));
         root.render(matrixStack,mouseX,mouseY,partialTicks);
-        held.render(matrixStack,mouseX,mouseY,partialTicks);
     }
 }
