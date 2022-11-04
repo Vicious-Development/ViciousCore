@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.vicious.viciouscore.ViciousCore;
 import com.vicious.viciouscore.common.recipe.VCRecipe;
 import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
-import com.vicious.viciouscore.common.util.item.ItemStackMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;

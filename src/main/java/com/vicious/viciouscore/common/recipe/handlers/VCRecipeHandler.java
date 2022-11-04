@@ -2,7 +2,6 @@ package com.vicious.viciouscore.common.recipe.handlers;
 
 
 import com.vicious.viciouscore.common.recipe.VCRecipe;
-import com.vicious.viciouscore.common.util.item.ItemStackMap;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -20,7 +20,7 @@ public interface IFastItemHandler extends IItemHandlerModifiable {
     ItemStack extractItem(ItemStack requested, boolean simulate);
     ItemStack insertItem(ItemStack push, boolean simulate);
 
-    Collection<Integer> indexOf(ItemStack stack);
+    Collection<Integer> indexesOf(ItemStack stack);
 
     void listenChanged(Consumer<SlotChangedEvent> cons);
     void stopListening(Consumer<SlotChangedEvent> cons);

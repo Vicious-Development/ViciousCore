@@ -49,8 +49,8 @@ public class SyncableInventory extends SyncableIVCNBT<FastItemStackHandler> impl
     }
 
     @Override
-    public Collection<Integer> indexOf(ItemStack stack) {
-        return value.indexOf(stack);
+    public Collection<Integer> indexesOf(ItemStack stack) {
+        return value.indexesOf(stack);
     }
 
     @Override

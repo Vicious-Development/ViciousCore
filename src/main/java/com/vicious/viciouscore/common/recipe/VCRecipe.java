@@ -6,7 +6,6 @@ import com.vicious.viciouscore.common.recipe.ingredients.IngredientStackMap;
 import com.vicious.viciouscore.common.recipe.ingredients.stack.IngredientStack;
 import com.vicious.viciouscore.common.recipe.ingredients.type.ItemTypeKey;
 import com.vicious.viciouscore.common.recipe.ingredients.type.TypeKey;
-import com.vicious.viciouscore.common.util.item.ItemStackMap;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
