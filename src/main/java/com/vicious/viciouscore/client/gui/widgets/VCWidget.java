@@ -374,5 +374,17 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
         Extents e = getExtents();
         return new Vector2i(x-e.TOPLEFT.x,y-e.TOPLEFT.y);
     }
+
+    public Map<RenderStage,Set<Consumer<PoseStack>>> getGLTransformations() {
+        return glTransformers;
+    }
+
+    public void copyGLsTo(VCWidget<?> other) {
+        getGLTransformations().forEach((k,v)->{
+            for (Consumer<PoseStack> poseStackConsumer : v) {
+                other.addGL(k,poseStackConsumer);
+            }
+        });
+    }
 }
 
