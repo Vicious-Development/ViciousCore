@@ -17,17 +17,12 @@ public class ImageWidgetSlot<T extends ImageWidgetSlot<T>> extends WidgetImage<T
         super(root, x, y, w, h, widgetResource);
         this.wrapper=wrapper;
         this.slot=slot;
-        addFlags(ControlFlag.RESPONDTOHOVER);
-        addFlags(ControlFlag.RESPONDTOCLICK);
-        item = addChild(new WidgetItem<>(root,0,0,0,0,()->wrapper.getItem(slot))).removeFlags(ControlFlag.RESPONDTORAYTRACE);
-
+        addFlags(ControlFlag.RESPONDTOHOVER,ControlFlag.RESPONDTOCLICK);
+        item = addChild(new WidgetItem<>(root,0,0,0,0,()->wrapper.getItem(slot))).onlyVisible();
+        addGL(RenderStage.PRE,(s)->item.renderDecorations(hasFlag(ControlFlag.HOVERED)));
     }
     public ImageWidgetSlot<?> setSelectedImage(ResourceLocation rl){
         this.selectedImage=rl;
-        return this;
-    }
-
-    public VCWidget<?> widgetMouseOver(){
         return this;
     }
 
