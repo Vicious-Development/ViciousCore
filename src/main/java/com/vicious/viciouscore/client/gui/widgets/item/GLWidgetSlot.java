@@ -1,15 +1,12 @@
 package com.vicious.viciouscore.client.gui.widgets.item;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.vicious.viciouscore.client.gui.widgets.*;
 import com.vicious.viciouscore.client.gui.widgets.glrendered.WidgetRectangle;
 import com.vicious.viciouscore.client.gui.widgets.glrendered.WidgetRectangularBorder;
 import com.vicious.viciouscore.common.inventory.container.InventoryWrapper;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
-
-import java.awt.*;
 
 public class GLWidgetSlot<T extends GLWidgetSlot<T>> extends VCWidget<T> implements ISlotWidget<T> {
     protected WidgetRectangle<?> backing;
@@ -21,27 +18,11 @@ public class GLWidgetSlot<T extends GLWidgetSlot<T>> extends VCWidget<T> impleme
         super(root, x, y, w, h);
         this.wrapper = wrapper;
         this.slot = slot;
-        backing = addChild(new WidgetRectangle<>(root, x, y, w, h).addGL(RenderStage.SELFPRE, (s) -> {
-            Color c = Color.GREEN;
-            RenderSystem.enableBlend();
-            if(hasFlag(ControlFlag.HOVERED)){
-                c = c.brighter();
-            }
-            RenderSystem.setShaderColor(c.getRed(), c.getGreen(), c.getBlue(), 0.5f);
-        })).addGL(RenderStage.SELFPOST,(s)->RenderSystem.disableBlend());
-        border = backing.addChild(new WidgetRectangularBorder<>(root, x - 1, y - 1, w + 2, h + 2, 1)).addGL(RenderStage.SELFPRE, (s) -> {
-            Color c = Color.DARK_GRAY;
-            RenderSystem.enableBlend();
-            RenderSystem.setShaderColor(c.getRed(), c.getGreen(), c.getBlue(), 0.25f);
-        }).addGL(RenderStage.SELFPOST,(s)->RenderSystem.disableBlend());
-        item = backing.addChild(new WidgetItem<>(root,0,0,0,0,()->wrapper.getItem(slot))).removeFlags(ControlFlag.RESPONDTORAYTRACE);
+        backing = addChild(new WidgetRectangle<>(root, x, y, w, h)).onlyVisible();
+        border = backing.addChild(new WidgetRectangularBorder<>(root, x - 1, y - 1, w + 2, h + 2, 1)).onlyVisible();
+        item = backing.addChild(new WidgetItem<>(root,0,0,0,0,()->wrapper.getItem(slot))).onlyVisible();
         addFlags(ControlFlag.RESPONDTOHOVER,ControlFlag.RESPONDTOCLICK);
-    }
-
-    @Override
-    public VCWidget<?> widgetMouseOver() {
-        addFlags(ControlFlag.HOVERED);
-        return this;
+        addGL(RenderStage.PRE,(s)->item.renderDecorations(hasFlag(ControlFlag.HOVERED)));
     }
 
     public void onClick(int button) {
