@@ -113,7 +113,7 @@ repositories {
 
 dependencies {
     minecraft ("net.minecraftforge:forge:${mcver}-${forgever}")
-    embed("com.vicious:viciouslib:${vcver}")
+    embed("com.vicious:viciouslib:${vlver}")
     embed('org.json:json:20220320')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly (fileTree(dir: 'lib', include: ['*.jar']))
