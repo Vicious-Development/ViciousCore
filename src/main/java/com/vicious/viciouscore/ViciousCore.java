@@ -5,6 +5,8 @@ import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
 import com.vicious.viciouscore.common.VCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
+import com.vicious.viciouscore.common.data.GlobalData;
+import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGlobalData;
 import com.vicious.viciouscore.common.events.Ticker;
 import com.vicious.viciouscore.common.keybinding.CommonKeyBindings;
 import com.vicious.viciouscore.common.network.VCNetwork;
@@ -59,6 +61,10 @@ public class ViciousCore
     public void clientSetup(FMLClientSetupEvent event){
         logger.info("Setting up ViciousCore Client Side");
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);
+    }
+
+    public static SyncableGlobalData getData(){
+        return GlobalData.getGlobalData();
     }
 
     @SubscribeEvent

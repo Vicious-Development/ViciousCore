@@ -1,58 +1,15 @@
 package com.vicious.viciouscore.common.data.implementations.attachable;
 
-import com.vicious.viciouscore.common.capability.VCCapabilities;
-import com.vicious.viciouscore.common.util.FuckLazyOptionals;
-import com.vicious.viciouscore.common.util.server.ServerHelper;
-import com.vicious.viciouslib.aunotamation.Aunotamation;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.storage.ServerLevelData;
-import net.minecraftforge.common.capabilities.Capability;
+import com.vicious.viciouscore.common.data.GlobalData;
+import com.vicious.viciouscore.common.data.structures.SyncableCompound;
+import com.vicious.viciouscore.common.util.mixinsupport.InjectionInterface;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class SyncableGlobalData extends SyncableAttachableCompound<ServerLevel> {
-    private static SyncableGlobalData instance;
-
-    public static @NotNull SyncableGlobalData getInstance(){
-        if(instance == null) instance = Aunotamation.processObject(new SyncableGlobalData(ServerHelper.getMainLevel()));
-        else{
-            if(instance.attached != ServerHelper.getMainLevel()){
-                instance = Aunotamation.processObject(new SyncableGlobalData(ServerHelper.getMainLevel()));
-            }
-        }
-        return instance;
-    }
-    public SyncableGlobalData(ServerLevel holder) {
-        super("globaldata",holder);
-    }
-
-    //Only load this data once.
-    private boolean load = true;
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        if(attached != null) {
-            if (attached.getLevelData() instanceof ServerLevelData) {
-                if (((ServerLevelData) attached.getLevelData()).isInitialized()) {
-                    if (load) {
-                        load = false;
-                        super.deserializeNBT(nbt);
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        if(cap == VCCapabilities.GLOBALDATA) {
-            return (LazyOptional<T>) LazyOptional.of(SyncableGlobalData::getInstance);
-        }
-        return LazyOptional.empty();
+public class SyncableGlobalData extends SyncableCompound implements InjectionInterface {
+    public SyncableGlobalData() {
+        super("globaldata");
     }
 
     public static void executeIfPresent(Object o, Consumer<SyncableGlobalData> cons){
@@ -66,15 +23,13 @@ public class SyncableGlobalData extends SyncableAttachableCompound<ServerLevel> 
         }
     }
     public static void executeIfPresent(ICapabilityProvider p, Consumer<SyncableGlobalData> cons){
-        LazyOptional<SyncableGlobalData> lop = p.getCapability(VCCapabilities.GLOBALDATA);
-        SyncableGlobalData data = FuckLazyOptionals.getOrNull(lop);
+        SyncableGlobalData data = GlobalData.getGlobalData();
         if(data != null){
             cons.accept(data);
         }
     }
     public static <V> void executeIfPresent(ICapabilityProvider p, Consumer<V> cons, Class<V> as){
-        LazyOptional<SyncableGlobalData> lop = p.getCapability(VCCapabilities.GLOBALDATA);
-        SyncableGlobalData data = FuckLazyOptionals.getOrNull(lop);
+        SyncableGlobalData data = GlobalData.getGlobalData();
         if(as.isInstance(data)){
             cons.accept(as.cast(data));
         }
