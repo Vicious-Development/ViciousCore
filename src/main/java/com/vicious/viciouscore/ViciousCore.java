@@ -17,7 +17,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,12 +28,14 @@ public class ViciousCore
     public static VCoreConfig CFG;
     public static ViciousCore instance;
 
+
+
     public ViciousCore(){
+        logger.info("Initializing ViciousCore.");
         Aunotamations.init();
         ViciousDirectories.initializeConfigDependents();
         CFG = VCoreConfig.getInstance();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);
         SidedExecutor.clientOnly(()->{
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
@@ -44,6 +45,7 @@ public class ViciousCore
     public static final Logger logger = LogManager.getLogger();
     public void setup(FMLCommonSetupEvent event)
     {
+        logger.info("Setting up ViciousCore");
         instance = this;
         //Initialize the network.
         VCNetwork.getInstance();
@@ -53,14 +55,8 @@ public class ViciousCore
         MinecraftForge.EVENT_BUS.register(Ticker.class);
     }
     public void clientSetup(FMLClientSetupEvent event){
-        CommonKeyBindings.register();
+        logger.info("Setting up ViciousCore Client Side");
         MinecraftForge.EVENT_BUS.register(ViciousCoreInputEventHandler.class);
-    }
-
-
-    public void postInit(FMLLoadCompleteEvent event)
-    {
-        CFG.save();
     }
 
     @SubscribeEvent

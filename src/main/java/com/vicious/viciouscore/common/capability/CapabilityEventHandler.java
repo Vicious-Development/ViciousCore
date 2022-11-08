@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.capability;
 import com.vicious.viciouscore.common.capability.interfaces.ICapabilityDeathPersistant;
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.capability.types.keypresshandler.KeyPressHandler;
-import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGlobalData;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncableLevelData;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncablePlayerData;
 import com.vicious.viciouscore.common.resource.VCResources;
@@ -38,7 +37,6 @@ public class CapabilityEventHandler {
         Level l = event.getObject();
         if(l instanceof ServerLevel sl) {
             event.addCapability(VCResources.LEVELDATA, Aunotamation.processObject(new SyncableLevelData(l)));
-            event.addCapability(VCResources.GLOBALDATA, SyncableGlobalData.getInstance());
         }
     }
     public static <T extends IVCCapabilityHandler> void attach(AttachCapabilitiesEvent<?> event, ResourceLocation key, Capability<T> token, NonNullSupplier<T> capSupplier, Object target){

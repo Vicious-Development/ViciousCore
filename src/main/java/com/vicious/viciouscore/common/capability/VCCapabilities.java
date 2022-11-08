@@ -3,7 +3,6 @@ package com.vicious.viciouscore.common.capability;
 import com.vicious.viciouscore.common.capability.interfaces.IVCCapabilityHandler;
 import com.vicious.viciouscore.common.capability.types.keypresshandler.KeyPressHandler;
 import com.vicious.viciouscore.common.data.implementations.SyncableInventory;
-import com.vicious.viciouscore.common.data.implementations.attachable.SyncableGlobalData;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncableLevelData;
 import com.vicious.viciouscore.common.data.implementations.attachable.SyncablePlayerData;
 import com.vicious.viciouscore.common.util.FuckLazyOptionals;
@@ -18,7 +17,6 @@ public class VCCapabilities {
     public static Capability<KeyPressHandler> KEYPRESS;
     public static Capability<SyncableInventory> FASTITEMSTACKHANDLER;
     public static Capability<SyncablePlayerData> PLAYERDATA;
-    public static Capability<SyncableGlobalData> GLOBALDATA;
     public static Capability<SyncableLevelData> LEVELDATA;
     public static <T extends IVCCapabilityHandler> T getCapability(ICapabilityProvider provider, Class<T> cls) {
         return FuckLazyOptionals.getOrNull(provider.getCapability(getToken(cls)));
@@ -62,9 +60,6 @@ public class VCCapabilities {
         event.register(SyncablePlayerData.class);
         PLAYERDATA = CapabilityManager.get(new CapabilityToken<>(){});
         capabilityTokens.put(SyncablePlayerData.class,PLAYERDATA);
-        event.register(SyncableGlobalData.class);
-        GLOBALDATA = CapabilityManager.get(new CapabilityToken<>(){});
-        capabilityTokens.put(SyncableGlobalData.class,GLOBALDATA);
         event.register(SyncableLevelData.class);
         LEVELDATA = CapabilityManager.get(new CapabilityToken<>(){});
         capabilityTokens.put(SyncableLevelData.class,LEVELDATA);

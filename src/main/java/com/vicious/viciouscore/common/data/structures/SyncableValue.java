@@ -68,7 +68,7 @@ public abstract class SyncableValue<T> implements IVCCapabilityHandler, IVCNBTSe
         return (V) this;
     }
 
-    protected boolean changed() {
+    public boolean changed() {
         return isDirty;
     }
 
