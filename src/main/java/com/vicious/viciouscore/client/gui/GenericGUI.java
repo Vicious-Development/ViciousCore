@@ -3,6 +3,7 @@ package com.vicious.viciouscore.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.vicious.viciouscore.client.gui.widgets.*;
+import com.vicious.viciouscore.client.gui.widgets.item.ImageWidgetSlot;
 import com.vicious.viciouscore.client.textures.VCTextures;
 import com.vicious.viciouscore.client.util.WindowGetter;
 import com.vicious.viciouscore.common.inventory.container.GenericContainer;
@@ -65,8 +66,12 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
         final int hotbarx = 6;
         final int hotbary = 65;
 
+
         for (int x = 0; x < 9; x++) {
-            holo.addChild(WidgetTemplates.generateSlotWidget(root,hotbarx+slotxspacing*x,hotbary,VCTextures.SLOTHG,menu.playerInv,x).setSelectedImage(VCTextures.SLOTHGS.name()));
+            ImageWidgetSlot<?> s = new ImageWidgetSlot<>(root,hotbarx+slotxspacing*x,hotbary,18,18,VCTextures.SLOTHG.name(),menu.playerInv,x).setSelectedImage(VCTextures.SLOTHGS.name());
+            //This is necessary because the background widget is 18x18 rather than 16x16
+            s.item.translate(1,1);
+            holo.addChild(s);
         }
 
         // Add the rest of the players inventory to the gui
@@ -75,7 +80,9 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
                 int slotNumber = 9 + y * 9 + x;
                 int xpos = hotbarx + x * slotxspacing;
                 int ypos = hotbary - 2 - (3-y) * slotyspacing;
-                holo.addChild(WidgetTemplates.generateSlotWidget(root,xpos, ypos, VCTextures.SLOTHG,menu.playerInv,slotNumber).setSelectedImage(VCTextures.SLOTHGS.name()));
+                ImageWidgetSlot<?> s = new ImageWidgetSlot<>(root,xpos, ypos, 18,18,VCTextures.SLOTHG.name(),menu.playerInv,slotNumber).setSelectedImage(VCTextures.SLOTHGS.name());
+                s.item.translate(1,1);
+                holo.addChild(s);
             }
         }
     }

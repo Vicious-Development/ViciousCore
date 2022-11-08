@@ -9,9 +9,9 @@ import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.packets.slot.SPacketSlotClicked;
 
 public class GLWidgetSlot<T extends GLWidgetSlot<T>> extends VCWidget<T> implements ISlotWidget<T> {
-    protected WidgetRectangle<?> backing;
-    protected WidgetRectangularBorder<?> border;
-    protected WidgetItem<?> item;
+    public WidgetRectangle<?> backing;
+    public WidgetRectangularBorder<?> border;
+    public WidgetItem<?> item;
     protected InventoryWrapper<?> wrapper;
     protected int slot;
     public GLWidgetSlot(RootWidget root, int x, int y, int w, int h, InventoryWrapper<?> wrapper, int slot) {
@@ -22,7 +22,6 @@ public class GLWidgetSlot<T extends GLWidgetSlot<T>> extends VCWidget<T> impleme
         border = backing.addChild(new WidgetRectangularBorder<>(root, x - 1, y - 1, w + 2, h + 2, 1)).onlyVisible();
         item = backing.addChild(new WidgetItem<>(root,0,0,0,0,()->wrapper.getItem(slot))).onlyVisible();
         addFlags(ControlFlag.RESPONDTOHOVER,ControlFlag.RESPONDTOCLICK);
-        addGL(RenderStage.PRE,(s)->item.renderDecorations(hasFlag(ControlFlag.HOVERED)));
     }
 
     public void onClick(int button) {

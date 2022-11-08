@@ -35,10 +35,7 @@ public class ServerHelper {
     }
 
     public static ServerLevel getMainLevel() {
-        for (ServerLevel l : server.getAllLevels()) {
-            return l;
-        }
-        return null;
+        return server.getLevel(Level.OVERWORLD);
     }
     public static List<ServerPlayer> getPlayers(){
         return server.getPlayerList().getPlayers();

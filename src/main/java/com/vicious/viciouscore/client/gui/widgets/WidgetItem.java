@@ -29,7 +29,7 @@ public class WidgetItem<T extends WidgetItem<T>> extends VCWidget<T> {
         int y = this.actualPosition.y;
         ItemStack stack = supplier.get();
         if(!stack.isEmpty()){
-            if(renderDecorations) {
+            if(renderNumbers) {
                 renderer.renderAndDecorateItem(stack,x,y);
                 renderer.renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
             }
@@ -38,10 +38,10 @@ public class WidgetItem<T extends WidgetItem<T>> extends VCWidget<T> {
             }
         }
     }
-    protected boolean renderDecorations = false;
+    protected boolean renderNumbers = true;
 
-    public T renderDecorations(boolean v){
-        this.renderDecorations=v;
+    public T renderNumbers(boolean v){
+        this.renderNumbers =v;
         return asT();
     }
 }

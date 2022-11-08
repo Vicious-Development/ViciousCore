@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ImageWidgetSlot<T extends ImageWidgetSlot<T>> extends WidgetImage<T> implements ISlotWidget<T> {
     protected InventoryWrapper<?> wrapper;
     protected ResourceLocation selectedImage;
-    protected WidgetItem<?> item;
+    public WidgetItem<?> item;
     protected int slot;
     public ImageWidgetSlot(RootWidget root, int x, int y, int w, int h, ResourceLocation widgetResource, InventoryWrapper<?> wrapper, int slot) {
         super(root, x, y, w, h, widgetResource);
@@ -19,11 +19,10 @@ public class ImageWidgetSlot<T extends ImageWidgetSlot<T>> extends WidgetImage<T
         this.slot=slot;
         addFlags(ControlFlag.RESPONDTOHOVER,ControlFlag.RESPONDTOCLICK);
         item = addChild(new WidgetItem<>(root,0,0,0,0,()->wrapper.getItem(slot))).onlyVisible();
-        addGL(RenderStage.PRE,(s)->item.renderDecorations(hasFlag(ControlFlag.HOVERED)));
     }
-    public ImageWidgetSlot<?> setSelectedImage(ResourceLocation rl){
+    public T setSelectedImage(ResourceLocation rl){
         this.selectedImage=rl;
-        return this;
+        return asT();
     }
 
     @Override
