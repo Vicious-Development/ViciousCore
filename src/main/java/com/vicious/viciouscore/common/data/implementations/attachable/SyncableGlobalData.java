@@ -5,7 +5,8 @@ import com.vicious.viciouscore.common.util.FuckLazyOptionals;
 import com.vicious.viciouscore.common.util.server.ServerHelper;
 import com.vicious.viciouslib.aunotamation.Aunotamation;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
+public class SyncableGlobalData extends SyncableAttachableCompound<ServerLevel> {
     private static SyncableGlobalData instance;
 
     public static @NotNull SyncableGlobalData getInstance(){
@@ -25,7 +26,7 @@ public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
         }
         return instance;
     }
-    public SyncableGlobalData(Level holder) {
+    public SyncableGlobalData(ServerLevel holder) {
         super("globaldata",holder);
     }
 
@@ -34,9 +35,15 @@ public class SyncableGlobalData extends SyncableAttachableCompound<Level> {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if(load) {
-            load = false;
-            super.deserializeNBT(nbt);
+        if(attached != null) {
+            if (attached.getLevelData() instanceof ServerLevelData) {
+                if (((ServerLevelData) attached.getLevelData()).isInitialized()) {
+                    if (load) {
+                        load = false;
+                        super.deserializeNBT(nbt);
+                    }
+                }
+            }
         }
     }
 

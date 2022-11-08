@@ -126,30 +126,30 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
         ItemStack clone = stack.copy();
         int toPull = Math.min(stack.getCount(),amount);
         if(!simulate){
-            sendEventPre(slot, SlotChangedEvent.Action.EXTRACT);
-            shrinkMaps(slot,toPull);
-            stack.shrink(toPull);
-            sendEventPost(slot, SlotChangedEvent.Action.EXTRACT);
+            remapSlotStack(slot, SlotChangedEvent.Action.SET, ()->stack.shrink(toPull));
         }
         clone.setCount(toPull);
         return clone;
     }
-    private void growMaps(int slot, int toPush){
-        ItemStack og = getStackInSlot(slot);
-        ItemStack grow = og.copy();
-        grow.setCount(toPush);
-        roster.add(grow);
-        roster.add(grow,slot);
+
+    private void remapSlotStack(int slot, SlotChangedEvent.Action set, Runnable run){
+        sendEventPre(slot,set);
+        purgeMapData(slot);
+        run.run();
+        remapData(slot);
+        sendEventPost(slot,set);
     }
 
-    private void shrinkMaps(int slot, int toPull) {
+    private void remapData(int slot){
         ItemStack og = getStackInSlot(slot);
-        ItemStack shrink = og.copy();
-        shrink.setCount(toPull);
-        roster.remove(shrink);
-        if(og.getCount()-shrink.getCount() <= 0){
-            roster.remove(og,slot);
-        }
+        roster.add(og);
+        roster.add(og,slot);
+    }
+
+    private void purgeMapData(int slot) {
+        ItemStack og = getStackInSlot(slot);
+        roster.remove(og);
+        roster.remove(og,slot);
     }
 
     private void validateInRange(int slot) {
@@ -205,12 +205,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-        ItemStack og = getStackInSlot(slot);
-        sendEventPre(slot, SlotChangedEvent.Action.SET);
-        stacks.set(slot,stack);
-        shrinkMaps(slot,og.getCount());
-        growMaps(slot,stack.getCount());
-        sendEventPost(slot, SlotChangedEvent.Action.SET);
+        remapSlotStack(slot,SlotChangedEvent.Action.SET,()->stacks.set(slot,stack));
     }
 
     @Override

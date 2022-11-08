@@ -12,7 +12,7 @@ public class RootWidget extends VCWidget<RootWidget>{
     public int mouseDX = 0;
     public int mouseDY = 0;
     public VCWidget<?> draggedWidget = null;
-    public VCWidget<?> mouseWidget = new VCWidget<>(this,0,0,0,0).onlyVisible();
+    public VCWidget<?> mouseWidget = addChild(new VCWidget<>(this,0,0,0,0).onlyVisible());
 
     public RootWidget() {
         super(null,0, 0, 0, 0);
