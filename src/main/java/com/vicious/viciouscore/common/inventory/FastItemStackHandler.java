@@ -175,7 +175,7 @@ public class FastItemStackHandler implements IFastItemHandler, IVCNBTSerializabl
 
     @Override
     public void stopListening(Consumer<SlotChangedEvent> cons) {
-        changeListeners.add(cons);
+        changeListeners.remove(cons);
     }
 
     @Override
