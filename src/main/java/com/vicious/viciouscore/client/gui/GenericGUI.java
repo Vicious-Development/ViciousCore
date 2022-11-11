@@ -57,6 +57,13 @@ public class GenericGUI<T extends GenericContainer<?>> extends AbstractContainer
         root.resize(resizeX,resizeY);
         super.resize(minecraft, width, height);
     }
+
+    @Override
+    public boolean mouseScrolled(double mx, double my, double scroll) {
+        root.widgetMouseOver().onScroll(scroll);
+        return true;
+    }
+
     protected void createHoloInv() {
         //Holoinvbackscreen.
         //WidgetFreeDrag holo = add(new WidgetFreeDrag(root,menu.playerSlots.get(0).x - 7,menu.playerSlots.get(0).y - 66, VCTextures.HOLOINVMKI.width(), VCTextures.HOLOINVMKI.height(), VCTextures.HOLOINVMKI.name()));

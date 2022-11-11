@@ -178,6 +178,11 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
         }
         if(hasFlag(ControlFlag.RESPONDTOCLICK)) addFlags(ControlFlag.CLICKED);
     }
+
+    public void onScroll(double scroll){
+        
+    }
+
     public boolean leftClick(int button){
         return button == 0;
     }
@@ -386,5 +391,6 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
             }
         });
     }
+
 }
 
