@@ -2,7 +2,7 @@ package com.vicious.viciouscore;
 
 import com.vicious.viciouscore.aunotamation.Aunotamations;
 import com.vicious.viciouscore.client.ViciousCoreInputEventHandler;
-import com.vicious.viciouscore.common.VCoreConfig;
+import com.vicious.viciouscore.common.ViciousCoreConfig;
 import com.vicious.viciouscore.common.capability.CapabilityEventHandler;
 import com.vicious.viciouscore.common.capability.VCCapabilities;
 import com.vicious.viciouscore.common.data.GlobalData;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 public class ViciousCore
 {
     public static final String MODID = "viciouscore";
-    public static VCoreConfig CFG;
+    public static ViciousCoreConfig CFG;
     public static ViciousCore instance;
 
 
@@ -37,7 +37,7 @@ public class ViciousCore
         logger.info("Initializing ViciousCore.");
         Aunotamations.init();
         ViciousDirectories.initializeConfigDependents();
-        CFG = VCoreConfig.getInstance();
+        CFG = ViciousCoreConfig.getInstance();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);
         SidedExecutor.clientOnly(()->{

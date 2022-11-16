@@ -1,6 +1,6 @@
 package com.vicious.viciouscore.common.network.packets.keybindpress;
 
-import com.vicious.viciouscore.common.VCoreConfig;
+import com.vicious.viciouscore.common.ViciousCoreConfig;
 import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.network.VCPacket;
 import net.minecraft.network.FriendlyByteBuf;
@@ -78,7 +78,7 @@ public class CPacketButtonPressReceived extends VCPacket {
                 }
                 SPacketButtonUpdate pk = toSend.get(i);
                 if(pk == null) continue;
-                if(pk.getTicksExisted() >= VCoreConfig.getInstance().buttonPressResponseTimeOut.value()){
+                if(pk.getTicksExisted() >= ViciousCoreConfig.getInstance().buttonPressResponseTimeOut.value()){
                     toSend.remove(i);
                 }
                 pk.tick();
