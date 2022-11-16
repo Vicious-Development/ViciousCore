@@ -288,7 +288,7 @@ public class VCWidget<T extends VCWidget<T>> implements Widget, RenderTools {
     }
 
     public void resize(int resizeX, int resizeY) {
-        translate(resizeX,resizeY);
+        //translate(resizeX,resizeY);
     }
     public long getWindowID(){
         return Minecraft.getInstance().getWindow().getWindow();

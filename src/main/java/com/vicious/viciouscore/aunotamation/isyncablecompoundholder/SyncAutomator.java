@@ -50,6 +50,10 @@ public class SyncAutomator {
                 requireInitialized(compound,anno,(sv)-> sv.sendRemote(true).readRemote(false));
             }
         });
+        Aunotamation.registerProcessor(new SyncProcessor<>(Controlled.class,ISyncableCompoundHolder.class) {
+            @Override
+            public void process(ISyncableCompoundHolder compound, AnnotatedElement anno){}
+        });
         Aunotamation.registerProcessor(new SyncProcessor<>(Editable.class,ISyncableCompoundHolder.class) {
             @Override
             public void process(ISyncableCompoundHolder compound, AnnotatedElement anno) throws IllegalAccessException {
