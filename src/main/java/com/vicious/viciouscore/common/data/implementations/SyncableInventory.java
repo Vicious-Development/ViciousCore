@@ -60,7 +60,7 @@ public class SyncableInventory extends SyncableIVCNBT<FastItemStackHandler> impl
 
     @Override
     public void stopListening(Consumer<SlotChangedEvent> cons) {
-        value.listenChanged(cons);
+        value.stopListening(cons);
     }
 
     @Override

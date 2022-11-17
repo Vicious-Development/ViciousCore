@@ -17,7 +17,7 @@ public class ViciousDirectories {
         ViciousDirectories.viciousResourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(resourcesDirectory.toAbsolutePath().toString(),"vicious"));
         ViciousDirectories.viciousStructuresDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"structures"));
         ViciousDirectories.viciousConfigDirectory = FileUtil.createDirectoryIfDNE(directorize(configDirectory.toAbsolutePath().toString(),"vicious"));
-        ViciousDirectories.viciousCoreConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"core.json");
+        ViciousDirectories.viciousCoreConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"core.cfg");
         ViciousDirectories.viciousCoreOverrideConfigPath = directorize(viciousConfigDirectory.toAbsolutePath().toString(),"overrides.json");
     }
     public static Path createConfigPath(String modid){
