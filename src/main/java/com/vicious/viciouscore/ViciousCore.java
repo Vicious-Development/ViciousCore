@@ -13,6 +13,7 @@ import com.vicious.viciouscore.common.network.VCNetwork;
 import com.vicious.viciouscore.common.util.SidedExecutor;
 import com.vicious.viciouscore.common.util.file.ViciousDirectories;
 import com.vicious.viciouscore.common.util.server.ServerHelper;
+import com.vicious.viciouslib.LoggerWrapper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
@@ -33,10 +34,11 @@ public class ViciousCore
 
 
 
-    public ViciousCore(){
+    public ViciousCore() throws Exception {
         logger.info("Initializing ViciousCore.");
-        Aunotamations.init();
+        LoggerWrapper.log4jLogger = logger;
         ViciousDirectories.initializeConfigDependents();
+        Aunotamations.init();
         CFG = ViciousCoreConfig.getInstance();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(VCCapabilities::onCapRegistry);

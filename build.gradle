@@ -123,6 +123,7 @@ shadowJar{
     configurations = [project.configurations.embed]
 }
 
+
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
@@ -150,10 +151,11 @@ afterEvaluate {
 
 
 
-shadowJar{
+shadowJar {
     configurations = [project.configurations.embed]
     classifier = 'deobf'
 }
+
 task reobf(type: Jar){
     from shadowJar
     classifier = 'reobf'

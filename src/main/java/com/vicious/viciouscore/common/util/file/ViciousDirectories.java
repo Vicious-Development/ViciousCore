@@ -10,9 +10,11 @@ public class ViciousDirectories {
     public static Path viciousCoreConfigPath;
     public static Path viciousCoreOverrideConfigPath;
     public static Path viciousStructuresDirectory;
+    public static String mods;
 
     public static void initializeConfigDependents() {
         ViciousDirectories.configDirectory = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"config"));
+        ViciousDirectories.mods = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"mods")).toAbsolutePath().toString();
         ViciousDirectories.resourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(rootDir(),"resources"));
         ViciousDirectories.viciousResourcesDirectory = FileUtil.createDirectoryIfDNE(directorize(resourcesDirectory.toAbsolutePath().toString(),"vicious"));
         ViciousDirectories.viciousStructuresDirectory = FileUtil.createDirectoryIfDNE(directorize(viciousResourcesDirectory.toAbsolutePath().toString(),"structures"));
