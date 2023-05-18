@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public interface InjectionInterface {
     /**
-     * Used outside of ViciousCore for mixin injection type casting. See ILLPlayerData in LifelossCore as an example.
+     * Used outside ViciousCore for mixin injection type casting. See ILLPlayerData in LifelossCore as an example.
      */
     default <V> void executeAs(Class<V> type, Consumer<V> cons){
         if(type.isInstance(this)) {

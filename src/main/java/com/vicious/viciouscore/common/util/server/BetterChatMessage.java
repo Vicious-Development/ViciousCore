@@ -3,8 +3,10 @@ package com.vicious.viciouscore.common.util.server;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 
@@ -39,6 +41,7 @@ public class BetterChatMessage {
             if(object == null) object = "null";
             if(object instanceof String str){
                 if(str.startsWith("<") && str.endsWith(">")) {
+                    //boolean pretranslate = str.charAt(1) == '<';
                     if(Character.isDigit(str.charAt(1))){
                         StringBuilder val = new StringBuilder();
                         for (int j = 1; j < str.length(); j++) {

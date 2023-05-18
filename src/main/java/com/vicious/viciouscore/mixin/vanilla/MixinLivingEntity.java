@@ -4,6 +4,7 @@ import com.vicious.viciouscore.common.events.TotemUsedEvent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,7 +27,7 @@ public abstract class MixinLivingEntity {
      */
     @Overwrite
     private boolean checkTotemDeathProtection(DamageSource p_21263_) {
-        if (p_21263_.isBypassInvul()) {
+        if (p_21263_.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         } else {
             ItemStack ref = null;
