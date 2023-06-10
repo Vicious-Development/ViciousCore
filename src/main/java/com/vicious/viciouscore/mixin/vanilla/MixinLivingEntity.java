@@ -15,6 +15,8 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity {
@@ -22,8 +24,6 @@ public abstract class MixinLivingEntity {
     /**
      * @reason provide totem death event.
      * @author drathonix
-     * @param p_21263_
-     * @return
      */
     @Overwrite
     private boolean checkTotemDeathProtection(DamageSource p_21263_) {
@@ -53,7 +53,7 @@ public abstract class MixinLivingEntity {
                     self.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
                     self.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
                     self.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
-                    self.getLevel().broadcastEntityEvent(self, (byte) 35);
+                    self.level().broadcastEntityEvent(self, (byte) 35);
                     MinecraftForge.EVENT_BUS.post(new TotemUsedEvent.Post(self,ref));
                     return true;
                 }
