@@ -18,20 +18,20 @@ public class VCNetwork {
     public static VCNetwork getInstance(){
         if(instance == null){
             instance = new VCNetwork();
-            VCPacket.register(CPacketButtonPressReceived.class, CPacketButtonPressReceived::new);
-            VCPacket.register(SPacketButtonUpdate.class, SPacketButtonUpdate::new);
-            VCPacket.register(CPacketSyncData.Window.class, CPacketSyncData.Window::new);
-            VCPacket.register(SPacketSyncData.Window.class, SPacketSyncData.Window::new);
-            VCPacket.register(SPacketSlotClicked.class, SPacketSlotClicked::new);
-            VCPacket.register(SPacketSlotKeyPressed.class, SPacketSlotKeyPressed::new);
+            //VCPacket.register(CPacketButtonPressReceived.class, CPacketButtonPressReceived::new);
+            //VCPacket.register(SPacketButtonUpdate.class, SPacketButtonUpdate::new);
+            //VCPacket.register(CPacketSyncData.Window.class, CPacketSyncData.Window::new);
+            //VCPacket.register(SPacketSyncData.Window.class, SPacketSyncData.Window::new);
+            //VCPacket.register(SPacketSlotClicked.class, SPacketSlotClicked::new);
+            //VCPacket.register(SPacketSlotKeyPressed.class, SPacketSlotKeyPressed::new);
         }
         return instance;
     }
     private static final String VERSION = "1";
     protected SimpleChannel channel = getChannel();
     public SimpleChannel getChannel(){
-        if(channel == null) channel =NetworkRegistry.newSimpleChannel(VCResources.NETWORK,VCNetwork::getProtocolVersion,VERSION::equals,VERSION::equals);
-        return channel;
+        //if(channel == null) channel =NetworkRegistry.newSimpleChannel(VCResources.NETWORK,VCNetwork::getProtocolVersion,VERSION::equals,VERSION::equals);
+        return null;
     }
 
     public VCNetwork(){

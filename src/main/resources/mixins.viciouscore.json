@@ -6,7 +6,8 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "vanilla.MixinLivingEntity"
+    "vanilla.MixinLivingEntity",
+    "vanilla.MixinTranslatableContents"
   ],
   "client": []
 }

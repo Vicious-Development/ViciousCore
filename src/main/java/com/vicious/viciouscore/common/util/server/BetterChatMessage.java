@@ -11,6 +11,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
  * With more complex messages such as ones using actions the mojang provided system is actually very practical and is required with BCM.
  */
 public class BetterChatMessage {
+    protected static boolean pretranslate = false;
     public MutableComponent component;
 
     public BetterChatMessage(List<Object> objects){
@@ -41,7 +43,6 @@ public class BetterChatMessage {
             if(object == null) object = "null";
             if(object instanceof String str){
                 if(str.startsWith("<") && str.endsWith(">")) {
-                    //boolean pretranslate = str.charAt(1) == '<';
                     if(Character.isDigit(str.charAt(1))){
                         StringBuilder val = new StringBuilder();
                         for (int j = 1; j < str.length(); j++) {
@@ -53,10 +54,23 @@ public class BetterChatMessage {
                             }
                         }
                         Tuple<Object[],Integer> ret = gatherComponentsForTranslation(objects,i+1, Integer.parseInt(val.toString()));
-                        unstyled = Component.translatable(str.substring(1+val.toString().length(),str.length()-1), ret.getA());
+                        String key = str.substring(1 + val.toString().length(), str.length() - 1);
+                        unstyled = Component.translatable(key, ret.getA());
+                        if(pretranslate) {
+                            TranslatableContents ctx = (TranslatableContents) unstyled.getContents();
+                            unstyled = ((IPretranslatable) ctx).translate();
+                        }
                         i = (int) ret.getB();
                     }
-                    else unstyled = Component.translatable(str.substring(1, str.length() - 1));
+                    else {
+                        if(!pretranslate) {
+                            unstyled = Component.translatable(str.substring(1, str.length() - 1));
+                        }
+                        else{
+                            unstyled = Component.literal(Language.getInstance().getOrDefault(str.substring(1, str.length() - 1)));
+                        }
+
+                    }
                 }
                 else{
                     unstyled = Component.literal(str);
